@@ -55,7 +55,7 @@ jobs:
             curl -X POST \
               -H "Authorization: token ${{ secrets.GK_PAT }}" \
               -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/'${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}'/'${{ matrix.repository }}'/actions/workflows/'repalce-runner.yml'/dispatches" \
+              "https://api.github.com/repos/${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}/${{ matrix.repository }}/actions/workflows/repalce-runner.yml/dispatches" \
               -d '{
                 "ref": "github-migration"
               }'
