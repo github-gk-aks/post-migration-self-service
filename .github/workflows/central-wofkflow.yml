@@ -34,8 +34,8 @@ jobs:
             const response = github.request(
               'POST /repos/{owner}/{repo}/issues/{issue_number}/comments',
               {
-                owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
-                repo: '${{ matrix.repository }}',
+                owner: 'context.repo.owner',
+                repo: 'context.repo.repo',
                 issue_number: '${{ github.event.issue.number }}',
                 body: 'Starting Runner Change for `${{ matrix.repository}}`.....',
                 headers: {
