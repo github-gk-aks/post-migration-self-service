@@ -51,7 +51,7 @@ jobs:
 
       - name: Trigger Workflows in Other Repositories
         run: |
-            echo "Triggering workflow in `${{ matrix.repository }}`"
+            echo "Triggering workflow in ${{ matrix.repository }}"
             curl -X POST \
               -H "Authorization: token ${{ secrets.GK_PAT }}" \
               -H "Accept: application/vnd.github+json" \
