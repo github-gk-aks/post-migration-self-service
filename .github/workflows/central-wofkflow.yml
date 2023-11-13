@@ -44,16 +44,10 @@ jobs:
               }
             );
 
-      - name: Checkout Central Repository
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GK_PAT }}
-
-      - name: Trigger Repository Settings Workflows in Other Repositories
-        uses: ${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}/${{ matrix.repository }}/.github/workflows/settings-meet-standard.yml@github-migration
-        with:
-          repository: ${{ matrix.repository }}
-          organization: ${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}
+      # - name: Checkout Central Repository
+      #   uses: actions/checkout@v4
+      #   with:
+      #     token: ${{ secrets.GK_PAT }}
 
       # - name: Trigger Runner Change Workflows in Other Repositories
       #   run: |
@@ -86,4 +80,20 @@ jobs:
       #         }'
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GK_PAT }}
-      
+
+      - name: Trigger Repository Settings Workflows in Other Repositories
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GK_PAT}}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
+              repo: '${{ matrix.repository }}',
+              workflow_id: 'settings-meet-standard.yml',
+              ref: 'github-migration',
+              inputs: {
+                repository: '${{ matrix.repository }}',
+                organisation: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}'
+              }
+            });
+
