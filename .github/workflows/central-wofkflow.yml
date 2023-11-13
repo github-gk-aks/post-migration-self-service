@@ -43,6 +43,10 @@ jobs:
                 }
               }
             );
+      - name: Debug Information
+        run: |
+          echo "GitHub context: ${{ toJson(github) }}"
+          
 
       # - name: Checkout Central Repository
       #   uses: actions/checkout@v4
@@ -89,7 +93,7 @@ jobs:
             await github.rest.actions.createWorkflowDispatch({
               owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
               repo: '${{ matrix.repository }}',
-              workflow_id: 'settings-meet-standard.yml',
+              workflow_id: '.github/workflows/settings-meet-standard.yml',
               ref: 'github-migration',
               inputs: {
                 repository: '${{ matrix.repository }}',
