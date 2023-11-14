@@ -50,6 +50,7 @@ jobs:
       #     token: ${{ secrets.GK_PAT }}
 
       - name: Trigger Runner Change Workflows in Other Repositories
+        id: step-1
         run: |
             echo "Triggering workflow in ${{ matrix.repository }}"
             curl -X POST \
@@ -82,9 +83,10 @@ jobs:
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GK_PAT }}
 
+      - name: Wait for 1 minute
+        run: sleep 30
+
       - name: Acknowledgment For Repository Setting Change
-        id: step-2
-        if: always()
         uses: actions/github-script@v6
         with:
           script: |
@@ -102,8 +104,7 @@ jobs:
             );              
 
       - name: Trigger Repository Settings Workflows in Other Repositories
-        id: step-3
-        if: always()
+        id: step-2
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GK_PAT}}
