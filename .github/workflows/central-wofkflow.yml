@@ -83,7 +83,7 @@ jobs:
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GK_PAT }}
 
-      - name: Wait for 1 minute
+      - name: Wait for 30 seconds
         run: sleep 30
 
       - name: Acknowledgment For Repository Setting Change
