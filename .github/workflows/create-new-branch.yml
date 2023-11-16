@@ -68,9 +68,9 @@ jobs:
           github-token: ${{ secrets.GK_PAT }}
           script: |
             await github.rest.git.createRef({
-             owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }},
-             repo: '${{ matrix.repository }}',
-             ref: 'refs/heads/test-branch',
-             sha: context.sha
+              owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
+              repo: '${{ matrix.repository }}',
+              ref: 'refs/heads/test-branch',
+              sha: context.sha
             });
 
