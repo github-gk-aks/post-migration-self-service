@@ -72,12 +72,20 @@ jobs:
           github-token: ${{ secrets.GK_PAT }}
           script: |
             const defaultBranch = '${{ steps.default-branch.outputs.default_branch }}';
-            console.log("GitHub SHA:", github.sha);
+            console.log("Default Branch SHA:", defaultBranch);
+            
+            const { data: commit } = await github.rest.repos.getCommit({
+                owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
+                repo: '${{ matrix.repository }}',
+                ref: defaultBranch
+              });
+            console.log("Commit SHA of Default Branch:", commit.sha);
+
             await github.rest.git.createRef({
               owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
               repo: '${{ matrix.repository }}',
               ref: 'refs/heads/test-branch',
-              sha: defaultBranch.commit.sha
+              sha: commit.sha
             });
           
 
