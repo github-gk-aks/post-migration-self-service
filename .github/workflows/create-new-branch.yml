@@ -73,4 +73,5 @@ jobs:
               ref: 'refs/heads/test-branch',
               sha: context.sha
             });
+            console.log(result);
 
