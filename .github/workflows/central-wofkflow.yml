@@ -134,7 +134,6 @@ jobs:
         with:
           github-token: ${{ secrets.GK_PAT}}
           script: |
-            const base64LicenseContent = process.env.BASE64_LICENSE_CONTENT.trim();
             await github.rest.actions.createWorkflowDispatch({
               owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
               repo: '${{ matrix.repository }}',
