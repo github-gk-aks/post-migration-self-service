@@ -125,8 +125,8 @@ jobs:
         run: |
           LICENSE_CONTENT=$(cat data/license-file.txt)
           BASE64_LICENSE_CONTENT=$(echo -n "$LICENSE_CONTENT" | base64)
-          echo "BASE64_LICENSE_CONTENT=$BASE64_LICENSE_CONTENT" >> $GITHUB_ENV
-        working-directory: ${{ github.workspace }}  
+          printf "BASE64_LICENSE_CONTENT=%s\n" "$BASE64_LICENSE_CONTENT" >> $GITHUB_ENV
+ 
 
       - name: Trigger License File Check and Add Workflows in Other Repositories
         id: step-3
