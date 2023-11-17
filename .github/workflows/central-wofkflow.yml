@@ -123,7 +123,7 @@ jobs:
       - name: Encode License Content as Base64
         id: encode-license
         run: |
-          LICENSE_CONTENT=$(cat data/license-file.txt)
+          LICENSE_CONTENT=$(cat license-file.txt)
           BASE64_LICENSE_CONTENT=$(echo -n "$LICENSE_CONTENT" | base64)
           echo "::set-output name=base64LicenseContent::$BASE64_LICENSE_CONTENT"    
         working-directory: ${{ github.workspace }}  
