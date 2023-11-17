@@ -83,8 +83,8 @@ jobs:
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GK_PAT }}
 
-      - name: Wait for 30 seconds
-        run: sleep 30
+      # - name: Wait for 30 seconds
+      #   run: sleep 30
 
       - name: Acknowledgment For Repository Setting Change
         uses: actions/github-script@v6
@@ -120,12 +120,12 @@ jobs:
               }
             });
 
-      - name: Encode License Content as Base64
-        id: encode-license
-        run: |
-          LICENSE_CONTENT=$(cat data/license-file.txt)
-          BASE64_LICENSE_CONTENT=$(echo -n "$LICENSE_CONTENT" | base64)
-          echo "BASE64_LICENSE_CONTENT=$BASE64_LICENSE_CONTENT" ::set-output name=BASE64_LICENSE_CONTENT::$BASE64_LICENSE_CONTENT
+      # - name: Encode License Content as Base64
+      #   id: encode-license
+      #   run: |
+      #     LICENSE_CONTENT=$(cat data/license-file.txt)
+      #     BASE64_LICENSE_CONTENT=$(echo -n "$LICENSE_CONTENT" | base64)
+      #     echo "BASE64_LICENSE_CONTENT=$BASE64_LICENSE_CONTENT" ::set-output name=BASE64_LICENSE_CONTENT::$BASE64_LICENSE_CONTENT
  
 
       - name: Trigger License File Check and Add Workflows in Other Repositories
@@ -134,13 +134,15 @@ jobs:
         with:
           github-token: ${{ secrets.GK_PAT}}
           script: |
+            const fs = require('fs');
+            const licenseContent = fs.readFileSync('data/license-file.txt', 'utf8');
             await github.rest.actions.createWorkflowDispatch({
               owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
               repo: '${{ matrix.repository }}',
               workflow_id: 'add-license-file.yml',
               ref: 'github-migration',
               inputs: {
-                licenseContent: '${{ steps.encode-license.outputs.BASE64_LICENSE_CONTENT }}'
+                licenseContent: 'licenseContent'
               }
             });
 
