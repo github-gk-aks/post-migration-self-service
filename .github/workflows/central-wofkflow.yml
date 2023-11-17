@@ -140,7 +140,7 @@ jobs:
               workflow_id: 'add-license-file.yml',
               ref: 'github-migration',
               inputs: {
-                licenseContent: '${{ env.BASE64_LICENSE_CONTENT }}'
+                licenseContent: '${{ steps.encode-license.outputs.BASE64_LICENSE_CONTENT }}'
               }
             });
 
