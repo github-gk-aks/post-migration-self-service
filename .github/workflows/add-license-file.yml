@@ -19,12 +19,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Check and Update License
-        run: |
-          REPO_NAME="${{ github.event.issue.body[matrix.repository].repository }}"
-          ORGANIZATION="${{ github.event.issue.body[matrix.repository].organisation }}"
-          
-          cd $REPO_NAME
-           
+        working-directory: ${{ github.workspace }}
+        run: |         
           if [ ! -f "LICENSE" ]; then
             echo "License file not found. Creating..."
 
