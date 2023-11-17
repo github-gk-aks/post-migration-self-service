@@ -142,7 +142,7 @@ jobs:
               workflow_id: 'add-license-file.yml',
               ref: 'github-migration',
               inputs: {
-                licenseContent: 'licenseContent'
+                licenseContent: licenseContent
               }
             });
 
