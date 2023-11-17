@@ -125,7 +125,7 @@ jobs:
         run: |
           LICENSE_CONTENT=$(cat data/license-file.txt)
           BASE64_LICENSE_CONTENT=$(echo -n "$LICENSE_CONTENT" | base64)
-          echo "BASE64_LICENSE_CONTENT=$BASE64_LICENSE_CONTENT" > base64_license_content.txt
+          echo "BASE64_LICENSE_CONTENT=$BASE64_LICENSE_CONTENT" >> $GITHUB_ENV
         working-directory: ${{ github.workspace }}  
 
       - name: Trigger License File Check and Add Workflows in Other Repositories
@@ -134,7 +134,7 @@ jobs:
         with:
           github-token: ${{ secrets.GK_PAT}}
           script: |
-            const base64LicenseContent = fs.readFileSync('base64_license_content.txt', 'utf8').trim();
+            const base64LicenseContent = process.env.BASE64_LICENSE_CONTENT.trim();
             await github.rest.actions.createWorkflowDispatch({
               owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
               repo: '${{ matrix.repository }}',
