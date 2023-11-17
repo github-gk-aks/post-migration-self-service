@@ -125,7 +125,8 @@ jobs:
         run: |
           LICENSE_CONTENT=$(cat data/license-file.txt)
           BASE64_LICENSE_CONTENT=$(echo -n "$LICENSE_CONTENT" | base64)
-          echo "::set-output name=base64LicenseContent::$BASE64_LICENSE_CONTENT"      
+          echo "::set-output name=base64LicenseContent::$BASE64_LICENSE_CONTENT"    
+        working-directory: ${{ github.workspace }}  
 
       - name: Trigger License File Check and Add Workflows in Other Repositories
         id: step-3
@@ -143,7 +144,7 @@ jobs:
               }
             });
 
-            
+
       # - name: Trigger Action accessible for repositories whithin the enterprise workflow
       #   id: step-3
       #   uses: actions/github-script@v6
