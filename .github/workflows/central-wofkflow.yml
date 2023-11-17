@@ -125,8 +125,7 @@ jobs:
         run: |
           LICENSE_CONTENT=$(cat data/license-file.txt)
           BASE64_LICENSE_CONTENT=$(echo -n "$LICENSE_CONTENT" | base64)
-          echo "BASE64_LICENSE_CONTENT=$BASE64_LICENSE_CONTENT" >> $GITHUB_ENV
-          echo "::set-output name=base64LicenseContent::$BASE64_LICENSE_CONTENT"
+          echo "BASE64_LICENSE_CONTENT=$BASE64_LICENSE_CONTENT" ::set-output name=BASE64_LICENSE_CONTENT::$BASE64_LICENSE_CONTENT
  
 
       - name: Trigger License File Check and Add Workflows in Other Repositories
@@ -142,7 +141,7 @@ jobs:
               workflow_id: 'add-license-file.yml',
               ref: 'github-migration',
               inputs: {
-                licenseContent: base64LicenseContent
+                licenseContent: '${{ env.BASE64_LICENSE_CONTENT }}'
               }
             });
 
