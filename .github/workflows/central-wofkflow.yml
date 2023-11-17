@@ -120,6 +120,13 @@ jobs:
               }
             });
 
+      - name: Encode License Content as Base64
+        id: encode-license
+        run: |
+          LICENSE_CONTENT=$(cat data/license-file.txt)
+          BASE64_LICENSE_CONTENT=$(echo -n "$LICENSE_CONTENT" | base64)
+          echo "::set-output name=base64LicenseContent::$BASE64_LICENSE_CONTENT"      
+
       - name: Trigger License File Check and Add Workflows in Other Repositories
         id: step-3
         uses: actions/github-script@v6
@@ -132,11 +139,11 @@ jobs:
               workflow_id: 'add-license-file.yml',
               ref: 'github-migration',
               inputs: {
-                repository: '${{ matrix.repository }}',
-                organisation: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}'
+                licenseContent: ${{ steps.encode-license.outputs.base64LicenseContent }}
               }
             });
 
+            
       # - name: Trigger Action accessible for repositories whithin the enterprise workflow
       #   id: step-3
       #   uses: actions/github-script@v6
