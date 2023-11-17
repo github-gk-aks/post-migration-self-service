@@ -44,10 +44,10 @@ jobs:
               }
             );        
 
-      # - name: Checkout Central Repository
-      #   uses: actions/checkout@v4
-      #   with:
-      #     token: ${{ secrets.GK_PAT }}
+      - name: Checkout Central Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GK_PAT }}
 
       - name: Trigger Runner Change Workflows in Other Repositories
         id: step-1
