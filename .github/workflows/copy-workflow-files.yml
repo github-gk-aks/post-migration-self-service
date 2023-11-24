@@ -33,7 +33,7 @@ jobs:
               -d @- <<EOF
             {
               "message": "Update $workflow_file",
-              "content": "$(echo -n "$content")",
+              "content": "$(echo -n "$content" | base64)",
               "branch": "github-migration"
             }
             EOF
