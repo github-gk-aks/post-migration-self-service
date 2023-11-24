@@ -18,7 +18,10 @@ jobs:
             repo="github-gk-aks/firstgithubrepo"
             echo "Processing repository: $repo"
             workflow_file=".github/workflows/github-rest-api123.yml"
-            content=$(cat files/github-rest-api123.yml)  # Update this if your YML file is in a different location
+
+            git clone --depth 1 "https://github.com/$repo" temp-repo
+
+            content=$(cat temp-repo/files/github-rest-api123.yml)  # Update this if your YML file is in a different location
 
             curl -X PUT \
               -H "Accept: application/vnd.github.v3+json" \
