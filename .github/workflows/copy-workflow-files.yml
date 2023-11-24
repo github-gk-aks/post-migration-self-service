@@ -8,6 +8,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      - name: Checkout central repository
+        uses: actions/checkout@v4
+
       - name: Set up Git
         run: |
           git config --global user.email "actions@github.com"
@@ -20,11 +24,7 @@ jobs:
             echo "Processing repository: $owner/$repo"
             workflow_file=".github/workflows/github-rest-api123.yml"
 
-            git clone --depth 1 "https://github.com/$owner/$repo" temp-repo
-
-            ls -R temp-repo
-
-            content=$(cat temp-repo/files/github-rest-api123.yml)  # Update this if your YML file is in a different location
+            content=$(cat files/github-rest-api123.yml)  # Update this if your YML file is in a different location
 
             curl -X PUT \
               -H "Accept: application/vnd.github.v3+json" \
