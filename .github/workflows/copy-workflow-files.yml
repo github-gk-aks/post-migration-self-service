@@ -28,7 +28,7 @@ jobs:
 
             curl -X PUT \
               -H "Accept: application/vnd.github.v3+json" \
-              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Authorization: Bearer ${{ secrets.GK_PAT }}" \
               "https://api.github.com/repos/$owner/$repo/contents/$workflow_file" \
               -d @- <<EOF
             {
