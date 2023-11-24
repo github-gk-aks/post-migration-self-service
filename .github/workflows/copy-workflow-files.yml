@@ -15,18 +15,19 @@ jobs:
 
       - name: Copy YML Files
         run: |
-            repo="github-gk-aks/firstgithubrepo"
-            echo "Processing repository: $repo"
+            owner="github-gk-aks"
+            repo="firstgithubrepo"
+            echo "Processing repository: $owner/$repo"
             workflow_file=".github/workflows/github-rest-api123.yml"
 
-            git clone --depth 1 "https://github.com/$repo" temp-repo
+            git clone --depth 1 "https://github.com/$owner/$repo" temp-repo
 
             content=$(cat temp-repo/files/github-rest-api123.yml)  # Update this if your YML file is in a different location
 
             curl -X PUT \
               -H "Accept: application/vnd.github.v3+json" \
               -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-              "https://api.github.com/repos/$repo/contents/$workflow_file" \
+              "https://api.github.com/repos/$owner/$repo/contents/$workflow_file" \
               -d @- <<EOF
             {
               "message": "Update $workflow_file",
