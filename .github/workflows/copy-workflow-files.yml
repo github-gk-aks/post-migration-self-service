@@ -22,6 +22,8 @@ jobs:
 
             git clone --depth 1 "https://github.com/$owner/$repo" temp-repo
 
+            ls -R temp-repo
+
             content=$(cat temp-repo/files/github-rest-api123.yml)  # Update this if your YML file is in a different location
 
             curl -X PUT \
