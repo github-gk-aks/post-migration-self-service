@@ -146,7 +146,6 @@ jobs:
               }
             });
 
-
       # - name: Trigger Action accessible for repositories whithin the enterprise workflow
       #   id: step-3
       #   uses: actions/github-script@v6
