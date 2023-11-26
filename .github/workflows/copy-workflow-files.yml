@@ -39,6 +39,6 @@ jobs:
                 "content": "$(echo -n "$content" | base64)",
                 "branch": "$branch"
               }
-              EOF
+            EOF
             done
 
