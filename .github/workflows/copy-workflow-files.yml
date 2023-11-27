@@ -1,26 +1,62 @@
 name: Distribute YML Files
 
 on:
-  push
+  issues:
+    types:
+      - opened
+      - edited
+
+# expected issue body input should be structured as follows:
+  #     {
+  #         "rep01": {
+  #             "repository": "rep01",
+  #             "organisation": "org01"
+  #         },
+  #         "rep02": {
+  #             "repository": "rep02",
+  #             "organisation": "org02"
+  #         } 
+  #     }
 
 jobs:
   distribute-yml-files:
+    if: contains(github.event.issue.labels.*.name, 'distribute-yml-files')
     runs-on: ubuntu-latest
-
+    strategy:  
+      matrix:
+        repository: ${{ fromJson(github.event.issue.body).*.repository }}  # rep01, repo02
+      max-parallel: 1
     steps:
-
       - name: Checkout central repository
         uses: actions/checkout@v4
 
-      - name: Set up Git
+      - name: Import GPG key
         run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
+          echo "${GPG_PRIVATE_KEY}" | gpg --batch --import
+        env: 
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
+      - name: Add the custom gpg siging program that passes the passphrase to the gpg CLI
+        run: |
+          rm -rf /tmp/gpg.sh
+          echo '#!/bin/bash' >> /tmp/gpg.sh
+          echo 'gpg --batch --pinentry-mode=loopback --passphrase $GPG_KEY_PASSPHRASE $@' >> /tmp/gpg.sh
+          chmod +x /tmp/gpg.sh
+
+      - name: Setup git
+        run: |
+            git config commit.gpgsign true
+            git config user.signingkey $GPG_KEY_ID
+            git config gpg.program /tmp/gpg.sh
+            git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+            git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
+        env:
+            GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
 
       - name: Copy YML Files
         run: |
-            owner="github-gk-aks"
-            repo="firstgithubrepo"
+            repo='${{ matrix.repository }}'
+            owner='${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}'
             echo "Processing repository: $owner/$repo"
             
             branch="github-migration"
