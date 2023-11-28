@@ -30,28 +30,11 @@ jobs:
       - name: Checkout central repository
         uses: actions/checkout@v4
 
-      - name: Import GPG key
-        run: |
-          echo "${GPG_PRIVATE_KEY}" | gpg --batch --import
-        env: 
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-
-      - name: Add the custom gpg siging program that passes the passphrase to the gpg CLI
-        run: |
-          rm -rf /tmp/gpg.sh
-          echo '#!/bin/bash' >> /tmp/gpg.sh
-          echo 'gpg --batch --pinentry-mode=loopback --passphrase $GPG_KEY_PASSPHRASE $@' >> /tmp/gpg.sh
-          chmod +x /tmp/gpg.sh
-
       - name: Setup git
         run: |
-            git config commit.gpgsign true
-            git config user.signingkey $GPG_KEY_ID
-            git config gpg.program /tmp/gpg.sh
             git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
             git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
-        env:
-            GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+
 
       - name: Copy YML Files
         run: |
@@ -60,12 +43,21 @@ jobs:
             echo "Processing repository: $owner/$repo"
             
             branch="github-migration"
-
+           
             for file in files/*.yml; do
               workflow_file=".github/workflows/$(basename "$file")"
               content=$(cat "$file")  # Update this if your YML file is in a different location
 
-              curl -X PUT \
+              existing_file=$(curl -s -o /dev/null -w "%{http_code}" \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ secrets.GK_PAT }}" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "https://api.github.com/repos/$owner/$repo/contents/$workflow_file?ref=$branch")
+
+
+              if [ "$existing_file" -eq 404 ]; then
+                echo "File does not exist. Creating..."
+                curl -X PUT \
                 -H "Accept: application/vnd.github.v3+json" \
                 -H "Authorization: Bearer ${{ secrets.GK_PAT }}" \
                 "https://api.github.com/repos/$owner/$repo/contents/$workflow_file" \
@@ -76,5 +68,9 @@ jobs:
                 "branch": "$branch"
               }
             EOF
+              else
+                echo "File already exists. Skipping..."
+              fi
             done
+
 
