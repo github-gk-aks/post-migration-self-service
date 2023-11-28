@@ -68,8 +68,11 @@ jobs:
                 "branch": "$branch"
               }
             EOF
-              else
+              elif [ "$existing_file" -eq 200 ]; then
                 echo "File already exists. Skipping..."
+              else
+                echo "Unexpected response: $existing_file. Exiting..."
+                exit 1
               fi
             done
 
