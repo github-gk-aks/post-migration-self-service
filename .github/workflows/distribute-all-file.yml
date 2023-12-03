@@ -1,0 +1,62 @@
+name: Distribute YML Files
+
+on:
+  issues:
+    types:
+      - opened
+      - edited
+
+jobs:
+  distribute-yml-files:
+    if: contains(github.event.issue.labels.*.name, 'distribute-all-files')
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        repository: ${{ fromJson(github.event.issue.body).*.repository }}
+      max-parallel: 1
+    steps:
+      - name: Checkout central repository
+        uses: actions/checkout@v4
+    
+      - name: Checkout target repository
+        uses: actions/checkout@v4
+        with:
+          repository: "${{ fromJSON(github.event.issue.body)[matrix.repository].organisation}}/${{ matrix.repository }}"
+          path: "./target-repo"
+          ref: "github-migration"
+          token: ${{ secrets.GK_PAT }}
+
+      - name: Copy YML, PY, and XLSX files
+        run: |
+          repo='${{ matrix.repository }}'
+          owner='${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}'
+          echo "Processing repository: $owner/$repo"
+          
+          branch="github-migration"
+          target_repo_path="./target-repo"
+          files_path="./files"
+          
+          for file in $files_path/*.{yml,py,xlsx}; do
+            file_extension="${file##*.}"
+            target_folder=""
+            
+            if [ "$file_extension" == "yml" ]; then
+              target_folder=".github/workflows"
+            elif [ "$file_extension" == "py" ]; then
+              target_folder="script"
+            elif [ "$file_extension" == "xlsx" ]; then
+              target_folder="data"
+            fi
+            
+            if [ ! -d "$target_repo_path/$target_folder" ]; then
+              echo "Creating folder: $target_folder"
+              mkdir -p "$target_repo_path/$target_folder"
+            fi
+            
+            cp "$file" "$target_repo_path/$target_folder/"
+          done
+          
+          cd "$target_repo_path"
+          git add .
+          git commit -m "Distribute YML, PY, and XLSX files"
+          git push origin "$branch"
