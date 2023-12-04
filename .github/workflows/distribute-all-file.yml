@@ -84,12 +84,17 @@ jobs:
               
               cp "$file" "$target_repo_path/$target_folder/"
               echo "Copied $file to $target_repo_path/$target_folder/"
+              has_changes=true
             fi
           done
           
-          cd "$target_repo_path"
-          git add .
-          git commit -m "Distribute YML, PY, and XLSX files"
-          git push origin "$branch"
+          if [ "$has_changes" = true ]; then
+            cd "$target_repo_path"
+            git add .
+            git commit -m "Distribute YML, PY, and XLSX files"
+            git push origin "$branch"
+          else
+            echo "No changes to commit. Skipping commit step."
+          fi
         env:
             GPG_KEY_PASSPHRASE: ${{ secrets.PASSPHRASE }}
