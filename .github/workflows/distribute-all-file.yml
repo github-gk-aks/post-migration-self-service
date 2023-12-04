@@ -74,12 +74,17 @@ jobs:
               target_folder="data"
             fi
             
-            if [ ! -d "$target_repo_path/$target_folder" ]; then
-              echo "Creating folder: $target_folder"
-              mkdir -p "$target_repo_path/$target_folder"
+            if [ -e "$target_repo_path/$target_folder/$(basename $file)" ]; then
+              echo "File $file already exists in $target_repo_path/$target_folder/. Skipping..."
+            else
+              if [ ! -d "$target_repo_path/$target_folder" ]; then
+                echo "Creating folder: $target_folder"
+                mkdir -p "$target_repo_path/$target_folder"
+              fi
+              
+              cp "$file" "$target_repo_path/$target_folder/"
+              echo "Copied $file to $target_repo_path/$target_folder/"
             fi
-            
-            cp "$file" "$target_repo_path/$target_folder/"
           done
           
           cd "$target_repo_path"
