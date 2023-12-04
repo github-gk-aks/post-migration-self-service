@@ -61,32 +61,37 @@ jobs:
           branch="github-migration"
           target_repo_path="./target-repo"
           files_path="./files"
-          
-          for file in $files_path/*.{yml,py,xlsx}; do
-            file_extension="${file##*.}"
-            target_folder=""
+          has_changes=false
+
+          if [ -d "$workflows_folder" ]; then
+            for file in $files_path/*.{yml,py,xlsx}; do
+                file_extension="${file##*.}"
+                target_folder=""
             
-            if [ "$file_extension" == "yml" ]; then
-              target_folder=".github/workflows"
-            elif [ "$file_extension" == "py" ]; then
-              target_folder="script"
-            elif [ "$file_extension" == "xlsx" ]; then
-              target_folder="data"
-            fi
-            
-            if [ -e "$target_repo_path/$target_folder/$(basename $file)" ]; then
-              echo "File $file already exists in $target_repo_path/$target_folder/. Skipping..."
-            else
-              if [ ! -d "$target_repo_path/$target_folder" ]; then
-                echo "Creating folder: $target_folder"
-                mkdir -p "$target_repo_path/$target_folder"
-              fi
-              
-              cp "$file" "$target_repo_path/$target_folder/"
-              echo "Copied $file to $target_repo_path/$target_folder/"
-              has_changes=true
-            fi
-          done
+                if [ "$file_extension" == "yml" ]; then
+                    target_folder=".github/workflows"
+                elif [ "$file_extension" == "py" ]; then
+                    target_folder="script"
+                elif [ "$file_extension" == "xlsx" ]; then
+                    target_folder="data"
+                fi
+                
+                if [ -e "$target_repo_path/$target_folder/$(basename $file)" ]; then
+                    echo "File $file already exists in $target_repo_path/$target_folder/. Skipping..."
+                else
+                    if [ ! -d "$target_repo_path/$target_folder" ]; then
+                      echo "Creating folder: $target_folder"
+                      mkdir -p "$target_repo_path/$target_folder"
+                    fi
+                    
+                    cp "$file" "$target_repo_path/$target_folder/"
+                    echo "Copied $file to $target_repo_path/$target_folder/"
+                    has_changes=true
+                fi
+            done
+          else
+            echo "The .github/workflows folder does not exist in the target repository. Skipping the copy operation."
+          fi
           
           if [ "$has_changes" = true ]; then
             cd "$target_repo_path"
