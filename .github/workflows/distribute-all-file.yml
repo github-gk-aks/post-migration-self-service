@@ -1,4 +1,4 @@
-name: Distribute YML Files
+name: Distribute All Files
 
 on:
   issues:
@@ -7,7 +7,7 @@ on:
       - edited
 
 jobs:
-  distribute-yml-files:
+  distribute-all-files:
     if: contains(github.event.issue.labels.*.name, 'distribute-all-files')
     runs-on: ubuntu-latest
     strategy:
@@ -17,6 +17,27 @@ jobs:
     steps:
       - name: Checkout central repository
         uses: actions/checkout@v4
+
+      - name: Import GPG key
+        run: |
+          echo "${GPG_PRIVATE_KEY}" | gpg --batch --import
+        env: 
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
+      - name: Add the custom gpg siging program that passes the passphrase to the gpg CLI
+        run: |
+          rm -rf /tmp/gpg.sh
+          echo '#!/bin/bash' >> /tmp/gpg.sh
+          echo 'gpg --batch --pinentry-mode=loopback --passphrase $GPG_KEY_PASSPHRASE $@' >> /tmp/gpg.sh
+          chmod +x /tmp/gpg.sh
+
+      - name: Setup git
+        run: |
+            git config --global commit.gpgsign true
+            git config --global user.signingkey $GPG_KEY_ID
+            git config --global gpg.program /tmp/gpg.sh
+        env:
+            GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
 
       - name: Setup git
         run: |
