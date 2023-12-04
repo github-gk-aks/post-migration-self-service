@@ -20,8 +20,8 @@ jobs:
 
       - name: Setup git
         run: |
-            git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
-            git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
+            git config --global user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+            git config --global user.name ${{ secrets.GIT_COMMITTER_NAME }}
     
       - name: Checkout target repository
         uses: actions/checkout@v4
