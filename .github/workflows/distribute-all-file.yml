@@ -17,6 +17,11 @@ jobs:
     steps:
       - name: Checkout central repository
         uses: actions/checkout@v4
+
+      - name: Setup git
+        run: |
+            git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+            git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
     
       - name: Checkout target repository
         uses: actions/checkout@v4
