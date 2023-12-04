@@ -86,3 +86,5 @@ jobs:
           git add .
           git commit -m "Distribute YML, PY, and XLSX files"
           git push origin "$branch"
+        env:
+            GPG_KEY_PASSPHRASE: ${{ secrets.PASSPHRASE }}
