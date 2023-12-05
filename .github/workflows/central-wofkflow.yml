@@ -27,6 +27,18 @@ jobs:
         repository: ${{ fromJson(github.event.issue.body).*.repository }}  # rep01, repo02
       max-parallel: 1
     steps:
+      - name: Trigger Organization Change Workflow
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const response = await github.rest.actions.createWorkflowDispatch({
+              owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
+              repo: '${{ matrix.repository}}',
+              workflow_id: 'replace-string.yml',  # Provide the path to your replace strings workflow
+              ref: 'github-migration',  # Provide the branch name
+            });
+            console.log(response.data);
+
       - name: Acknowledgment For Runner Change
         uses: actions/github-script@v6
         with:
