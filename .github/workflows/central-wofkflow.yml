@@ -30,6 +30,7 @@ jobs:
       - name: Trigger Organization Change Workflow
         uses: actions/github-script@v6
         with:
+          github-token: ${{ secrets.GK_PAT}}
           script: |
             const response = await github.rest.actions.createWorkflowDispatch({
               owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
@@ -38,8 +39,6 @@ jobs:
               ref: 'github-migration'  
             });
             console.log(response.data);
-        env:
-          GITHUB_TOKEN: ${{ secrets.GK_PAT }}
 
       - name: Acknowledgment For Runner Change
         uses: actions/github-script@v6
