@@ -38,6 +38,8 @@ jobs:
               ref: 'github-migration'  
             });
             console.log(response.data);
+        env:
+          GITHUB_TOKEN: ${{ secrets.GK_PAT }}
 
       - name: Acknowledgment For Runner Change
         uses: actions/github-script@v6
