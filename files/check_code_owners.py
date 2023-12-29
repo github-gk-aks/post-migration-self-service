@@ -6,7 +6,8 @@ import requests
 def get_default_branch(repo_name):
     # Make a GitHub API request to get information about the repository
     url = f"https://api.github.com/repos/{repo_name}"
-    response = requests.get(url, headers={"Authorization": f"Bearer {secrets.GIGK_PAT}"})
+    github_token = os.environ['GK_PAT']
+    response = requests.get(url, headers={"Authorization": f"Bearer {github_token}"})
     
     # Check if the request was successful
     if response.status_code == 200:
