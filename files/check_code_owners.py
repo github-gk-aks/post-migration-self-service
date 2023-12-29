@@ -1,11 +1,12 @@
 import os
 import subprocess
 import requests
+from github import secrets
 
 def get_default_branch(repo_name):
     # Make a GitHub API request to get information about the repository
     url = f"https://api.github.com/repos/{repo_name}"
-    response = requests.get(url, headers={"Authorization": f"Bearer {os.getenv['GITHUB_TOKEN']}"})
+    response = requests.get(url, headers={"Authorization": f"Bearer {secrets.GITHUB_TOKEN}"})
     
     # Check if the request was successful
     if response.status_code == 200:
