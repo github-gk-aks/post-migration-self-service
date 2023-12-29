@@ -3,10 +3,10 @@ import json
 import requests
 
 ORG_NAME = "github-gk-aks"
-GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
+github_token = os.environ['GK_PAT']
 
 headers = {
-    "Authorization": f"Bearer {GITHUB_TOKEN}",
+    "Authorization": f"Bearer {github_token}",
     "Accept": "application/vnd.github.v3+json"
 }
 
