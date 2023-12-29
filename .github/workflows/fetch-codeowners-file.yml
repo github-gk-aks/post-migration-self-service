@@ -52,6 +52,5 @@ jobs:
         git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
         git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
         git add results.txt
-        git pull 
         git commit -m "Add results.txt"
         git push     
