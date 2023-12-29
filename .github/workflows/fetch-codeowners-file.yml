@@ -44,8 +44,8 @@ jobs:
 
    - name: Commit results.txt back to the repository
      run: |
-        git config user.email "actions@github.com"
-        git config user.name "GitHub Actions"
+        git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+        git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
         git add results.txt
         git commit -m "Add results.txt"
         git push     
