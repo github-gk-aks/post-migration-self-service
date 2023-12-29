@@ -28,3 +28,12 @@ jobs:
 
     - name: Display Repo List
       run: cat repo_list.txt
+
+    - name: Commit results.txt back to the repository
+      run: |
+         git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+         git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
+         git pull
+         git add repo_list.txt
+         git commit -m "Add repo_list.txt"
+         git push    
