@@ -21,15 +21,19 @@ except json.JSONDecodeError:
         repos = json.loads(response.text)
     except json.JSONDecodeError:
         print("Error decoding JSON. Exiting.")
+        print("Response content:")
+        print(response.content.decode())
         exit(1)
 
 # Check if the repos variable is a list (as expected)
 if not isinstance(repos, list):
     print("Invalid JSON format. Exiting.")
+    print("Response content:")
+    print(response.content.decode())
     exit(1)
 
 # Filter out archived repositories
-active_repos = [repo["full_name"] for repo in repos if not repo["archived"]]
+active_repos = [repo["full_name"] for repo in repos if isinstance(repo, dict) and not repo.get("archived")]
 
 # Write the list of repositories to a text file
 with open("repo_list.txt", "w") as file:
