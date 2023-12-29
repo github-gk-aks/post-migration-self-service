@@ -24,7 +24,7 @@ if __name__ == "__main__":
     with open(results_file, "w") as results:
         for repo_name in repo_names:
             # Clone the repository using GITHUB_TOKEN
-            os.system(f"git clone https://github.com/github-gk-aks/{repo_name}.git temp_repos/{repo_name} --depth=1")
+            os.system(f"git clone https://github.com/{repo_name}.git temp_repos/{repo_name} --depth=1")
             code_owners_locations = check_code_owners(repo_name)
             
             if code_owners_locations:
