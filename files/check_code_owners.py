@@ -5,7 +5,7 @@ def check_code_owners(repo_name):
    repo_path = f"temp_repos/{repo_name}"  # Assuming you have a temporary directory for cloning repos
    code_owners_locations = []
    # Check for CODEOWNERS file in different locations
-   locations_to_check = [".github/CODEOWNERS", "data/CODEOWNERS", "CODEOWNERS"]
+   locations_to_check = [".github/CODEOWNERS", "docs/CODEOWNERS", "CODEOWNERS"]
    for location in locations_to_check:
        code_owners_path = os.path.join(repo_path, location)
        if os.path.exists(code_owners_path):
