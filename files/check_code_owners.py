@@ -8,8 +8,10 @@ def check_code_owners(repo_name):
    locations_to_check = [".github/CODEOWNERS", "docs/CODEOWNERS", "CODEOWNERS"]
    for location in locations_to_check:
        code_owners_path = os.path.join(repo_path, location)
+       print(f"Checking for CODEOWNERS at: {code_owners_path}")
        if os.path.exists(code_owners_path):
            code_owners_locations.append(location)
+           print(f"Found CODEOWNERS at: {code_owners_path}")
    return code_owners_locations  # Return the locations of CODEOWNERS files
 
 if __name__ == "__main__":
@@ -21,6 +23,7 @@ if __name__ == "__main__":
        repo_names = f.read().splitlines()
    with open(results_file, "w") as results:
        for repo_name in repo_names:
+           print(f"Checking repository: {repo_name}")
            code_owners_locations = check_code_owners(repo_name)
            if code_owners_locations:
                results.write(f"{repo_name}, {', '.join(code_owners_locations)}\n")
