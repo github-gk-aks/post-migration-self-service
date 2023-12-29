@@ -1,5 +1,27 @@
 import os
 import subprocess
+import requests
+
+def get_default_branch(repo_name):
+    # Make a GitHub API request to get information about the repository
+    url = f"https://api.github.com/repos/{repo_name}"
+    response = requests.get(url, headers={"Authorization": f"Bearer {os.environ['GITHUB_TOKEN']}"})
+    
+    # Check if the request was successful
+    if response.status_code == 200:
+        # Parse the JSON response
+        repo_info = response.json()      
+        # Extract and return the default branch
+        default_branch = repo_info.get("default_branch")
+        if default_branch is not None:
+            return default_branch
+        else:
+            print("No value found for 'default_branch'.")
+            return None
+    else:
+        # Handle the error if the request was not successful
+        print(f"Error getting repository info for {repo_name}. Status code: {response.status_code}")
+        return None  # Default to "master" in case of an error
 
 def check_code_owners(repo_name):
     repo_path = f"temp_repos/{repo_name}"  # Assuming you have a temporary directory for cloning repos
@@ -24,10 +46,14 @@ if __name__ == "__main__":
     with open(results_file, "w") as results:
         for repo_name in repo_names:
             # Clone the repository using GITHUB_TOKEN
-            os.system(f"git clone https://github.com/{repo_name}.git temp_repos/{repo_name} --depth=1")
-            code_owners_locations = check_code_owners(repo_name)
+            default_branch = get_default_branch(repo_name)
+            if default_branch is not None:
+                os.system(f"git clone https://github.com/{repo_name}.git temp_repos/{repo_name} --depth=1")
+                code_owners_locations = check_code_owners(repo_name)
             
-            if code_owners_locations:
-                results.write(f"{repo_name}, {', '.join(code_owners_locations)}\n")
+                if code_owners_locations:
+                    results.write(f"{repo_name}, {', '.join(code_owners_locations)}\n")
+                else:
+                    results.write(f"{repo_name}, Not found\n")
             else:
-                results.write(f"{repo_name}, Not found\n")
+                print(f"Skipping repository {repo_name} due to missing 'default_branch'.")
