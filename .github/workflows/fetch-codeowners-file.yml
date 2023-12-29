@@ -6,6 +6,8 @@ on:
 jobs:
  check-code-owners:
    runs-on: ubuntu-latest
+   env:
+    GK_PAT: ${{ secrets.GK_PAT }}
    steps:
    - name: Checkout this repository
      uses: actions/checkout@v4
