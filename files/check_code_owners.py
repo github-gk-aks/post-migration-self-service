@@ -1,7 +1,7 @@
 import os
 import subprocess
 import requests
-from github import secrets
+
 
 def get_default_branch(repo_name):
     # Make a GitHub API request to get information about the repository
