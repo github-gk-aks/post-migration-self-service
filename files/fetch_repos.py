@@ -16,7 +16,11 @@ response = requests.get(url, headers=headers)
 repos = response.json()
 
 if isinstance(repos, str):
-    repos = json.loads(repos)
+    try:
+        repos = json.loads(repos)
+    except json.JSONDecodeError:
+        print("Error decoding JSON. Exiting.")
+        exit(1)
 
 # Filter out archived repositories
 active_repos = [repo["full_name"] for repo in repos if not repo["archived"]]
