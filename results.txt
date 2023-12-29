@@ -1,2 +1,2 @@
-github-gk-aks/firstgithubrepo, .github/CODEOWNERS, CODEOWNERS
+github-gk-aks/firstgithubrepo, .github/CODEOWNERS
 github-gk-aks/secondgithubrepo, docs/CODEOWNERS
