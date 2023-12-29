@@ -1,4 +1,5 @@
 import os
+import json
 import requests
 
 ORG_NAME = "github-gk-aks"
@@ -13,6 +14,9 @@ headers = {
 url = f"https://api.github.com/orgs/{ORG_NAME}/repos?per_page=100"
 response = requests.get(url, headers=headers)
 repos = response.json()
+
+if isinstance(repos, str):
+    repos = json.loads(repos)
 
 # Filter out archived repositories
 active_repos = [repo["full_name"] for repo in repos if not repo["archived"]]
