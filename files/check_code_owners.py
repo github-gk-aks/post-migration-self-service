@@ -2,7 +2,7 @@ import os
 import subprocess
 
 def check_code_owners(repo_name):
-   repo_path = f"temp_repos/{repo_name}"  # Assuming you have a temporary directory for cloning repos
+   repo_path = f"{repo_name}"  # Assuming you have a temporary directory for cloning repos
    code_owners_locations = []
    # Check for CODEOWNERS file in different locations
    locations_to_check = [".github/CODEOWNERS", "docs/CODEOWNERS", "CODEOWNERS"]
@@ -25,6 +25,7 @@ if __name__ == "__main__":
        for repo_name in repo_names:
            print(f"Checking repository: {repo_name}")
            code_owners_locations = check_code_owners(repo_name)
+           print(f"Code Owners Locations : {code_owners_locations}")
            if code_owners_locations:
                results.write(f"{repo_name}, {', '.join(code_owners_locations)}\n")
            else:
