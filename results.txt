@@ -1,1 +1,1 @@
-github-gk-aks/firstgithubrepo, Not found
+github-gk-aks/firstgithubrepo, CODEOWNERS
