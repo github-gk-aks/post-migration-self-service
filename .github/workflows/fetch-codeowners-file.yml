@@ -21,6 +21,7 @@ jobs:
      run: |
        python -m pip install --upgrade pip
        pip install openpyxl  # For Excel file support
+       pip install requests
 
    - name: Run Python script
      run: python files/check_code_owners.py
