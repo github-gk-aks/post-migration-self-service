@@ -49,6 +49,7 @@ if __name__ == "__main__":
         for repo_name in repo_names:
             # Clone the repository using GITHUB_TOKEN
             default_branch = get_default_branch(repo_name)
+            print(f"Default branch is: {default_branch}")
             if default_branch is not None:
                 os.system(f"git clone https://github.com/{repo_name}.git temp_repos/{repo_name} --depth=1")
                 code_owners_locations = check_code_owners(repo_name)
