@@ -21,8 +21,7 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install requests openpyxl
-        pip install requests
+        pip install requests openpyxl PyGithub
 
     - name: Fetch GitHub Teams and Members
       run: python files/fetch_teams.py
