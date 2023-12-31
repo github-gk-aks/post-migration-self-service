@@ -1,0 +1,39 @@
+name: Fetch GitHub Teams
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fetch-teams:
+    runs-on: ubuntu-latest
+    env:
+        GK_PAT: ${{ secrets.GK_PAT }}
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests openpyxl
+        pip install requests
+
+    - name: Fetch GitHub Teams and Members
+      run: python files/fetch_teams.py
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Commit Changes
+      run: |
+        git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+        git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
+        git pull
+        git add teams_and_members.xlsx
+        git commit -m "Update teams and members file - $(date +"%Y-%m-%d %H:%M:%S")"
+        git push    
