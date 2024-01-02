@@ -41,6 +41,10 @@ for repository in repositories:
             print(f"Error decoding JSON for {permission_url}: {e}")
             continue
 
+        if 'permissions' not in permission_data:
+            print(f"Invalid response for {permission_url}. Skipping...")
+            continue
+
         # Iterate through permissions and append to Excel worksheet
         permissions = permission_data.get('permissions', {})
         for permission, value in permissions.items():
@@ -61,6 +65,10 @@ for repository in repositories:
             permission_data = permission_response.json()
         except requests.exceptions.JSONDecodeError as e:
             print(f"Error decoding JSON for {permission_url}: {e}")
+            continue
+
+        if 'permission' not in permission_data:
+            print(f"Invalid response for {permission_url}. Skipping...")
             continue
 
         # Iterate through permissions and append to Excel worksheet
