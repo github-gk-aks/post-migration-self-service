@@ -33,7 +33,8 @@ for repository in repositories:
         team_name = team['name']
         permission_url = f'{api_base_url}/orgs/{org_name}/teams/{team_name}/repos/{repository}'
         permission_response = requests.get(permission_url, headers=headers)
-        permission_data = permission_response.json()
+        
+        # permission_data = permission_response.json()
 
         try:
             permission_data = permission_response.json()
@@ -60,7 +61,8 @@ for repository in repositories:
         username = collaborator['login']
         permission_url = f'{api_base_url}/repos/{repository}/collaborators/{username}/permissions'
         permission_response = requests.get(permission_url, headers=headers)
-        permission_data = permission_response.json()
+
+        # permission_data = permission_response.json()
 
         try:
             permission_data = permission_response.json()
