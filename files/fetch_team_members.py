@@ -80,7 +80,7 @@ for repository in repositories:
 
             # Iterate through permissions and append to Excel worksheet
             permission = permission_data.get('permission')
-    worksheet.append([repository, f'User: {username}', f'Permission: {permission}'])
+            worksheet.append([repository, f'User: {username}', f'Permission: {permission}'])
 
 # Save the Excel file
 workbook.save('teams_members_permissions.xlsx')
