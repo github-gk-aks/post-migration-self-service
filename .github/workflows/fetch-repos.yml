@@ -35,5 +35,5 @@ jobs:
          git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
          git pull
          git add repo_list.txt
-         git commit -m "Add repo_list.txt"
+         git commit -m "Add repo_list.txt - - $(date +"%Y-%m-%d %H:%M:%S")"
          git push    

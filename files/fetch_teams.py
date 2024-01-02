@@ -2,14 +2,13 @@ import os
 import requests
 import openpyxl
 from openpyxl import Workbook
-from openpyxl.styles import Alignment
 from github import Github
 
 GITHUB_TOKEN = os.environ['GK_PAT']
 ORG_NAME = 'github-gk-aks'
 
 def fetch_teams():
-    url = f'https://api.github.com/orgs/{ORG_NAME}/teams'
+    url = f'https://api.github.com/orgs/{ORG_NAME}/teams?per_page=5'
 
     headers = {
     "Authorization": f"Bearer {GITHUB_TOKEN}",
