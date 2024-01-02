@@ -35,6 +35,12 @@ for repository in repositories:
         permission_response = requests.get(permission_url, headers=headers)
         permission_data = permission_response.json()
 
+        try:
+            permission_data = permission_response.json()
+        except requests.exceptions.JSONDecodeError as e:
+            print(f"Error decoding JSON for {permission_url}: {e}")
+            continue
+
         # Iterate through permissions and append to Excel worksheet
         permissions = permission_data.get('permissions', {})
         for permission, value in permissions.items():
@@ -50,6 +56,12 @@ for repository in repositories:
         permission_url = f'{api_base_url}/repos/{repository}/collaborators/{username}/permissions'
         permission_response = requests.get(permission_url, headers=headers)
         permission_data = permission_response.json()
+
+        try:
+            permission_data = permission_response.json()
+        except requests.exceptions.JSONDecodeError as e:
+            print(f"Error decoding JSON for {permission_url}: {e}")
+            continue
 
         # Iterate through permissions and append to Excel worksheet
         permission = permission_data.get('permission')
