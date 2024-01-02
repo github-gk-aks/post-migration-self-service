@@ -28,7 +28,7 @@ jobs:
       - name: Fetch Teams and Members
         run: python files/fetch_team_members.py
 
-      - name: Commit results.txt back to the repository
+      - name: Commit result back to the repository
         run: |
             git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
             git config user.name ${{ secrets.GIT_COMMITTER_NAME }}

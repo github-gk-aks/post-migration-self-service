@@ -30,7 +30,7 @@ for repository in repositories:
 
     # Iterate through teams and fetch members and permissions
     for team in teams_data:
-        team_name = team['name']
+        team_name = team['slug']
         permission_url = f'{api_base_url}/orgs/{org_name}/teams/{team_name}/repos/{repository}'
         permission_response = requests.get(permission_url, headers=headers)
         
