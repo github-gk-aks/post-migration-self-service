@@ -34,7 +34,7 @@ for repository in repositories:
         permission_url = f'{api_base_url}/orgs/{org_name}/teams/{team_name}/repos/{repository}'
         headers = {
         "Authorization": f"Bearer {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github+json",
+        "Accept": "application/vnd.github.v3.repository+json",
         "X-GitHub-Api-Version": "2022-11-28"
         }
         permission_response = requests.get(permission_url, headers=headers)
