@@ -24,7 +24,7 @@ jobs:
           pip install openpyxl requests
 
       - name: Fetch Teams and Members
-        run: python files/fetch_teams_members.py
+        run: python files/fetch_team_members.py
         env:
           GITHUB_TOKEN: ${{ secrets.GK_PAT }}
 
