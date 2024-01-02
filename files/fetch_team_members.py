@@ -35,27 +35,30 @@ for repository in repositories:
         permission_response = requests.get(permission_url, headers=headers)
         
         # permission_data = permission_response.json()
+        if permission_response.status_code == 200:
+            try:
+                permission_data = permission_response.json()
+            except requests.exceptions.JSONDecodeError as e:
+                print(f"Error decoding JSON for {permission_url}: {e}")
+                print(f"Response content: {permission_response.content}")
+                continue
 
-        try:
-            permission_data = permission_response.json()
-        except requests.exceptions.JSONDecodeError as e:
-            print(f"Error decoding JSON for {permission_url}: {e}")
-            print(f"Response content: {permission_response.content}")
-            continue
+            if 'permissions' not in permission_data:
+                print(f"Invalid response for {permission_url}. Skipping...")
+                continue
 
-        if 'permissions' not in permission_data:
-            print(f"Invalid response for {permission_url}. Skipping...")
-            continue
-
-        # Iterate through permissions and append to Excel worksheet
-        permissions = permission_data.get('permissions', {})
-        for permission, value in permissions.items():
-            worksheet.append([repository, f'Team: {team_name}', f'{permission}: {value}'])
+            # Iterate through permissions and append to Excel worksheet
+            permissions = permission_data.get('permissions', {})
+            for permission, value in permissions.items():
+                worksheet.append([repository, f'Team: {team_name}', f'{permission}: {value}'])
 
     # Fetch individual users and their permissions for the repository
     collaborators_url = f'{api_base_url}/repos/{repository}/collaborators'
     collaborators_response = requests.get(collaborators_url, headers=headers)
-    collaborators_data = collaborators_response.json()
+   
+
+    if collaborators_response.status_code == 200:
+         collaborators_data = collaborators_response.json()
 
     for collaborator in collaborators_data:
         username = collaborator['login']
@@ -63,21 +66,21 @@ for repository in repositories:
         permission_response = requests.get(permission_url, headers=headers)
 
         # permission_data = permission_response.json()
+        if permission_response.status_code == 200:
+            try:
+                permission_data = permission_response.json()
+            except requests.exceptions.JSONDecodeError as e:
+                print(f"Error decoding JSON for {permission_url}: {e}")
+                print(f"Response content: {permission_response.content}")
+                continue
 
-        try:
-            permission_data = permission_response.json()
-        except requests.exceptions.JSONDecodeError as e:
-            print(f"Error decoding JSON for {permission_url}: {e}")
-            print(f"Response content: {permission_response.content}")
-            continue
+            if 'permission' not in permission_data:
+                print(f"Invalid response for {permission_url}. Skipping...")
+                continue
 
-        if 'permission' not in permission_data:
-            print(f"Invalid response for {permission_url}. Skipping...")
-            continue
-
-        # Iterate through permissions and append to Excel worksheet
-        permission = permission_data.get('permission')
-        worksheet.append([repository, f'User: {username}', f'Permission: {permission}'])
+            # Iterate through permissions and append to Excel worksheet
+            permission = permission_data.get('permission')
+worksheet.append([repository, f'User: {username}', f'Permission: {permission}'])
 
 # Save the Excel file
 workbook.save('teams_members_permissions.xlsx')
