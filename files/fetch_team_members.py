@@ -39,6 +39,7 @@ for repository in repositories:
             permission_data = permission_response.json()
         except requests.exceptions.JSONDecodeError as e:
             print(f"Error decoding JSON for {permission_url}: {e}")
+            print(f"Response content: {permission_response.content}")
             continue
 
         if 'permissions' not in permission_data:
@@ -65,6 +66,7 @@ for repository in repositories:
             permission_data = permission_response.json()
         except requests.exceptions.JSONDecodeError as e:
             print(f"Error decoding JSON for {permission_url}: {e}")
+            print(f"Response content: {permission_response.content}")
             continue
 
         if 'permission' not in permission_data:
