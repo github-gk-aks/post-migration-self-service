@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GK_PAT }}
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -25,8 +27,6 @@ jobs:
 
       - name: Fetch Teams and Members
         run: python files/fetch_team_members.py
-        env:
-          GITHUB_TOKEN: ${{ secrets.GK_PAT }}
 
       - name: Commit results.txt back to the repository
         run: |
