@@ -38,6 +38,10 @@ for repository in repositories:
         if permission_response.status_code == 200:
             try:
                 permission_data = permission_response.json()
+                permissions = permission_data.get('permissions', {})
+                # Iterate through permissions and append to Excel worksheet
+                for permission, value in permissions.items():
+                    worksheet.append([repository, f'Team: {team_name}', f'{permission}: {value}'])
             except requests.exceptions.JSONDecodeError as e:
                 print(f"Error decoding JSON for {permission_url}: {e}")
                 print(f"Response content: {permission_response.content}")
@@ -45,12 +49,9 @@ for repository in repositories:
 
             if 'permissions' not in permission_data:
                 print(f"Invalid response for {permission_url}. Skipping...")
-                continue
-
-            # Iterate through permissions and append to Excel worksheet
-            permissions = permission_data.get('permissions', {})
-            for permission, value in permissions.items():
-                worksheet.append([repository, f'Team: {team_name}', f'{permission}: {value}'])
+                continue  
+        else:
+            print(f"Non-200 status code ({permission_response.status_code}) for {permission_url}")     
 
     # Fetch individual users and their permissions for the repository
     collaborators_url = f'{api_base_url}/repos/{repository}/collaborators'
@@ -69,6 +70,9 @@ for repository in repositories:
         if permission_response.status_code == 200:
             try:
                 permission_data = permission_response.json()
+                # Iterate through permissions and append to Excel worksheet
+                permission = permission_data.get('permission')
+                worksheet.append([repository, f'User: {username}', f'Permission: {permission}'])
             except requests.exceptions.JSONDecodeError as e:
                 print(f"Error decoding JSON for {permission_url}: {e}")
                 print(f"Response content: {permission_response.content}")
@@ -76,11 +80,9 @@ for repository in repositories:
 
             if 'permission' not in permission_data:
                 print(f"Invalid response for {permission_url}. Skipping...")
-                continue
-
-            # Iterate through permissions and append to Excel worksheet
-            permission = permission_data.get('permission')
-            worksheet.append([repository, f'User: {username}', f'Permission: {permission}'])
+                continue  
+        else:
+            print(f"Non-200 status code ({permission_response.status_code}) for {permission_url}")
 
 # Save the Excel file
 workbook.save('teams_members_permissions.xlsx')
