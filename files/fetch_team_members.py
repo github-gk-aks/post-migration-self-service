@@ -44,9 +44,13 @@ for repository in repositories:
             try:
                 permission_data = permission_response.json()
                 permissions = permission_data.get('permissions', {})
+                permission_strings = []
                 # Iterate through permissions and append to Excel worksheet
                 for permission, value in permissions.items():
-                    worksheet.append([repository, f'Team: {team_name}', f'{permission}: {value}'])
+                    permission_strings.append(f"{permission}: {value}")
+                    # worksheet.append([repository, f'Team: {team_name}', f'{permission}: {value}'])
+                permissions_string = ", ".join(permission_strings)
+                worksheet.append([repository, f'Team: {team_name}', permissions_string])
             except requests.exceptions.JSONDecodeError as e:
                 print(f"Error decoding JSON for {permission_url}: {e}")
                 print(f"Response content: {permission_response.content}")
