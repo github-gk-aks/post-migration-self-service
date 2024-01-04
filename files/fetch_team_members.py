@@ -76,7 +76,7 @@ for repository in repositories:
 
     for collaborator in collaborators_data:
         username = collaborator['login']
-        permission_url = f'{api_base_url}/repos/{repository}/collaborators/{username}/permissions'
+        permission_url = f'{api_base_url}/repos/{repository}/collaborators/{username}/permission'
         headers = {
         "Authorization": f"Bearer {GITHUB_TOKEN}",
         "Accept": "application/vnd.github+json",
