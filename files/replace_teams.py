@@ -4,7 +4,7 @@ import json
 repo_path = './target_repo'
 codeowners_location = os.environ.get('CODEOWNERS_LOCATION')
 
-teams_to_replace = json.loads(os.environ.get('TEAMS', '[]').replace("'", "\""))
+teams_to_replace = json.loads(os.environ.get('TEAMS', '[]'))
 
 # Read and replace teams in the CODEOWNERS file
 codeowners_path = os.path.join(repo_path, codeowners_location)
