@@ -25,4 +25,4 @@ jobs:
 
     - name: Replace Teams
       run: |
-        python replace_teams.py
+        python files/replace_teams.py
