@@ -15,4 +15,4 @@ teams_json = json.dumps(teams)
 workbook.close()
 
 #print(f"::set-output name=teams::{teams_json}")
-print(json.dumps(teams))
+print(teams_json)
