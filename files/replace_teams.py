@@ -1,7 +1,7 @@
 import os
 import json
 
-repo_path = '.'
+repo_path = './target_repo'
 codeowners_location = os.environ.get('CODEOWNERS_LOCATION')
 
 teams_to_replace = json.loads(os.environ.get('TEAMS', '[]'))

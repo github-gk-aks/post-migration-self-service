@@ -13,4 +13,6 @@ for row in sheet.iter_rows(min_row=2, values_only=True):
 teams_json = json.dumps(teams)
 
 workbook.close()
-print(f"::set-output name=teams::{teams_json}")
+
+#print(f"::set-output name=teams::{teams_json}")
+print(json.dumps(teams))
