@@ -42,7 +42,7 @@ jobs:
           cd ./target-repo
           export CODEOWNERS_LOCATION='${{ fromJSON(github.event.issue.body)[matrix.repository].codeownerslocation }}'
           export TEAMS="${{ steps.read-teams.outputs.teams }}"
-          python replace_teams.py
+          python files/replace_teams.py
 
       - name: Commit and Push Changes
         run: |
