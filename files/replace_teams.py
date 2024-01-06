@@ -10,6 +10,7 @@ for row in sheet.iter_rows(min_row=2, values_only=True):
 
     # Clone the repository
     repo_path = f'/repos/{repo_name}'
+    os.makedirs(repo_path, exist_ok=True)
     os.system(f'git clone https://github.com/{org_name}/{repo_name}.git {repo_path}')
     os.chdir(repo_path)
 
@@ -35,5 +36,5 @@ for row in sheet.iter_rows(min_row=2, values_only=True):
             print(f'Teams replaced in {org_name}/{repo_name}')
 
     os.chdir('/repo/central_repo')
-    
+
 workbook.close()
