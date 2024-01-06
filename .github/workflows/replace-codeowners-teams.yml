@@ -27,11 +27,12 @@ jobs:
           import openpyxl
 
           teams = []
-          with openpyxl.load_workbook('data/CodeOwners-Team-Replacement.xlsx') as workbook:
-            sheet = workbook.active
+          workbook = openpyxl.load_workbook('data/CodeOwners-Team-Replacement.xlsx')
+          sheet = workbook.active
             for row in sheet.iter_rows(min_row=2, values_only=True):
                 teams.append({'search': row[0], 'replace': row[1]})
           print(teams)
+          workbook.close()
           EOF
 
       - name: Checkout target repository
