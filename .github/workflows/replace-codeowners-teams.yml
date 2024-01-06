@@ -39,7 +39,6 @@ jobs:
 
       - name: Replace Teams in CODEOWNERS
         run: |
-          cd ./target-repo
           export CODEOWNERS_LOCATION='${{ fromJSON(github.event.issue.body)[matrix.repository].codeownerslocation }}'
           export TEAMS="${{ steps.read-teams.outputs.teams }}"
           python files/replace_teams.py
