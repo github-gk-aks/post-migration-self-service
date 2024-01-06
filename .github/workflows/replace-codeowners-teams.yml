@@ -26,7 +26,7 @@ jobs:
         id: read-teams
         run: |
           python -m pip install openpyxl
-          teams=$(python files/process_teams.py)
+          teams=$(python files/read_teams.py)
           echo "::set-output name=teams::$teams"
 
       - name: Checkout target repository
