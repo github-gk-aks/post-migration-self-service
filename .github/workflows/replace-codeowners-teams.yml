@@ -13,11 +13,11 @@ jobs:
       with:
         token: ${{ secrets.GK_PAT }}
 
-    - name: Copy Excel files to runner's workspace
-      run: |
-        mkdir -p $GITHUB_WORKSPACE/data
-        cp data/CodeOwners-File-Location.xlsx $GITHUB_WORKSPACE/data
-        cp data/CodeOwners-Team-Replacement.xlsx $GITHUB_WORKSPACE/data
+    # - name: Copy Excel files to runner's workspace
+    #   run: |
+    #     mkdir -p $GITHUB_WORKSPACE/data
+    #     cp data/CodeOwners-File-Location.xlsx $GITHUB_WORKSPACE/data
+    #     cp data/CodeOwners-Team-Replacement.xlsx $GITHUB_WORKSPACE/data
 
     - name: Set up Python
       uses: actions/setup-python@v2
