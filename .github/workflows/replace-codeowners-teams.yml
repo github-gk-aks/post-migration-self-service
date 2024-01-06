@@ -37,7 +37,6 @@ jobs:
         with:
           repository: "${{ fromJSON(github.event.issue.body)[matrix.repository].organisation}}/${{ matrix.repository }}"
           path: "./target-repo"
-          ref: "github-migration"
           token: ${{ secrets.GK_PAT }}
 
       - name: Replace Teams in CODEOWNERS
