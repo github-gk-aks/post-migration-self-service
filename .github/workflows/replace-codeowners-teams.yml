@@ -44,14 +44,15 @@ jobs:
           export CODEOWNERS_LOCATION='${{ fromJSON(github.event.issue.body)[matrix.repository].codeownerslocation }}'
           export TEAMS="${{ steps.read-teams.outputs.teams }}"
           export TEAMS="${TEAMS//\'/\"}"
+          echo "TEAMS: $TEAMS"
           python files/replace_teams.py
 
-      - name: Commit and Push Changes
-        run: |
-          cd ./target-repo
-          git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
-          git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
-          git pull
-          git add .
-          git commit -m "Replace teams in CODEOWNERS - $(date +"%Y-%m-%d %H:%M:%S")"
-          git push
+    #   - name: Commit and Push Changes
+    #     run: |
+    #       cd ./target-repo
+    #       git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+    #       git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
+    #       git pull
+    #       git add .
+    #       git commit -m "Replace teams in CODEOWNERS - $(date +"%Y-%m-%d %H:%M:%S")"
+    #       git push
