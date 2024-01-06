@@ -29,6 +29,10 @@ jobs:
           teams=$(python files/read_teams.py)
           echo "::set-output name=teams::$teams"
 
+      - name: Show Teams Output
+        run: |
+          echo "TEAMS: ${{ steps.read-teams.outputs.teams }}"
+
       - name: Checkout target repository
         uses: actions/checkout@v4
         with:
