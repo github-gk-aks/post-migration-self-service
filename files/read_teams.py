@@ -1,5 +1,6 @@
 import openpyxl
 import json
+import ast
 
 teams = []
 
@@ -10,9 +11,9 @@ for row in sheet.iter_rows(min_row=2, values_only=True):
     teams.append({'search': row[0], 'replace': row[1]})
 
 # Convert teams to a JSON string
-teams_json = json.dumps(teams)
+teams_json = ast.literal_eval(json.dumps(teams))
 
 workbook.close()
 
 #print(f"::set-output name=teams::{teams_json}")
-print("::set-output name=teams::{}".format(teams_json.replace('\'', '\"')))
+print(f"::set-output name=teams::{teams_json}")
