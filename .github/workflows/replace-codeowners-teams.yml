@@ -1,34 +1,82 @@
-name: Replace CODEOWNERS Teams
+name: Replace Teams in CODEOWNERS
 
 on:
-  workflow_dispatch:
+  issues:
+    types:
+      - opened
 
 jobs:
   replace-teams:
+    if: contains(github.event.issue.labels.*.name, 'codeowner-replace')
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        repository: ${{ fromJson(github.event.issue.body).*.repository }}
+      max-parallel: 1
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.GK_PAT }}
+      - name: Checkout central repository
+        uses: actions/checkout@v4
 
-    # - name: Copy Excel files to runner's workspace
-    #   run: |
-    #     mkdir -p $GITHUB_WORKSPACE/data
-    #     cp data/CodeOwners-File-Location.xlsx $GITHUB_WORKSPACE/data
-    #     cp data/CodeOwners-Team-Replacement.xlsx $GITHUB_WORKSPACE/data
+      - name: Read Teams from Excel File
+        run: |
+          python -m pip install openpyxl
+          python - <<EOF
+          import openpyxl
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
+          teams = []
+          with openpyxl.load_workbook('data/CodeOwners-Team-Replacement.xlsx') as workbook:
+            sheet = workbook.active
+            for row in sheet.iter_rows(min_row=2, values_only=True):
+                teams.append({'search': row[0], 'replace': row[1]})
+          print(teams)
+          EOF
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install openpyxl PyGithub
+      - name: Checkout target repository
+        uses: actions/checkout@v4
+        with:
+          repository: "${{ fromJSON(github.event.issue.body)[matrix.repository].organisation}}/${{ matrix.repository }}"
+          path: "./target-repo"
+          ref: "github-migration"
+          token: ${{ secrets.GK_PAT }}
 
-    - name: Replace Teams
-      run: |
-        python files/replace_teams.py
+      - name: Replace Teams in CODEOWNERS
+        run: |
+          # Navigate to the repository directory
+          cd ./target-repo
+
+          # Replace teams in CODEOWNERS file
+          python - <<EOF
+          import os
+
+          repo_path = '.'
+          codeowners_location = '${{ fromJSON(github.event.issue.body)[matrix.repository].codeownerslocation }}'
+
+          teams_to_replace = ${teams}  # List of teams to replace from Excel
+
+          # Read and replace teams in the CODEOWNERS file
+          codeowners_path = os.path.join(repo_path, codeowners_location)
+          with open(codeowners_path, 'r') as file:
+            content = file.read()
+
+          for team in teams_to_replace:
+            content = content.replace(team['search'], team['replace'])
+
+          with open(codeowners_path, 'w') as file:
+            file.write(content)
+          EOF
+
+      - name: Commit and Push Changes
+        run: |
+          # Navigate to the repository directory
+          cd ./target-repo
+
+          # Configure Git
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          # Commit and push changes
+          git add .
+          git commit -m "Replace teams in CODEOWNERS"
+          git push
