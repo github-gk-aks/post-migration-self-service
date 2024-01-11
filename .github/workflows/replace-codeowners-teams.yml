@@ -22,11 +22,24 @@ jobs:
         with:
             token: ${{ secrets.GK_PAT }}
 
+      - name: Identify Organization
+        id: identify-org
+        run: |
+            echo "::set-output name=organization::${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}"
+
       - name: Read Teams from Excel File
         id: read-teams
         run: |
           python -m pip install openpyxl
-          python files/read_teams.py
+          organization="${{ steps.identify-org.outputs.organization }}"
+          if [ "$organization" == "org1" ]; then
+            python files/read_teams_shared.py
+          elif [ "$organization" == "org2" ]; then
+            python files/read_teams_confidential.py
+          else
+            echo "Unsupported organization: $organization"
+            exit 1
+          fi
 
       - name: Show Teams Output
         run: |
@@ -47,12 +60,12 @@ jobs:
           echo "TEAMS: $TEAMS"
           python files/replace_teams.py
 
-    #   - name: Commit and Push Changes
-    #     run: |
-    #       cd ./target-repo
-    #       git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
-    #       git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
-    #       git pull
-    #       git add .
-    #       git commit -m "Replace teams in CODEOWNERS - $(date +"%Y-%m-%d %H:%M:%S")"
-    #       git push
+      - name: Commit and Push Changes
+        run: |
+          cd ./target-repo
+          git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+          git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
+          git pull
+          git add .
+          git commit -m "Replace teams in CODEOWNERS - $(date +"%Y-%m-%d %H:%M:%S")"
+          git push
