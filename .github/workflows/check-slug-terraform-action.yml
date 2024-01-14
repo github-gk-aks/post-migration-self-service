@@ -54,6 +54,7 @@ jobs:
           cd ./source-repo/output
           pwd
           ls
+          echo "github workspace: ${{ github.workspace }}"
           git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
           git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
           git add result.txt
