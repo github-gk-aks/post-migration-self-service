@@ -26,7 +26,7 @@ jobs:
             echo "Processing repository: $org_name/$repo_name"
             
             # Clone target repository
-            git clone "https://github.com/$repo.git" "./target-repo"
+            git clone -b github-migration "https://github.com/$repo.git" "./target-repo"
 
             # Check if .github/workflows directory exists
             if [ -d "./target-repo/.github/workflows" ]; then
@@ -34,7 +34,7 @@ jobs:
 
               # Find and Record Strings
               for file in $(find "./target-repo" -name '*.yml' -or -name '*.yaml' -path './target-repo/.github/workflows/*' -exec grep -ilE 'workspace|gaurav-terraform' {} +); do
-                echo "Repo: $repo_name, File: $file, Matched String: $(grep -E 'gaurav-slug|gaurav-terraform' "$file")" >> output/result.txt
+                echo "Repo: $repo_name, File: $file, Matched String: $(grep -E 'workspace|gaurav-terraform' "$file")" >> output/result.txt
               done
             else
               echo ".github/workflows directory not found. Appending information to result.txt."
