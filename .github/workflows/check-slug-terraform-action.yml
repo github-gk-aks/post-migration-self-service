@@ -46,6 +46,7 @@ jobs:
 
             # Clean up
             rm -rf "./target-repo"
+            ls ${{ github.workspace }}/source-repo/output/
           done
 
       - name: Commit Changes
