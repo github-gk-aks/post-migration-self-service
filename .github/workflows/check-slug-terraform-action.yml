@@ -12,9 +12,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GK_PAT }}
+          path: ./source-repo
 
       - name: Create output directory
-        run: mkdir -p output
+        run: mkdir -p ./source-repo/output
 
       - name: Read repositories from file
         run: REPOSITORIES=$(cat repositories.txt)
@@ -34,11 +35,11 @@ jobs:
 
               # Find and Record Strings
               for file in $(find "./target-repo" -name '*.yml' -or -name '*.yaml' -path './target-repo/.github/workflows/*' -exec grep -ilE 'workspace|GPG_KEY_ID' {} +); do
-                echo "Repo: $repo_name, File: $file, Matched String: $(grep -E 'workspace|GPG_KEY_ID' "$file")" >> output/result.txt
+                echo "Repo: $repo_name, File: $file, Matched String: $(grep -E 'workspace|GPG_KEY_ID' "$file")" >> ./source-repo/output/result.txt
               done
             else
               echo ".github/workflows directory not found. Appending information to result.txt."
-              echo "Repo: $repo_name, .github/workflows directory not found." >> output/result.txt
+              echo "Repo: $repo_name, .github/workflows directory not found." >> .source-repo/output/result.txt
             fi
 
             # Clean up
@@ -49,7 +50,7 @@ jobs:
         run: |
           git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
           git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
-          cd output
+          cd ./source-repo/output
           git add result.txt
           git commit -m "Add result.txt - $(date +"%Y-%m-%d %H:%M:%S")"
           git push
