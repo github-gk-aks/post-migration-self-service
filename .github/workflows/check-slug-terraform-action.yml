@@ -47,7 +47,8 @@ jobs:
 
       - name: Commit Changes
         run: |
-          cd ${{ github.workspace }}/source-repo
+          cd ${{ github.workspace }}/source-repo/output
+          ls
           git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
           git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
           git add ./output/result.txt
