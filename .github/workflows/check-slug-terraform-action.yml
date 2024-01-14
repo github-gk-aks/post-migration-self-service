@@ -22,7 +22,9 @@ jobs:
 
       - name: Iterate Over Repos
         run: |
+          cd ./source-repo
           pwd
+          ls
           for repo in $REPOSITORIES; do
             IFS='/' read -r org_name repo_name <<< "$repo"
             echo "Processing repository: $org_name/$repo_name"
