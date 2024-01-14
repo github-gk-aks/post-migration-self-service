@@ -20,7 +20,8 @@ jobs:
       - name: Read repositories from file
         id: find-repo
         run: | 
-          REPOSITORIES=$(cat ${{ github.workspace }}/source-repo/repositories.txt)
+          #REPOSITORIES=$(cat ${{ github.workspace }}/source-repo/repositories.txt)
+          REPOSITORIES=$(<${{ github.workspace }}/source-repo/repositories.txt)
           echo $REOSITORIES
           echo "::set-output name=REPOSITORIES::$REPOSITORIES"
 
