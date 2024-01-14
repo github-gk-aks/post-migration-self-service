@@ -19,8 +19,11 @@ jobs:
 
       - name: Read repositories from file
         run: REPOSITORIES=$(cat ${{ github.workspace }}/source-repo/repositories.txt)
+
       - name: Iterate Over Repos
         run: |
+          cd ${{ github.workspace }}/source-repo
+          ls
           for repo in $REPOSITORIES; do
             IFS='/' read -r org_name repo_name <<< "$repo"
             echo "Processing repository: $org_name/$repo_name"
