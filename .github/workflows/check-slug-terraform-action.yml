@@ -42,7 +42,7 @@ jobs:
               echo "Repo: $repo_name"
 
               # Find and Record Strings
-              find "./target-repo" -name '*.yml' -or -name '*.yaml' -path './target-repo/.github/workflows/*' -exec grep -ilE 'workspace|GPG_KEY_ID' {} + | while read -r file; do
+              find "./target-repo" -name '*.yml' -or -name '*.yaml' -path './target-repo/.github/workflows/*' -exec grep -ilE 'workspace|GPG_KEY_ID' {} + | while IFS= read -r file; do
                 echo "Processing file: $file"
                 echo "Repo: $repo_name, File: $file, Matched String: $(grep -E 'workspace|GPG_KEY_ID' "$file")"
                 echo "Repo: $repo_name, File: $file, Matched String: $(grep -E 'workspace|GPG_KEY_ID' "$file")" >> ${{ github.workspace }}/source-repo/output/result.txt
