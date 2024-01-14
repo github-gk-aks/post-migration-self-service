@@ -42,7 +42,7 @@ jobs:
               done
             else
               echo ".github/workflows directory not found. Appending information to result.txt."
-              echo "Repo: $repo_name, .github/workflows directory not found." >> .source-repo/output/result.txt
+              echo "Repo: $repo_name, .github/workflows directory not found." >> ./source-repo/output/result.txt
             fi
 
             # Clean up
@@ -52,6 +52,8 @@ jobs:
       - name: Commit Changes
         run: |
           cd ./source-repo/output
+          pwd
+          ls
           git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
           git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
           git add result.txt
