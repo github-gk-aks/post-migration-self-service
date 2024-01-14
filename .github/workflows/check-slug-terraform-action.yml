@@ -18,13 +18,15 @@ jobs:
         run: mkdir -p ${{ github.workspace }}/source-repo/output
 
       - name: Read repositories from file
-        run: REPOSITORIES=$(cat ${{ github.workspace }}/source-repo/repositories.txt)
+        id: find-repo
+        run: | 
+          REPOSITORIES=$(cat ${{ github.workspace }}/source-repo/repositories.txt)
+          echo "::set-output name=REPOSITORIES::$REPOSITORIES"
+
 
       - name: Iterate Over Repos
         run: |
-          cd ${{ github.workspace }}/source-repo
-          ls
-          for repo in $REPOSITORIES; do
+          for repo in ${{ steps.find-repo.outputs.REPOSITORIES }}; do
             IFS='/' read -r org_name repo_name <<< "$repo"
             echo "Processing repository: $org_name/$repo_name"
             
