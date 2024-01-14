@@ -47,10 +47,10 @@ jobs:
 
       - name: Commit Changes
         run: |
-          cd ./source-repo
+          cd ${{ github.workspace }}/source-repo
           git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
           git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
-          git add output/result.txt
+          git add ./output/result.txt
           git commit -m "Add result.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
           git push
         working-directory: ${{ github.workspace }}
