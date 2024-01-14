@@ -54,4 +54,10 @@ jobs:
           pwd
           git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
           git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
-          cd ./source-repo/output && git add result.txt && git commit -m "Add result.txt - $(date +"%Y-%m-%d %H:%M:%S")" && git push
+          cd ./source-repo/output 
+          pwd
+          ls
+          git add result.txt
+          git commit -m "Add result.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
+          git push
+        working-directory: ${{ github.workspace }}
