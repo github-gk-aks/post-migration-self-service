@@ -33,8 +33,8 @@ jobs:
               echo ".github/workflows directory found. Proceeding with search."
 
               # Find and Record Strings
-              for file in $(find "./target-repo" -name '*.yml' -or -name '*.yaml' -path './target-repo/.github/workflows/*' -exec grep -ilE 'workspace|gaurav-terraform' {} +); do
-                echo "Repo: $repo_name, File: $file, Matched String: $(grep -E 'workspace|gaurav-terraform' "$file")" >> output/result.txt
+              for file in $(find "./target-repo" -name '*.yml' -or -name '*.yaml' -path './target-repo/.github/workflows/*' -exec grep -ilE 'workspace|GPG_KEY_ID' {} +); do
+                echo "Repo: $repo_name, File: $file, Matched String: $(grep -E 'workspace|GPG_KEY_ID' "$file")" >> output/result.txt
               done
             else
               echo ".github/workflows directory not found. Appending information to result.txt."
