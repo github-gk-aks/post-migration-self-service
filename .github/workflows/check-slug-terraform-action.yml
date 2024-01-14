@@ -15,16 +15,12 @@ jobs:
           path: ./source-repo
 
       - name: Create output directory
-        run: mkdir -p ./source-repo/output
+        run: mkdir -p ${{ github.workspace }}/source-repo/output
 
       - name: Read repositories from file
-        run: REPOSITORIES=$(cat ./source-repo/repositories.txt)
-
+        run: REPOSITORIES=$(cat ${{ github.workspace }}/source-repo/repositories.txt)
       - name: Iterate Over Repos
         run: |
-          cd ./source-repo
-          pwd
-          ls
           for repo in $REPOSITORIES; do
             IFS='/' read -r org_name repo_name <<< "$repo"
             echo "Processing repository: $org_name/$repo_name"
@@ -38,11 +34,11 @@ jobs:
 
               # Find and Record Strings
               for file in $(find "./target-repo" -name '*.yml' -or -name '*.yaml' -path './target-repo/.github/workflows/*' -exec grep -ilE 'workspace|GPG_KEY_ID' {} +); do
-                echo "Repo: $repo_name, File: $file, Matched String: $(grep -E 'workspace|GPG_KEY_ID' "$file")" >> ./source-repo/output/result.txt
+                echo "Repo: $repo_name, File: $file, Matched String: $(grep -E 'workspace|GPG_KEY_ID' "$file")" >> ${{ github.workspace }}/source-repo/output/result.txt
               done
             else
               echo ".github/workflows directory not found. Appending information to result.txt."
-              echo "Repo: $repo_name, .github/workflows directory not found." >> ./source-repo/output/result.txt
+              echo "Repo: $repo_name, .github/workflows directory not found." >> ${{ github.workspace }}/source-repo/output/result.txt
             fi
 
             # Clean up
@@ -51,14 +47,10 @@ jobs:
 
       - name: Commit Changes
         run: |
-          cd ./source-repo/output
-          pwd
-          ls
-          echo "github workspace: ${{ github.workspace }}"
-          ls ${{ github.workspace }}
+          cd ./source-repo
           git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
           git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
-          git add result.txt
+          git add output/result.txt
           git commit -m "Add result.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
           git push
         working-directory: ${{ github.workspace }}
