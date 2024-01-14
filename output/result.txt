@@ -37,3 +37,16 @@ Repo: firstgithubrepo, File: ./target-repo/.github/workflows/replace-string.yml,
             GITHUB_WORKSPACE: ${{ github.workspace }}
 Repo: firstgithubrepo, File: ./target-repo/.github/workflows/token-permission.yml, Matched String:     #     file_list=$(cat ${{ github.workspace }}/file-list.txt)
         GITHUB_WORKSPACE: ${{ github.workspace }}
+Repo: firstgithubrepo, File: ./target-repo/.github/workflows/add-license-file.yml, Matched String:             git config user.signingkey $GPG_KEY_ID
+            GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+Repo: firstgithubrepo, File: ./target-repo/.github/workflows/replace-runner.yml, Matched String:             git config user.signingkey $GPG_KEY_ID
+            GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+        working-directory: ${{ github.workspace }}
+        working-directory: ${{ github.workspace }}
+        #working-directory: ${{ github.workspace }}
+Repo: firstgithubrepo, File: ./target-repo/.github/workflows/replace-string.yml, Matched String:           GITHUB_WORKSPACE: ${{ github.workspace }}
+            git config user.signingkey $GPG_KEY_ID
+            GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+            GITHUB_WORKSPACE: ${{ github.workspace }}
+Repo: firstgithubrepo, File: ./target-repo/.github/workflows/token-permission.yml, Matched String:     #     file_list=$(cat ${{ github.workspace }}/file-list.txt)
+        GITHUB_WORKSPACE: ${{ github.workspace }}
