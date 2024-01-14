@@ -20,7 +20,6 @@ jobs:
       - name: Read repositories from file
         id: find-repo
         run: | 
-          #REPOSITORIES=$(cat ${{ github.workspace }}/source-repo/repositories.txt)
           REPOSITORIES=$(<${{ github.workspace }}/source-repo/repositories.txt)
           echo $REOSITORIES
           echo "::set-output name=REPOSITORIES::$REPOSITORIES"
@@ -32,10 +31,10 @@ jobs:
             IFS='/' read -r org_name repo_name <<< "$repo"
             echo "Processing repository: $org_name/$repo_name"
             
-            # Clone target repository
+           
             git clone -b github-migration "https://github.com/$repo.git" "./target-repo"
 
-            # Check if .github/workflows directory exists
+            
             if [ -d "./target-repo/.github/workflows" ]; then
               echo ".github/workflows directory found. Proceeding with search."
 
@@ -43,9 +42,9 @@ jobs:
 
               echo "Repo: $repo_name"
 
-              # Find and Record Strings
+            
               for file in "./target-repo/.github/workflows"/*.yml "./target-repo/.github/workflows"/*.yaml; do
-                 # Check if file exists
+                
                 if [ -e "$file" ]; then
                   if grep -qE 'workspace|GPG_KEY_ID' "$file"; then
                     echo "Processing file: $file"
@@ -62,7 +61,7 @@ jobs:
               echo "Repo: $repo_name, .github/workflows directory not found." >> ${{ github.workspace }}/source-repo/output/result.txt
             fi
 
-            # Clean up
+          
             rm -rf "./target-repo"
             ls ${{ github.workspace }}/source-repo/output/
           done
