@@ -22,6 +22,7 @@ jobs:
 
       - name: Iterate Over Repos
         run: |
+          pwd
           for repo in $REPOSITORIES; do
             IFS='/' read -r org_name repo_name <<< "$repo"
             echo "Processing repository: $org_name/$repo_name"
@@ -48,6 +49,7 @@ jobs:
 
       - name: Commit Changes
         run: |
+          pwd
           git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
           git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
           cd ./source-repo/output && git add result.txt && git commit -m "Add result.txt - $(date +"%Y-%m-%d %H:%M:%S")" && git push
