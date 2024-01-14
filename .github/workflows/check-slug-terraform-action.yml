@@ -1,0 +1,54 @@
+name: Find and Record Strings
+
+on:
+  workflow_dispatch:
+
+jobs:
+  find-strings:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout central repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GK_PAT }}
+
+      - name: Create output directory
+        run: mkdir -p output
+
+      - name: Read repositories from file
+        run: REPOSITORIES=$(cat repositories.txt)
+
+      - name: Iterate Over Repos
+        run: |
+          for repo in $REPOSITORIES; do
+            IFS='/' read -r org_name repo_name <<< "$repo"
+            echo "Processing repository: $org_name/$repo_name"
+            
+            # Clone target repository
+            git clone "https://github.com/$repo.git" "./target-repo"
+
+            # Check if .github/workflows directory exists
+            if [ -d "./target-repo/.github/workflows" ]; then
+              echo ".github/workflows directory found. Proceeding with search."
+
+              # Find and Record Strings
+              for file in $(find "./target-repo" -name '*.yml' -or -name '*.yaml' -path './target-repo/.github/workflows/*' -exec grep -ilE 'workspace|gaurav-terraform' {} +); do
+                echo "Repo: $repo_name, File: $file, Matched String: $(grep -E 'gaurav-slug|gaurav-terraform' "$file")" >> output/result.txt
+              done
+            else
+              echo ".github/workflows directory not found. Appending information to result.txt."
+              echo "Repo: $repo_name, .github/workflows directory not found." >> output/result.txt
+            fi
+
+            # Clean up
+            rm -rf "./target-repo"
+          done
+
+      - name: Commit Changes
+        run: |
+          git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+          git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
+          git add output/result.txt
+          git commit -m "Add result.txt - $(date +"%Y-%m-%d %H:%M:%S")"
+          git push
