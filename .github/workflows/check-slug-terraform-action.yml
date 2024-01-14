@@ -27,9 +27,8 @@ jobs:
 
       - name: Iterate Over Repos
         run: |
-          IFS=$'\n'
           for repo in ${{ steps.find-repo.outputs.REPOSITORIES }}; do
-            IFS='/' read -r org_name repo_name <<< "$repo"
+            IFS= read -r org_name repo_name <<< "$repo"
             echo "Processing repository: $org_name/$repo_name"
             
            
