@@ -41,16 +41,15 @@ jobs:
 
               echo "Repo: $repo_name"
 
-            
               for file in "./target-repo/.github/workflows"/*.yml "./target-repo/.github/workflows"/*.yaml; do
-                matched_string=$(grep -E 'workspace|GPG_KEY_ID' "$file")
+                
                 if [ -e "$file" ]; then
-                  if grep -qE 'workspace|GPG_KEY_ID' "$file"; then
+                  if grep -qE 'workspace' "$file"; then
                     echo "Processing file: $file"
-                    echo "Repo: $repo_name, File: $file, Matched String:" >> ${{ github.workspace }}/source-repo/output/result.txt
-                    echo "$matched_string" | sed 's/^/  /' >> ${{ github.workspace }}/source-repo/output/result.txt
+                    echo "Repo: $repo_name, File: $file, Matched String: workspace"
+                    echo "Repo: $repo_name, File: $file, Matched String: workspace" >> "${{ github.workspace }}/source-repo/output/result.txt"
                   else
-                    echo "Repo: $repo_name, File: $file - No match found"  >> "${{ github.workspace }}/source-repo/output/result.txt"
+                    echo "Repo: $repo_name, File: $file - No match found"
                   fi
                 fi
               done
