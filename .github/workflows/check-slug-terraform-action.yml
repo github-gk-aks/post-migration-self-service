@@ -18,7 +18,7 @@ jobs:
         run: mkdir -p ./source-repo/output
 
       - name: Read repositories from file
-        run: REPOSITORIES=$(cat repositories.txt)
+        run: REPOSITORIES=$(cat ./source-repo/repositories.txt)
 
       - name: Iterate Over Repos
         run: |
