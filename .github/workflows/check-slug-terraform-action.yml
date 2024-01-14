@@ -49,6 +49,7 @@ jobs:
         run: |
           git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
           git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
-          git add ./output/result.txt
+          cd output
+          git add result.txt
           git commit -m "Add result.txt - $(date +"%Y-%m-%d %H:%M:%S")"
           git push
