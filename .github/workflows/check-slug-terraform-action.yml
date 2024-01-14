@@ -49,7 +49,7 @@ jobs:
                     echo "Repo: $repo_name, File: $file, Matched String: workspace"
                     echo "Repo: $repo_name, File: $file, Matched String: workspace" >> "${{ github.workspace }}/source-repo/output/result.txt"
                   else
-                    echo "Repo: $repo_name, File: $file - No match found"
+                    echo "Repo: $repo_name, File: $file - No match found" >> "${{ github.workspace }}/source-repo/output/result.txt"
                   fi
                 fi
               done
