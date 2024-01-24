@@ -18,7 +18,7 @@ jobs:
       - name: Read repositories from file
         id: get-repo
         run: |
-          REPOSITORIES=$(awk '{print $1}' data/replacements.txt | sort -u)
+          REPOSITORIES=$(awk '{print $1}' data/replacements.txt)
           echo "::set-output name=REPOSITORIES::${REPOSITORIES}"
 
       - name: Commit results.txt back to the repository
