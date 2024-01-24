@@ -19,7 +19,6 @@ jobs:
         id: get-repo
         run: |
           REPOSITORIES=$(awk '{print $1}' data/replacements.txt)
-          REPOSITORIES="${REPOSITORIES//$'\n'/ }"
           echo $REPOSITORIES
           echo "::set-output name=REPOSITORIES::${REPOSITORIES}"
 
@@ -30,8 +29,8 @@ jobs:
 
       - name: Iterate Over Repos
         run: |
-          IFS=$'\n'
-          for repo in "${{ steps.get-repo.outputs.REPOSITORIES }}"; do
+          REPOSITORIES=(${{ steps.get-repo.outputs.REPOSITORIES }})
+          for repo in "${REPOSITORIES[@]}"; do
             echo "Processing repository: $repo"
             
             # Clone target repository
