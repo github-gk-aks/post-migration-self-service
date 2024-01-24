@@ -17,7 +17,7 @@ jobs:
 
       - name: Read repositories from file
         run: |
-          REPOSITORIES=$(awk -F ',' '{print $1}' data/replacements.txt | sort -u)
+          REPOSITORIES=$(awk '{print $1}' data/replacements.txt | sort -u)
           echo "REPOSITORIES: $REPOSITORIES"
 
       - name: Iterate Over Repos
