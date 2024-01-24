@@ -16,13 +16,14 @@ jobs:
       #   run: mkdir -p output
 
       - name: Read repositories from file
+        id: get-repo
         run: |
           REPOSITORIES=$(awk '{print $1}' data/replacements.txt | sort -u)
-          echo "$REPOSITORIES"
+          echo "::set-output name=REPOSITORIES::${REPOSITORIES}"
 
       - name: Iterate Over Repos
         run: |
-          for repo in $REPOSITORIES; do
+          for repo in ${{ steps.get-repo.outputs.REPOSITORIES }}; do
             echo "Processing repository: $repo"
             
             # Clone target repository
