@@ -30,6 +30,7 @@ jobs:
 
       - name: Iterate Over Repos
         run: |
+          IFS=$'\n'
           for repo in "${{ steps.get-repo.outputs.REPOSITORIES }}"; do
             echo "Processing repository: $repo"
             
