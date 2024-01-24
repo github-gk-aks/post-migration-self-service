@@ -19,49 +19,51 @@ jobs:
         id: get-repo
         run: |
           awk '{print $1}' data/replacements.txt | sort -u > repositories.txt
+          REPOSITORIES=$(cat repositories.txt)
+          echo $REPOSITORIES
           echo "::set-output name=REPOSITORIES::repositories.txt"
           # // REPOSITORIES=$(awk '{print $1}' data/replacements.txt | sort -u)
           # // REPOSITORIES=$(echo "$REPOSITORIES" | tr '\n' ' ')
           # // echo $REPOSITORIES
           # // echo "::set-output name=REPOSITORIES::${REPOSITORIES}"
 
-      - name: Commit results.txt back to the repository
-        run: |
-          git config --global user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
-          git config --global user.name ${{ secrets.GIT_COMMITTER_NAME }}
+      # - name: Commit results.txt back to the repository
+      #   run: |
+      #     git config --global user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+      #     git config --global user.name ${{ secrets.GIT_COMMITTER_NAME }}
 
-      - name: Iterate Over Repos
-        run: |
-          for repo in ${{ steps.get-repo.outputs.REPOSITORIES }}; do
-            echo "Processing repository: $repo"
+      # - name: Iterate Over Repos
+      #   run: |
+      #     for repo in ${{ steps.get-repo.outputs.REPOSITORIES }}; do
+      #       echo "Processing repository: $repo"
             
-            # Clone target repository
-            git clone --depth 1 -b github-migration "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./target-repo"
+      #       # Clone target repository
+      #       git clone --depth 1 -b github-migration "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./target-repo"
 
-            # Iterate through replacement entries for the repository
-            grep "^$repo" data/replacements.txt | while IFS=$'\t' read -r _ file search replace; do
-              echo "Processing file: $file"
+      #       # Iterate through replacement entries for the repository
+      #       grep "^$repo" data/replacements.txt | while IFS=$'\t' read -r _ file search replace; do
+      #         echo "Processing file: $file"
 
-              # Check if the specified file exists
-              if [ -f "./target-repo/$file" ]; then
-                echo "File $file found. Proceeding with replacements."
+      #         # Check if the specified file exists
+      #         if [ -f "./target-repo/$file" ]; then
+      #           echo "File $file found. Proceeding with replacements."
 
-                # Perform replacements in the file
-                sed -i "s/$search/$replace/g" "./target-repo/$file"
-              else
-                echo "File $file not found in repository $repo."
-              fi
-            done
-            cd "./target-repo"
-            git pull origin github-migration
-            git add .
-            git commit -m "Replace strings - $(date +"%Y-%m-%d %H:%M:%S")"
-            git push origin github-migration
-            # go ahead and add the commit signing instructions here
-            # Clean up
-            cd ..
-            rm -rf "./target-repo"
-          done
+      #           # Perform replacements in the file
+      #           sed -i "s/$search/$replace/g" "./target-repo/$file"
+      #         else
+      #           echo "File $file not found in repository $repo."
+      #         fi
+      #       done
+      #       cd "./target-repo"
+      #       git pull origin github-migration
+      #       git add .
+      #       git commit -m "Replace strings - $(date +"%Y-%m-%d %H:%M:%S")"
+      #       git push origin github-migration
+      #       # go ahead and add the commit signing instructions here
+      #       # Clean up
+      #       cd ..
+      #       rm -rf "./target-repo"
+      #     done
 
       # - name: Commit Changes
       #   run: |
