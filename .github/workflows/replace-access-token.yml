@@ -28,10 +28,7 @@ jobs:
 
       - name: Iterate Over Repos
         run: |
-          # Split the REPOSITORIES variable into an array
-          IFS=$'\n' read -rd '' -a repos <<<"${{ steps.get-repo.outputs.REPOSITORIES }}"  
-
-          for repo in "${repos[@]}"; do
+          for repo in "${{ steps.get-repo.outputs.REPOSITORIES }}"; do
             echo "Processing repository: $repo"
             
             # Clone target repository
@@ -52,10 +49,14 @@ jobs:
               fi
             done
             cd "./target-repo"
-            git pull origin github-migration
-            git add .
-            git commit -m "Replace strings - $(date +"%Y-%m-%d %H:%M:%S")"
-            git push origin github-migration
+            if git diff --quiet; then
+              echo "No changes to commit. Skipping commit step."
+            else
+              git pull origin github-migration
+              git add .
+              git commit -m "Replace strings - $(date +"%Y-%m-%d %H:%M:%S")"
+              git push origin github-migration
+            fi
             # go ahead and add the commit signing instructions here
             # Clean up
             cd ..
