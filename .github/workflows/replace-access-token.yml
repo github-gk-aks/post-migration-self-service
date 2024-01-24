@@ -21,6 +21,11 @@ jobs:
           REPOSITORIES=$(awk '{print $1}' data/replacements.txt | sort -u)
           echo "::set-output name=REPOSITORIES::${REPOSITORIES}"
 
+      - name: Commit results.txt back to the repository
+        run: |
+          git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+          git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
+
       - name: Iterate Over Repos
         run: |
           for repo in ${{ steps.get-repo.outputs.REPOSITORIES }}; do
@@ -44,8 +49,6 @@ jobs:
               fi
             done
             cd "./target-repo"
-            git config user.email gaurav3007@gmail.com
-            git config user.name gauravkhanna3007
             git pull origin github-migration
             git add .
             git commit -m "Replace strings - $(date +"%Y-%m-%d %H:%M:%S")"
