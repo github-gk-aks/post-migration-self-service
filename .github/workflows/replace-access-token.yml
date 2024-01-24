@@ -12,11 +12,13 @@ jobs:
         with:
           token: ${{ secrets.GK_PAT }}
 
-      - name: Create output directory
-        run: mkdir -p output
+      # - name: Create output directory
+      #   run: mkdir -p output
 
       - name: Read repositories from file
-        run: REPOSITORIES=$(awk -F ',' '{print $1}' data/replacements.txt | sort -u)
+        run: |
+          REPOSITORIES=$(awk -F ',' '{print $1}' data/replacements.txt | sort -u)
+          echo "REPOSITORIES: $REPOSITORIES"
 
       - name: Iterate Over Repos
         run: |
@@ -51,10 +53,10 @@ jobs:
             rm -rf "./target-repo"
           done
 
-      - name: Commit Changes
-        run: |
-          git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
-          git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
-          git add .
-          git commit -m "Replace strings - $(date +"%Y-%m-%d %H:%M:%S")"
-          git push
+      # - name: Commit Changes
+      #   run: |
+      #     git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+      #     git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
+      #     git add .
+      #     git commit -m "Replace strings - $(date +"%Y-%m-%d %H:%M:%S")"
+      #     git push
