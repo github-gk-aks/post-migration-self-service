@@ -27,7 +27,7 @@ jobs:
             git clone --depth 1 -b github-migration "https://github.com/$repo.git" "./target-repo"
 
             # Iterate through replacement entries for the repository
-            grep "^$repo" replacements.txt | while IFS=, read -r _ file search replace; do
+            grep "^$repo" replacements.txt | while IFS=$'\t' read -r _ file search replace; do
               echo "Processing file: $file"
 
               # Check if the specified file exists
