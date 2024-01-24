@@ -28,7 +28,10 @@ jobs:
 
       - name: Iterate Over Repos
         run: |
-          for repo in ${{ steps.get-repo.outputs.REPOSITORIES }}; do
+          # Split the REPOSITORIES variable into an array
+          IFS=$'\n' read -rd '' -a repos <<<"${{ steps.get-repo.outputs.REPOSITORIES }}"  
+
+          for repo in "${repos[@]}"; do
             echo "Processing repository: $repo"
             
             # Clone target repository
