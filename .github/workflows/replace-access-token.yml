@@ -56,7 +56,7 @@ jobs:
                 echo "File $file found. Proceeding with replacements."
 
                 # Perform replacements in the file
-                sed -i "s/\b$search\b/$replace/gI" "./target-repo/$file"
+                sed -i "s/\b$search\b/$replace/g" "./target-repo/$file"
               else
                 echo "File $file not found in repository $repo."
               fi
