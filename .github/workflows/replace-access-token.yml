@@ -19,6 +19,8 @@ jobs:
         id: get-repo
         run: |
           REPOSITORIES=$(awk '{print $1}' data/replacements.txt)
+          REPOSITORIES="${REPOSITORIES//$'\n'/ }"
+          echo $REPOSITORIES
           echo "::set-output name=REPOSITORIES::${REPOSITORIES}"
 
       - name: Commit results.txt back to the repository
