@@ -1,2 +1,6 @@
 Repo: firstgithubrepo - No ghas*.yml or ghas*.yaml files found in .github/workflows.
 Repo: secondgithubrepo - No ghas*.yml or ghas*.yaml files found in .github/workflows.
+Repo: firstgithubrepo, File: ./target-repo/.github/workflows/ghas_analysis.yml, Default Branch: main
+55ec83ddf34f3be55344aecc4954cd0292fe6337, Language String: language: [ 'python', 'javascript', 'java', 'ruby', 'csharp' ]
+Repo: secondgithubrepo, File: ./target-repo/.github/workflows/ghas_analysis.yml, Default Branch: main
+c4a1c26ce1cde3342a7a2f81c79579143dc13c7e, Language String: language: [ 'python', 'javascript']
