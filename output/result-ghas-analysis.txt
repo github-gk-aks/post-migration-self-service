@@ -1,0 +1,2 @@
+Repo: firstgithubrepo - No ghas*.yml or ghas*.yaml files found in .github/workflows.
+Repo: secondgithubrepo - No ghas*.yml or ghas*.yaml files found in .github/workflows.
