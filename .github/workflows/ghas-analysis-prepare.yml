@@ -22,7 +22,7 @@ jobs:
             mapfile -t repositories < "${{ github.workspace }}/source-repo/repositories.txt"
             for repo in "${repositories[@]}"; do
         
-                default_branch=$(git ls-remote --symref https://github.com/$repo HEAD | awk -F '/' '{print $NF}' | awk '{print $1}')
+                default_branch=$(git ls-remote --symref https://github.com/$repo HEAD | awk -F '/' '/^ref:/{print $NF}' | awk '{print $1}')
         
                 IFS='/' read -r org_name repo_name <<< "$repo"
                 echo "Processing repository: $org_name/$repo_name"                       
