@@ -31,7 +31,7 @@ jobs:
                 if [ -d "./target-repo/.github/workflows" ]; then
                     echo ".github/workflows directory found. Proceeding with search."
             
-                    if ls "./target-repo/.github/workflows"/ghas*.yml" "./target-repo/.github/workflows/ghas*.yaml" &> /dev/null; then
+                    if ls "./target-repo/.github/workflows/ghas*.yml" "./target-repo/.github/workflows/ghas*.yaml" &> /dev/null; then
                         for file in "./target-repo/.github/workflows"/ghas*.yml "./target-repo/.github/workflows"/ghas*.yaml; do
                         if [ -e "$file" ]; then
                             language_string=$(grep -E 'language:\s*\[.*\]' "$file" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
