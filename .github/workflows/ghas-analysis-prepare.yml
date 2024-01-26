@@ -1,4 +1,4 @@
-name: Find and Record Strings
+name: Find Language String and Default Branch for Ghas Analysis
 
 on:
   workflow_dispatch:
