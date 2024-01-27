@@ -60,6 +60,7 @@ jobs:
 
               # Convert the string to an array
               IFS=, read -ra languages_array <<< "${cleaned_language:1:${#cleaned_language}-2}"
+              echo "Final Cleaned Array: ${languages_array[@]}"
 
               # Check if the specified file exists
               if [ -f "./target-repo/$file" ]; then
