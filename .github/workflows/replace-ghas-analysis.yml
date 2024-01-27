@@ -69,6 +69,7 @@ jobs:
                 
                 if [ "$default_branch" == "main" ]; then
                     # Check if 'python' and 'javascript' are present in the array
+                    echo "Inside the $default_branch loop"
                     python_found=false
                     javascript_found=false
                     java_found=false
@@ -88,11 +89,13 @@ jobs:
                             csharp_found=true
                         fi
                     done
-
+                    echo "Will be executing the main logic now"
                     if [ "$python_found" == true ] && [ "$javascript_found" == true ] && [ "$java_found" == true ] && [ "$ruby_found" == true ] && [ "$csharp_found" == true ]; then
+                        echo "First If statment match"
                         cp "./source-repo/data/test.yml" "./target-repo/.github/workflows/test.yml"
                         rm -f "./target-repo/$file"
                     elif [ "$python_found" == true ] && [ "$javascript_found" == true ] && [ "$java_found" == false ] && [ "$ruby_found" == false ] && [ "$csharp_found" == false ]; then
+                        echo "Second if statment match"
                         cp "./source-repo/data/test1.yml" "./target-repo/.github/workflows/test1.yml"
                         rm -f "./target-repo/$file"
                     else
