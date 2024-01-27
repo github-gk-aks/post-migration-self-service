@@ -56,6 +56,7 @@ jobs:
               
               # Remove leading and trailing spaces, and replace single quotes with double quotes
               cleaned_language=$(echo "$language" | tr -d "[:space:]" | sed "s/'/\"/g; s/\[//; s/\]//")
+              echo $cleaned_language
 
               # Convert the string to an array
               IFS=, read -ra languages_array <<< "${cleaned_language:1:${#cleaned_language}-2}"
