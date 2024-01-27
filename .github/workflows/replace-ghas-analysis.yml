@@ -65,7 +65,7 @@ jobs:
                 echo "File $file found. Proceeding with replacements."             
 
                 # Add new test.yml from source repository to target repository based on default_branch and language
-                if [ "$default_branch" == "main" ] && [[ " ${languages_array[@]} " =~ "python" && " ${languages_array[@]} " =~ "javascript" && " ${languages_array[@]} " =~ "java" && " ${languages_array[@]} " =~ "ruby"  &&  " ${languages_array[@]} " =~ "csharp"]]; then
+                if [ "$default_branch" == "main" ] && [[ " ${languages_array[@]} " =~ "python" && " ${languages_array[@]} " =~ "javascript" && " ${languages_array[@]} " =~ "java" && " ${languages_array[@]} " =~ "ruby"  &&  " ${languages_array[@]} " =~ "csharp" ]]; then
                   cp "./source-repo/data/test.yml" "./target-repo/.github/workflows/test.yml"
                   rm -f "./target-repo/$file"
                 elif [ "$default_branch" == "main" ] && [[ " ${languages_array[@]} " =~ "python" && " ${languages_array[@]} " =~ "javascript" ]]; then
