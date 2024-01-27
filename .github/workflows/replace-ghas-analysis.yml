@@ -53,16 +53,22 @@ jobs:
             # Iterate through replacement entries for the repository
             grep "^$repo" ./source-repo/data/replacements_ghas.txt | while IFS=$'\t' read -r _ file default_branch language; do
               echo "Processing file: $file, Default Branch: $default_branch, Language: $language"
+              
+              # Remove leading and trailing spaces, and replace single quotes with double quotes
+              cleaned_language=$(echo "$language" | tr -d "[:space:]" | sed "s/'/\"/g")
+
+              # Convert the string to an array
+              IFS=, read -ra languages_array <<< "${cleaned_language:1:${#cleaned_language}-2}"
 
               # Check if the specified file exists
               if [ -f "./target-repo/$file" ]; then
                 echo "File $file found. Proceeding with replacements."             
 
                 # Add new test.yml from source repository to target repository based on default_branch and language
-                if [ "$default_branch" == "main" ] && [ "$language" == "[ 'python', 'javascript', 'java', 'ruby', 'csharp' ]" ]; then
+                if [ "$default_branch" == "main" ] && [[ " ${languages_array[@]} " =~ "python" && " ${languages_array[@]} " =~ "javascript" && " ${languages_array[@]} " =~ "java" && " ${languages_array[@]} " =~ "ruby"  &&  " ${languages_array[@]} " =~ "csharp"]]; then
                   cp "./source-repo/data/test.yml" "./target-repo/.github/workflows/test.yml"
                   rm -f "./target-repo/$file"
-                elif [ "$default_branch" == "main" ] && [ "$language" == "[ 'python', 'javascript']" ]; then
+                elif [ "$default_branch" == "main" ] && [[ " ${languages_array[@]} " =~ "python" && " ${languages_array[@]} " =~ "javascript" ]]; then
                   cp "./source-repo/data/test1.yml" "./target-repo/.github/workflows/test1.yml"
                   rm -f "./target-repo/$file"
                 elif [ "$default_branch" == "F" ] && [ "$language" == "E" ]; then
