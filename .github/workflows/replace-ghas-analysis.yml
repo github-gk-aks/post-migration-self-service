@@ -67,7 +67,11 @@ jobs:
               if [ -f "./target-repo/$file" ]; then
                 echo "File $file found. Proceeding with replacements."    
                 echo "Debug: Checking Default Branch - $default_branch"
-                if [ "$default_branch" == main ]; then
+                echo "Debug: Original Language String - $language"
+                echo "Debug: Cleaned Language String - $cleaned_language"
+                echo "Debug: Final Cleaned Array - ${languages_array[@]}"
+                
+                if [ "$default_branch" == "main" ]; then
                     # Check if 'python' and 'javascript' are present in the array
                     echo "Inside the $default_branch loop"
                     python_found=false
