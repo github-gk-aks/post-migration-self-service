@@ -65,34 +65,66 @@ jobs:
 
               # Check if the specified file exists
               if [ -f "./target-repo/$file" ]; then
-                echo "File $file found. Proceeding with replacements."             
+                echo "File $file found. Proceeding with replacements."    
+                
+                if [ "$default_branch" == "main" ]; then
+                    # Check if 'python' and 'javascript' are present in the array
+                    python_found=false
+                    javascript_found=false
+                    java_found=false
+                    ruby_found=false
+                    csharp_found=false
 
-                # Add new test.yml from source repository to target repository based on default_branch and language
-                if [ "$default_branch" == "main" ] && [ "${languages_array[*]}" == "python javascript java ruby csharp" ]; then
-                  cp "./source-repo/data/test.yml" "./target-repo/.github/workflows/test.yml"
-                  rm -f "./target-repo/$file"
-                elif [ "$default_branch" == "main" ] && [ "${languages_array[*]}" == "python javascript" ]; then
-                  cp "./source-repo/data/test1.yml" "./target-repo/.github/workflows/test1.yml"
-                  rm -f "./target-repo/$file"
-                elif [ "$default_branch" == "F" ] && [ "$language" == "E" ]; then
-                  cp "./source-repo/data/test.yml" "./target-repo/.github/workflows/test.yml"
-                  rm -f "./target-repo/$file"
-                else
-                  echo "Unsupported combination: Default Branch: $default_branch, Language: $language"
-                fi
+                    for lang in "${languages_array[@]}"; do
+                        if [ "$lang" == "python" ]; then
+                            python_found=true
+                        elif [ "$lang" == "javascript" ]; then
+                            javascript_found=true
+                        elif [ "$lang" == "java" ]; then
+                            java_found=true
+                        elif [ "$lang" == "ruby" ]; then
+                            ruby_found=true
+                        elif [ "$lang" == "csharp" ]; then
+                            csharp_found=true
+                        fi
+                    done
+
+                    if [ "$python_found" == true ] && [ "$javascript_found" == true ] && [ "$java_found" == true ] && [ "$ruby_found" == true ] && [ "$csharp_found" == true ]; then
+                        cp "./source-repo/data/test.yml" "./target-repo/.github/workflows/test.yml"
+                        rm -f "./target-repo/$file"
+                    elif [ "$python_found" == true ] && [ "$javascript_found" == true ] && [ "$java_found" == false ] && [ "$ruby_found" == false ] && [ "$csharp_found" == false ]; then
+                        cp "./source-repo/data/test1.yml" "./target-repo/.github/workflows/test1.yml"
+                        rm -f "./target-repo/$file"
+                    else
+                        echo "Unsupported combination: Default Branch: $default_branch, Language: $language"
+                    fi
+                fi    
+                # # Add new test.yml from source repository to target repository based on default_branch and language
+                # if [ "$default_branch" == "main" ] && [ "${languages_array[*]}" == "python javascript java ruby csharp" ]; then
+                #   cp "./source-repo/data/test.yml" "./target-repo/.github/workflows/test.yml"
+                #   rm -f "./target-repo/$file"
+                # elif [ "$default_branch" == "main" ] && [ "${languages_array[*]}" == "python javascript" ]; then
+                #   cp "./source-repo/data/test1.yml" "./target-repo/.github/workflows/test1.yml"
+                #   rm -f "./target-repo/$file"
+                # elif [ "$default_branch" == "F" ] && [ "$language" == "E" ]; then
+                #   cp "./source-repo/data/test.yml" "./target-repo/.github/workflows/test.yml"
+                #   rm -f "./target-repo/$file"
+                # else
+                #   echo "Unsupported combination: Default Branch: $default_branch, Language: $language"
+                # fi
               else
                 echo "File $file not found in repository $repo."
               fi
-            done
+          done
 
             cd "./target-repo"
             if git diff --quiet; then
               echo "No changes to commit. Skipping commit step."
             else
-              git pull origin "$default_branch"
+              git pull origin github-migration
               git add .
               git commit -S -m "Replace files - $(date +"%Y-%m-%d %H:%M:%S")"
-              git push origin "$default_branch"
+              git push origin github-migration
             fi
             # Clean up
             cd ..
