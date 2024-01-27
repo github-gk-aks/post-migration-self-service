@@ -1,2 +1,2 @@
-github-gk-aks/firstgithubrepo	.github/workflows/ghas_analysis.yml	 main	[ 'python', 'javascript', 'java', 'ruby', 'csharp' ]
-github-gk-aks/secondgithubrepo	.github/workflows/ghas_analysis.yml	 main	[ 'python', 'javascript']
+github-gk-aks/firstgithubrepo	.github/workflows/ghas_analysis.yml	main	[ 'python', 'javascript', 'java', 'ruby', 'csharp' ]
+github-gk-aks/secondgithubrepo	.github/workflows/ghas_analysis.yml	main	[ 'python', 'javascript']
