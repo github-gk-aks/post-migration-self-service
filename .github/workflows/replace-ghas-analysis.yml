@@ -51,7 +51,7 @@ jobs:
             git clone --depth 1 -b "github-migration" "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./target-repo"
 
             # Iterate through replacement entries for the repository
-            grep "^$repo" ./source-repo/data/replacement_ghas.txt | while IFS=$'\t' read -r _ file default_branch language; do
+            grep "^$repo" ./source-repo/data/replacements_ghas.txt | while IFS=$'\t' read -r _ file default_branch language; do
               echo "Processing file: $file, Default Branch: $default_branch, Language: $language"
 
               # Check if the specified file exists
