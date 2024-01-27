@@ -1,0 +1,2 @@
+firstgithubrepo	.github/workflows/ghas_analysis.yml	 main	[ 'python', 'javascript', 'java', 'ruby', 'csharp' ]
+secondgithubrepo	.github/workflows/ghas_analysis.yml	 main	[ 'python', 'javascript']

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  find-strings:
+  prepare-ghas-analysis:
     runs-on: ubuntu-latest
 
     steps:
