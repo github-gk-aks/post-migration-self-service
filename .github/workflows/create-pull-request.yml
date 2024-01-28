@@ -38,7 +38,7 @@ jobs:
         done
         for i in "${REVIEWER_ARRAY[@]}"; do
             IFS=' ' read -ra REPO_REVIEWER <<< "$i"
-            if [[ "${REPO_REVIEWER[0]}" == "repo1" ]]; then
+            if [[ "${REPO_REVIEWER[0]}" == "org1/repo1" ]]; then
                 reviewers="${REPO_REVIEWER[@]:1}"  # Select all elements from index 1 to the end
                 echo "Final reviewers: $reviewers"
             fi
