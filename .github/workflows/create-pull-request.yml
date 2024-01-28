@@ -1,0 +1,62 @@
+name: Automated PRs with Dynamic Reviewers
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14'
+
+    - name: Install Dependencies
+      run: npm install @octokit/rest
+
+    - name: Read Reviewers from File
+      id: read_reviewers
+      run: |
+        REVIEWERS_FILE="data/reviewers.txt"
+        REVIEWERS=$(awk '{$1=""; print substr($0,2)}' $REVIEWERS_FILE)
+        echo "REVIEWERS: $REVIEWERS"
+        echo "::set-output name=reviewers::$REVIEWERS"
+
+    # - name: Create Pull Request
+    #   run: |
+    #     # Set up your GitHub token as a secret in your repository
+    #     GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+
+    #     npm install -g @octokit/rest
+    #     PR_URL=$(octokit pr create \
+    #       --base main \
+    #       --head feature-branch \
+    #       --title "Automated PR" \
+    #       --body "Your pull request description" \
+    #       --token $GITHUB_TOKEN | jq -r '.url')
+
+    #     # Read reviewers dynamically
+    #     REVIEWERS="${{ steps.read_reviewers.outputs.reviewers }}"
+    #     IFS=' ' read -ra REVIEWER_ARRAY <<< "$REVIEWERS"
+
+    #     # Loop through reviewers and add them to the pull request
+    #     for i in "${REVIEWER_ARRAY[@]}"; do
+    #         IFS=':' read -ra REPO_REVIEWER <<< "$i"
+    #         if [[ "${REPO_REVIEWER[0]}" == "$(basename $GITHUB_REPOSITORY)" ]]; then
+    #         reviewers="${REPO_REVIEWER[@]:1}"  # Select all elements from index 1 to the end
+    #         octokit pr create-review-request \
+    #             --reviewers $reviewers \
+    #             --token $GITHUB_TOKEN \
+    #             --request-url $PR_URL
+    #       fi
+    #     done
+
+    #     # If you want to use a different user for commit, you might need to set the git user information here
+
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
