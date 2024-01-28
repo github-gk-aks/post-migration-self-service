@@ -24,13 +24,14 @@ jobs:
       run: |
         REVIEWERS_FILE="data/reviewers.txt"
         REVIEWERS=$(cat $REVIEWERS_FILE)
+        echo "REVIEWERS: $REVIEWERS"
         IFS=$'\n' read -ra REVIEWER_ARRAY <<< "$REVIEWERS"
 
         for reviewer in "${REVIEWER_ARRAY[@]}"; do
             echo "Reviewer: $reviewer"
         done
+
         
-        #echo "REVIEWERS: $REVIEWERS"
         #echo "::set-output name=reviewers::$REVIEWERS"
 
     # - name: Create Pull Request
