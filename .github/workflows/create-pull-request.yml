@@ -23,6 +23,11 @@ jobs:
       id: read_reviewers
       run: |
         REVIEWERS_FILE="data/reviewers.txt"
+        mapfile -t repositories < "$REVIEWERS_FILE"
+        for repo in "${repositories[@]}"; do
+            IFS='/' read -r org_name repo_name <<< "$repo"
+            echo "Processing repository: $org_name/$repo_name"
+        done  
         #REVIEWERS=$(cat "$REVIEWERS_FILE" | tr -d '\r')
         #echo "REVIEWERS: $REVIEWERS"
         #IFS=$'\n' read -ra REVIEWER_ARRAY <<< "$REVIEWERS"
