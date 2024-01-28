@@ -64,12 +64,12 @@ jobs:
               echo "Final Cleaned Array: ${languages_array[@]}"
 
               # Check if the specified file exists
-              # if [ -f "./target-repo/$file" ]; then
-              #   echo "File $file found. Proceeding with replacements."    
-              #   echo "Debug: Checking Default Branch - $default_branch"
-              #   echo "Debug: Original Language String - $language"
-              #   echo "Debug: Cleaned Language String - $cleaned_language"
-              #   echo "Debug: Final Cleaned Array - ${languages_array[@]}"
+              if [ -f "./target-repo/$file" ]; then
+                echo "File $file found. Proceeding with replacements."    
+                echo "Debug: Checking Default Branch - $default_branch"
+                echo "Debug: Original Language String - $language"
+                echo "Debug: Cleaned Language String - $cleaned_language"
+                echo "Debug: Final Cleaned Array - ${languages_array[@]}"
                 
               #   if [ "$default_branch" == "main" ]; then
               #       # Check if 'python' and 'javascript' are present in the array
