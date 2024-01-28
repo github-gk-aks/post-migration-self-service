@@ -23,14 +23,20 @@ jobs:
       id: read_reviewers
       run: |
         REVIEWERS_FILE="data/reviewers.txt"
-        REVIEWERS=$(cat "$REVIEWERS_FILE" | tr -d '\r')
-        echo "REVIEWERS: $REVIEWERS"
+        #REVIEWERS=$(cat "$REVIEWERS_FILE" | tr -d '\r')
+        #echo "REVIEWERS: $REVIEWERS"
         #IFS=$'\n' read -ra REVIEWER_ARRAY <<< "$REVIEWERS"
         readarray -t REVIEWER_ARRAY < "$REVIEWERS_FILE"
 
         for reviewer in "${REVIEWER_ARRAY[@]}"; do
             echo "Reviewer: $reviewer"
         done
+        for i in "${REVIEWER_ARRAY[@]}"; do
+            IFS=' ' read -ra REPO_REVIEWER <<< "$i"
+            if [[ "${REPO_REVIEWER[0]}" == "$(basename $GITHUB_REPOSITORY)" ]]; then
+                reviewers="${REPO_REVIEWER[@]:1}"  # Select all elements from index 1 to the end
+                echo "Final reviewers: $reviewers"
+            fi
 
         
         #echo "::set-output name=reviewers::$REVIEWERS"
