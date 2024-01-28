@@ -25,7 +25,8 @@ jobs:
         REVIEWERS_FILE="data/reviewers.txt"
         REVIEWERS=$(cat "$REVIEWERS_FILE" | tr -d '\r')
         echo "REVIEWERS: $REVIEWERS"
-        IFS=$'\n' read -ra REVIEWER_ARRAY <<< "$REVIEWERS"
+        #IFS=$'\n' read -ra REVIEWER_ARRAY <<< "$REVIEWERS"
+        readarray -t REVIEWER_ARRAY < "$REVIEWERS_FILE"
 
         for reviewer in "${REVIEWER_ARRAY[@]}"; do
             echo "Reviewer: $reviewer"
