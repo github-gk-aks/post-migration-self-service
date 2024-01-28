@@ -25,7 +25,7 @@ jobs:
         REVIEWERS_FILE="data/reviewers.txt"
         REVIEWERS=$(cat $REVIEWERS_FILE)
         echo "REVIEWERS: $REVIEWERS"
-        echo "::set-output name=reviewers::$REVIEWERS"
+        #echo "::set-output name=reviewers::$REVIEWERS"
 
     # - name: Create Pull Request
     #   run: |
