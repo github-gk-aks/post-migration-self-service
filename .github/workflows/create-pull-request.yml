@@ -23,7 +23,7 @@ jobs:
       id: read_reviewers
       run: |
         REVIEWERS_FILE="data/reviewers.txt"
-        REVIEWERS= cat  $REVIEWERS_FILE
+        REVIEWERS=$(cat $REVIEWERS_FILE)
         echo "REVIEWERS: $REVIEWERS"
         echo "::set-output name=reviewers::$REVIEWERS"
 
