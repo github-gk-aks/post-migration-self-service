@@ -23,7 +23,7 @@ jobs:
       id: read_reviewers
       run: |
         REVIEWERS_FILE="data/reviewers.txt"
-        mapfile -t repositories < "$REVIEWERS_FILE"
+        mapfile -t repositories < <(awk '{print $1}' "$REVIEWERS_FILE" | sort -u)
         for repo in "${repositories[@]}"; do
             IFS='/' read -r org_name repo_name <<< "$repo"
             echo "Processing repository: $org_name/$repo_name"
