@@ -37,6 +37,7 @@ jobs:
                 reviewers="${REPO_REVIEWER[@]:1}"  # Select all elements from index 1 to the end
                 echo "Final reviewers: $reviewers"
             fi
+        done
 
         
         #echo "::set-output name=reviewers::$REVIEWERS"
