@@ -23,7 +23,7 @@ jobs:
       id: read_reviewers
       run: |
         REVIEWERS_FILE="data/reviewers.txt"
-        REVIEWERS=$(awk '{$1=""; print substr($0,2)}' $REVIEWERS_FILE)
+        REVIEWERS=$(awk '{print $1":"$2}' $REVIEWERS_FILE)
         echo "REVIEWERS: $REVIEWERS"
         echo "::set-output name=reviewers::$REVIEWERS"
 
