@@ -22,6 +22,8 @@ jobs:
         
         default_branch=$(git ls-remote --symref https://github.com/$repo HEAD | awk -F '/' '/^ref:/{print $NF}' | awk '{print $1}')
 
+        echo "Default Branch is $default_branch"
+
         pr_number=$(curl -L \
             -X POST \
             -H "Accept: application/vnd.github+json" \
