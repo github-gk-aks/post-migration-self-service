@@ -41,7 +41,8 @@ jobs:
                 pr_number=$(echo "$pr_response" | jq -r '.number')
                 echo "Pull Request created successfully. Number: $pr_number"
 
-                REVIEWERS=$(awk -v repo="$repo" '$1 == repo { print $2 }' "$REVIEWERS_FILE")
+                #REVIEWERS=$(awk -v repo="$repo" '$1 == repo { print $2 }' "$REVIEWERS_FILE")
+                REVIEWERS=$(awk -v repo="$repo" '$1 == repo { gsub("\r",""); print substr($0, length($1)+2) }' "$REVIEWERS_FILE")
                 IFS=' ' read -ra REVIEWER_ARRAY <<< "$REVIEWERS"
                 for reviewer in "${REVIEWER_ARRAY[@]}"; do
                    echo "Reviewer: $reviewer"
