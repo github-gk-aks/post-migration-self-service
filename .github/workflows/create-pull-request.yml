@@ -32,20 +32,20 @@ jobs:
             https://api.github.com/repos/$repo/pulls \
             -d '{"title":"Migrating Changes","body":"Please pull these migration related changes","head":"github-migration","base":"'"$default_branch"'"}')
 
-        echo "The response is : $http_status_and_response"
+        #echo "The response is : $http_status_and_response"
 
-        # http_status=$(echo "$http_status_and_response" | tail -n 1)
-        # pr_number=$(echo "$http_status_and_response" | sed '$d')
+        http_status=$(echo "$http_status_and_response" | tail -n 1)
+        pr_number=$(echo "$http_status_and_response" | sed '$d')
 
-        # echo "Pull Request number for $repo is: $pr_number"
+        #echo "Pull Request number for $repo is: $pr_number"
 
-        # if [[ $http_status == 201 ]]; then
-        #     pr_number=$(echo "$pr_response" | jq -r '.number')
-        #     echo "Pull Request created successfully. Number: $pr_number"
-        # else
-        #     echo "Failed to create Pull Request. HTTP Status: $http_status"
-        #     echo "Response body: $pr_response"
-        # fi
+        if [[ $http_status == 201 ]]; then
+            pr_number=$(echo "$pr_response" | jq -r '.number')
+            echo "Pull Request created successfully. Number: $pr_number"
+        else
+            echo "Failed to create Pull Request. HTTP Status: $http_status"
+            echo "Response body: $pr_response"
+        fi
 
         # #REVIEWERS=$(cat "$REVIEWERS_FILE" | tr -d '\r')
         # #echo "REVIEWERS: $REVIEWERS"
