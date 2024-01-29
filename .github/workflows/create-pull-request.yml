@@ -56,7 +56,7 @@ jobs:
                     -H "Authorization: Bearer ${{ secrets.GK_PAT }}" \
                     -H "X-GitHub-Api-Version: 2022-11-28" \
                     "https://api.github.com/repos/$repo/pulls/$pr_number/requested_reviewers" \
-                    -d '{"reviewers":'$(jq -n --argjson arr "${REVIEWER_ARRAY[@]}" '[$arr | split(" ")[]]' | tr -d '\n')'}')
+                    -d '{"reviewers":['$(printf '"%s",' "${REVIEWER_ARRAY[@]}" | sed 's/,$//')']}')
 
                 http_status_reviewers=$(echo "$http_status_and_response_reviewers" | tail -n 1)
                 reviewers_response=$(echo "$http_status_and_response_reviewers" | sed '$d')
