@@ -35,7 +35,7 @@ jobs:
         #echo "The response is : $http_status_and_response"
 
         http_status=$(echo "$http_status_and_response" | tail -n 1)
-        pr_number=$(echo "$http_status_and_response" | sed '$d')
+        pr_response=$(echo "$http_status_and_response" | sed '$d')
 
         #echo "Pull Request number for $repo is: $pr_number"
 
