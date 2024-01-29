@@ -24,7 +24,7 @@ jobs:
 
         echo "Default Branch is $default_branch"
 
-        http_status_and_response=$(curl -w "%{http_code}\n" -L \
+        http_status_and_response=$(curl -w "%{http_code}" -L \
             -X POST \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.GK_PAT }}" \
