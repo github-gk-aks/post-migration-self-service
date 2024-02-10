@@ -1,0 +1,2 @@
+github-gk-aks/firstgithubrepo : Pull Request with number 3 Created Successfully with status code 201 : Failed to add reviewers to the Pull Request. HTTP Status: 422 : Response body is { "message": "Review cannot be requested from pull request author.", "documentation_url": "https://docs.github.com/rest/pulls/review-requests#request-reviewers-for-a-pull-request" }
+github-gk-aks/fourthgithubrepo : Pull Request with number 16 Created Successfully with status code 201 : Reviewers added successfully with status code 201
