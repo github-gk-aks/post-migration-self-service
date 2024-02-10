@@ -89,6 +89,7 @@ jobs:
                 echo "Failed to create Pull Request. HTTP Status: $http_status"
                 echo "Response body: $pr_response"
                 echo "$repo" ; Failed to create Pull Request. HTTP Status is $http_status ; Response body is $reviewers_response >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
+                continue # Continue to the next repository
             fi
 
         # #REVIEWERS=$(cat "$REVIEWERS_FILE" | tr -d '\r')
