@@ -26,7 +26,7 @@ jobs:
     - name: Read Reviewers from File
       id: read_reviewers
       run: |
-        REVIEWERS_FILE="data/reviewers.txt"
+        REVIEWERS_FILE="${{ github.workspace }}/source-repo/data/reviewers.txt"
         mapfile -t repositories < <(awk '{print $1}' "$REVIEWERS_FILE" | sort -u)
         # So, in summary, the entire statement reads the content of the reviewers file, 
         # extracts the first column (repository names) from each line, sorts them alphabetically,
