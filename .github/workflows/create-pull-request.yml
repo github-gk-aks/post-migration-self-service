@@ -79,20 +79,20 @@ jobs:
 
                 if [[ $http_status_reviewers == 201 ]]; then
                     echo "Reviewers added successfully to the Pull Request."
-                    echo "$repo" ; Pull Request with number $pr_number Created Successfully with status code $http_status ; Reviewers added successfully with status code $http_status_reviewers >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
+                    echo "$repo ; Pull Request with number $pr_number Created Successfully with status code $http_status ; Reviewers added successfully with status code $http_status_reviewers" >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
                 else
                     echo "Failed to add reviewers to the Pull Request. HTTP Status: $http_status_reviewers"
                     echo "Response body: $reviewers_response"
-                    echo "$repo" ; Pull Request with number $pr_number Created Successfully with status code $http_status ; Failed to add reviewers to the Pull Request. HTTP Status is $http_status_reviewers ; Response body is $reviewers_response >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
+                    echo "$repo ; Pull Request with number $pr_number Created Successfully with status code $http_status ; Failed to add reviewers to the Pull Request. HTTP Status is $http_status_reviewers ; Response body is $reviewers_response" >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
                 fi
             else
                 if [[ $http_status == 422 ]]; then
                   echo "A pull request already exists for the repository."
-                  echo "$repo" ; A pull request already exists for the repository. >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
+                  echo "$repo ; A pull request already exists for the repository." >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
                 else
                   echo "Failed to create Pull Request. HTTP Status: $http_status"
                   echo "Response body: $pr_response"
-                  echo "$repo" ; Failed to create Pull Request. HTTP Status is $http_status ; Response body is $reviewers_response >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
+                  echo "$repo ; Failed to create Pull Request. HTTP Status is $http_status ; Response body is $reviewers_response" >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
                 fi
                 continue  # Continue to the next repository
             fi
