@@ -115,4 +115,4 @@ jobs:
           git add result-ghas-analysis.txt
           git commit -m "Add create-pr-output.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
           git push
-        working-directory: ${{ github.workspace }}
+      working-directory: ${{ github.workspace }}
