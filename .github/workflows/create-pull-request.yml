@@ -112,7 +112,7 @@ jobs:
           cd ${{ github.workspace }}/source-repo/output
           git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
           git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
-          git add result-ghas-analysis.txt
+          git add create-pr-output.txt
           git commit -m "Add create-pr-output.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
           git push
       working-directory: ${{ github.workspace }}
