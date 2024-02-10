@@ -1,4 +1,4 @@
-name: Automated PRs with Dynamic Reviewers
+name: Create PRs with Dynamic Reviewers
 
 on:
   workflow_dispatch:
@@ -10,12 +10,28 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GK_PAT }}
+        path: ./source-repo
+
+    - name: Check if output directory exists
+      run: |
+        if [ ! -d "${{ github.workspace }}/source-repo/output" ]; then
+          echo "Output directory does not exist. Creating..."
+          mkdir -p "${{ github.workspace }}/source-repo/output"
+        else
+          echo "Output directory already exists."
+        fi
 
     - name: Read Reviewers from File
       id: read_reviewers
       run: |
         REVIEWERS_FILE="data/reviewers.txt"
         mapfile -t repositories < <(awk '{print $1}' "$REVIEWERS_FILE" | sort -u)
+        # So, in summary, the entire statement reads the content of the reviewers file, 
+        # extracts the first column (repository names) from each line, sorts them alphabetically,
+        # removes any duplicate names, and stores them in the repositories array for further processing.
+
         for repo in "${repositories[@]}"; do
             IFS='/' read -r org_name repo_name <<< "$repo"
             echo "Processing repository: $org_name/$repo_name"
@@ -63,13 +79,16 @@ jobs:
 
                 if [[ $http_status_reviewers == 201 ]]; then
                     echo "Reviewers added successfully to the Pull Request."
+                    echo "$repo" : Pull Request with number $pr_number Created Successfully with status code $http_status : Reviewers added successfully with status code $http_status_reviewers >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
                 else
                     echo "Failed to add reviewers to the Pull Request. HTTP Status: $http_status_reviewers"
                     echo "Response body: $reviewers_response"
+                    echo "$repo" : Pull Request with number $pr_number Created Successfully with status code $http_status : Failed to add reviewers to the Pull Request. HTTP Status: $http_status_reviewers : Response body is $reviewers_response >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
                 fi
             else
                 echo "Failed to create Pull Request. HTTP Status: $http_status"
                 echo "Response body: $pr_response"
+                echo "$repo" : Failed to create Pull Request. HTTP Status is $http_status : Response body is $reviewers_response >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
             fi
 
         # #REVIEWERS=$(cat "$REVIEWERS_FILE" | tr -d '\r')
@@ -88,39 +107,12 @@ jobs:
         # done
         done
 
-        
-        #echo "::set-output name=reviewers::$REVIEWERS"
-
-    # - name: Create Pull Request
-    #   run: |
-    #     # Set up your GitHub token as a secret in your repository
-    #     GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-
-    #     npm install -g @octokit/rest
-    #     PR_URL=$(octokit pr create \
-    #       --base main \
-    #       --head feature-branch \
-    #       --title "Automated PR" \
-    #       --body "Your pull request description" \
-    #       --token $GITHUB_TOKEN | jq -r '.url')
-
-    #     # Read reviewers dynamically
-    #     REVIEWERS="${{ steps.read_reviewers.outputs.reviewers }}"
-    #     IFS=' ' read -ra REVIEWER_ARRAY <<< "$REVIEWERS"
-
-    #     # Loop through reviewers and add them to the pull request
-    #     for i in "${REVIEWER_ARRAY[@]}"; do
-    #         IFS=':' read -ra REPO_REVIEWER <<< "$i"
-    #         if [[ "${REPO_REVIEWER[0]}" == "$(basename $GITHUB_REPOSITORY)" ]]; then
-    #         reviewers="${REPO_REVIEWER[@]:1}"  # Select all elements from index 1 to the end
-    #         octokit pr create-review-request \
-    #             --reviewers $reviewers \
-    #             --token $GITHUB_TOKEN \
-    #             --request-url $PR_URL
-    #       fi
-    #     done
-
-    #     # If you want to use a different user for commit, you might need to set the git user information here
-
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Commit Changes
+      run: |
+          cd ${{ github.workspace }}/source-repo/output
+          git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+          git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
+          git add result-ghas-analysis.txt
+          git commit -m "Add create-pr-output.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
+          git push
+        working-directory: ${{ github.workspace }}
