@@ -92,6 +92,7 @@ jobs:
             else
                 if [[ $http_status == 422 ]]; then
                   echo "A pull request already exists for the repository."
+                  echo $pr_response
                   echo "$repo ; Failed to create Pull Request. HTTP Status: $http_status ; Response is $pr_response_message " >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
                 else
                   echo "Failed to create Pull Request. HTTP Status: $http_status"
