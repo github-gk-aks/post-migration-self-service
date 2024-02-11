@@ -101,6 +101,7 @@ jobs:
             git config gpg.program /tmp/gpg.sh
       env:
         GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+      working-directory: ${{ github.workspace }}
 
     - name: Commit Changes
       run: |
