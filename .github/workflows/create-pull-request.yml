@@ -1,4 +1,4 @@
-name: Create PRs with Dynamic Reviewers
+name: Create PRs and Add Reviewers
 
 on:
   workflow_dispatch:
@@ -23,7 +23,7 @@ jobs:
           echo "Output directory already exists."
         fi
 
-    - name: Read Reviewers from File
+    - name: Create PR and Add Reviewers/Teams
       id: read_reviewers
       run: |
         REVIEWERS_FILE="${{ github.workspace }}/source-repo/data/reviewers.txt"
@@ -82,13 +82,7 @@ jobs:
                     echo "$repo ; Pull Request with number $pr_number Created Successfully with status code $http_status ; Failed to add reviewers to the Pull Request. HTTP Status is $http_status_reviewers ; Response body is $reviewers_response_message" >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
                 fi
             else
-                # if [[ $http_status == 422 ]]; then
-                #   echo "A pull request already exists for the repository."
-                #   echo $pr_response
-                #   echo "$repo ; Failed to create Pull Request. HTTP Status: $http_status ; Response is $pr_response_message " >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
-                # else
                 echo "$repo ; Failed to create Pull Request. HTTP Status is $http_status ; Response is $pr_response_message" >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
-                # fi
                 continue  # Continue to the next repository
             fi
         done
