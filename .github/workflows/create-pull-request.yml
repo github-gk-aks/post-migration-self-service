@@ -50,11 +50,16 @@ jobs:
 
             http_status=$(echo "$http_status_and_response" | tail -n 1)
             pr_response=$(echo "$http_status_and_response" | sed '$d')
-            pr_response_message=$(echo "$pr_response" | jq -r '.errors[0].message')
+            pr_response_message=$(echo "$pr_response" | jq -r '.errors[0].message') # extract the error message from the response
 
             if [[ $http_status == 201 ]]; then
                 pr_number=$(echo "$pr_response" | jq -r '.number')
+
+                #This command uses awk to search for lines in the file specified by $REVIEWERS_FILE where the first column matches the value of the variable $repo.
+                #If a matching line is found, it prints the substring of the line starting from the character immediately following the repository name (skipping the repository name itself).
                 REVIEWERS=$(awk -v repo="$repo" '$1 == repo { print substr($0, length($1)+2) }' "$REVIEWERS_FILE")
+                
+                #This splits the value of REVIEWERS into an array named REVIEWER_ARRAY, using space as the delimiter.
                 IFS=' ' read -ra REVIEWER_ARRAY <<< "$REVIEWERS"
 
                 # Add reviewers to the pull request
