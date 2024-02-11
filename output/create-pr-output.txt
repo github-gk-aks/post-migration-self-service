@@ -1,2 +1,4 @@
 github-gk-aks/firstgithubrepo ; Pull Request with number 8 Created Successfully with status code 201 ; Failed to add reviewers to the Pull Request. HTTP Status is 422 ; Response body is Review cannot be requested from pull request author.
 github-gk-aks/fourthgithubrepo ; Pull Request with number 21 Created Successfully with status code 201 ; Reviewers added successfully with status code 201
+github-gk-aks/firstgithubrepo ; Failed to create Pull Request. HTTP Status: 422 ; Response is A pull request already exists for github-gk-aks:github-migration. 
+github-gk-aks/fourthgithubrepo ; Failed to create Pull Request. HTTP Status: 422 ; Response is A pull request already exists for github-gk-aks:github-migration. 
