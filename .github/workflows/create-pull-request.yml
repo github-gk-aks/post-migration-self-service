@@ -62,9 +62,6 @@ jobs:
                 #REVIEWERS=$(awk -v repo="$repo" '$1 == repo { gsub("\r",""); print substr($0, length($1)+2) }' "$REVIEWERS_FILE")
                 REVIEWERS=$(awk -v repo="$repo" '$1 == repo { print substr($0, length($1)+2) }' "$REVIEWERS_FILE")
                 IFS=' ' read -ra REVIEWER_ARRAY <<< "$REVIEWERS"
-                # for reviewer in "${REVIEWER_ARRAY[@]}"; do
-                #    echo "Reviewer: $reviewer"
-                # done
 
                 # Add reviewers to the pull request
                 http_status_and_response_reviewers=$(curl -w "%{http_code}\n" -L \
@@ -77,28 +74,21 @@ jobs:
 
                 http_status_reviewers=$(echo "$http_status_and_response_reviewers" | tail -n 1)
                 reviewers_response=$(echo "$http_status_and_response_reviewers" | sed '$d')
-
                 reviewers_response_message=$(echo "$reviewers_response" | jq -r '.message')
 
                 if [[ $http_status_reviewers == 201 ]]; then
-                    echo "Reviewers added successfully to the Pull Request."
                     echo "$repo ; Pull Request with number $pr_number Created Successfully with status code $http_status ; Reviewers added successfully with status code $http_status_reviewers" >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
                 else
-                    echo "Failed to add reviewers to the Pull Request. HTTP Status: $http_status_reviewers"
-                    echo "Response body: $reviewers_response"
-                    echo "Response body Message: $reviewers_response_message"
                     echo "$repo ; Pull Request with number $pr_number Created Successfully with status code $http_status ; Failed to add reviewers to the Pull Request. HTTP Status is $http_status_reviewers ; Response body is $reviewers_response_message" >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
                 fi
             else
-                if [[ $http_status == 422 ]]; then
-                  echo "A pull request already exists for the repository."
-                  echo $pr_response
-                  echo "$repo ; Failed to create Pull Request. HTTP Status: $http_status ; Response is $pr_response_message " >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
-                else
-                  echo "Failed to create Pull Request. HTTP Status: $http_status"
-                  echo "Response body: $pr_response"
-                  echo "$repo ; Failed to create Pull Request. HTTP Status is $http_status ; Response is $pr_response" >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
-                fi
+                # if [[ $http_status == 422 ]]; then
+                #   echo "A pull request already exists for the repository."
+                #   echo $pr_response
+                #   echo "$repo ; Failed to create Pull Request. HTTP Status: $http_status ; Response is $pr_response_message " >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
+                # else
+                echo "$repo ; Failed to create Pull Request. HTTP Status is $http_status ; Response is $pr_response_message" >> "${{ github.workspace }}/source-repo/output/create-pr-output.txt"
+                # fi
                 continue  # Continue to the next repository
             fi
         done
