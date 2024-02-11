@@ -96,12 +96,12 @@ jobs:
 
     - name: Setup git
       run: |
+            cd ${{ github.workspace }}/source-repo/output
             git config commit.gpgsign true
             git config user.signingkey $GPG_KEY_ID
             git config gpg.program /tmp/gpg.sh
       env:
         GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
-      working-directory: ${{ github.workspace }}
 
     - name: Commit Changes
       run: |
