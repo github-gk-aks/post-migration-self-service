@@ -1,4 +1,4 @@
-name: Create PRs and Add Reviewers
+name: Create PRs and Add Reviewers Or Teams
 
 on:
   workflow_dispatch:
@@ -24,7 +24,6 @@ jobs:
         fi
 
     - name: Create PR and Add Reviewers/Teams
-      id: read_reviewers
       run: |
         REVIEWERS_FILE="${{ github.workspace }}/source-repo/data/reviewers.txt"
         mapfile -t repositories < <(awk '{print $1}' "$REVIEWERS_FILE" | sort -u)
@@ -40,6 +39,7 @@ jobs:
 
             echo "Default Branch is $default_branch"
 
+            # Create Pull Request
             http_status_and_response=$(curl -w "%{http_code}\n" -L \
                 -X POST \
                 -H "Accept: application/vnd.github+json" \
@@ -48,18 +48,12 @@ jobs:
                 https://api.github.com/repos/$repo/pulls \
                 -d '{"title":"Migrating Changes","body":"Please pull these migration related changes","head":"github-migration","base":"'"$default_branch"'"}')
 
-            #echo "The response is : $http_status_and_response"
-
             http_status=$(echo "$http_status_and_response" | tail -n 1)
             pr_response=$(echo "$http_status_and_response" | sed '$d')
             pr_response_message=$(echo "$pr_response" | jq -r '.errors[0].message')
 
             if [[ $http_status == 201 ]]; then
                 pr_number=$(echo "$pr_response" | jq -r '.number')
-                echo "Pull Request created successfully. Number: $pr_number"
-
-                #REVIEWERS=$(awk -v repo="$repo" '$1 == repo { print $2 }' "$REVIEWERS_FILE")
-                #REVIEWERS=$(awk -v repo="$repo" '$1 == repo { gsub("\r",""); print substr($0, length($1)+2) }' "$REVIEWERS_FILE")
                 REVIEWERS=$(awk -v repo="$repo" '$1 == repo { print substr($0, length($1)+2) }' "$REVIEWERS_FILE")
                 IFS=' ' read -ra REVIEWER_ARRAY <<< "$REVIEWERS"
 
@@ -86,13 +80,41 @@ jobs:
                 continue  # Continue to the next repository
             fi
         done
+    
+    - name: Import GPG key
+      run: |
+          echo "${GPG_PRIVATE_KEY}" | gpg --batch --import
+      env: 
+        GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
+    - name: Add the custom gpg siging program that passes the passphrase to the gpg CLI
+      run: |
+          rm -rf /tmp/gpg.sh
+          echo '#!/bin/bash' >> /tmp/gpg.sh
+          echo 'gpg --batch --pinentry-mode=loopback --passphrase $GPG_KEY_PASSPHRASE $@' >> /tmp/gpg.sh
+          chmod +x /tmp/gpg.sh
+
+    - name: Setup git
+      run: |
+            git config commit.gpgsign true
+            git config user.signingkey $GPG_KEY_ID
+            git config gpg.program /tmp/gpg.sh
+      env:
+        GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
 
     - name: Commit Changes
       run: |
           cd ${{ github.workspace }}/source-repo/output
-          git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
-          git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
-          git add create-pr-output.txt
-          git commit -m "Add create-pr-output.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
-          git push
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+            git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
+            git pull origin
+            git add create-pr-output.txt
+            git commit -S -m "Add create-pr-output.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
+            git push
+          else
+            echo "No changes to commit."
+          fi
+      env:
+        GPG_KEY_PASSPHRASE: ${{ secrets.PASSPHRASE }}
       working-directory: ${{ github.workspace }}
