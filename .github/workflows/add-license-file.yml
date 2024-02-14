@@ -54,9 +54,9 @@ jobs:
             # Check if LICENSE file exists in default branch
             if [ ! -f "${{ github.workspace }}/target-repo/LICENSE" ]; then
               echo "Before checkout"
-              git branch
               # Copy LICENSE file from source to target repository
               cd "${{ github.workspace }}/target-repo"
+              git branch
               git  remote  set-branches  --add  'origin'  'github-migration'
               git  fetch  'origin'
               git  checkout  --track  'origin/github-migration'
