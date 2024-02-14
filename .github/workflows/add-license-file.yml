@@ -39,7 +39,7 @@ jobs:
 
       - name: Iterate Over Repos
         run: |
-          mapfile -t repositories < <(awk '{print $1}' "${{ github.workspace }}/source-repo/data/repositories.txt" | sort -u)
+          mapfile -t repositories < <(awk '{print $1}' "${{ github.workspace }}/source-repo/data/repositories.txt")
           for repo in "${repositories[@]}"; do
             echo "Processing repository: $repo"
 
@@ -52,13 +52,13 @@ jobs:
             # echo "Default branch of $repo is: $default_branch"
 
             # Check if LICENSE file exists in default branch
-            if [ ! -f "${{ github.workspace }}/target-repo/LICENSE" ]; then
+            if [ ! -f "./target-repo/LICENSE" ]; then
               # Copy LICENSE file from source to target repository
-              cd "${{ github.workspace }}/target-repo"
+              cd "./target-repo"
               git  remote  set-branches  --add  'origin'  'github-migration'
               git  fetch  'origin'
               git  checkout  --track  'origin/github-migration'
-              if cp "${{ github.workspace }}/source-repo/data/LICENSE" "${{ github.workspace }}/target-repo/LICENSE"; then
+              if cp "${{ github.workspace }}/source-repo/data/LICENSE" "./target-repo/LICENSE"; then
                 echo "LICENSE file copied successfully."
               else
                 echo "Error: Failed to copy LICENSE file."
@@ -68,7 +68,7 @@ jobs:
             fi
               
               # Stage and commit the changes
-            cd "${{ github.workspace }}/target-repo"
+            cd "./target-repo"
             if [ -n "$(git status --porcelain)" ]; then
                 git pull origin github-migration
                 git add LICENSE
