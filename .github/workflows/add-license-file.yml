@@ -38,7 +38,7 @@ jobs:
             echo "Processing repository: $repo"
 
             # Clone target repository
-            git clone --depth 1  "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "${{ github.workspace }}/target-repo"
+            git clone --depth 1  "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./target-repo"
 
             # # Check default branch
             # #default_branch=$(git ls-remote --symref origin HEAD | grep -oP "refs/heads/\K.*")
@@ -73,7 +73,8 @@ jobs:
             fi
            
             # Clean up
-            rm -rf "${{ github.workspace }}/target-repo"
+            cd ${{ github.workspace }}
+            rm -rf "./target-repo"
           done
         env:
           GPG_KEY_PASSPHRASE: ${{ secrets.PASSPHRASE }}
