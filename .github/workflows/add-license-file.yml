@@ -55,6 +55,8 @@ jobs:
             if [ ! -f "${{ github.workspace }}/target-repo/LICENSE" ]; then
               # Copy LICENSE file from source to target repository
               cd "${{ github.workspace }}/target-repo"
+              pwd
+              ls
               git  remote  set-branches  --add  'origin'  'github-migration'
               git  fetch  'origin'
               git  checkout  --track  'origin/github-migration'
