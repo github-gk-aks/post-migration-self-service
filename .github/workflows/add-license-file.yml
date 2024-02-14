@@ -44,22 +44,12 @@ jobs:
             echo "Processing repository: $repo"
 
             # Clone target repository
-            git clone --depth 1  "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./target-repo"
-
-            # # Check default branch
-            # #default_branch=$(git ls-remote --symref origin HEAD | grep -oP "refs/heads/\K.*")
-            # default_branch=$(git ls-remote --symref https://github.com/$repo HEAD | awk -F '/' '/^ref:/{print $NF}' | awk '{print $1}')
-            # echo "Default branch of $repo is: $default_branch"
+            git clone --depth 1 -b "github-migration" "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./target-repo"
 
             # Check if LICENSE file exists in default branch
             if [ ! -f "${{ github.workspace }}/target-repo/LICENSE" ]; then
-              echo "Before checkout"
               # Copy LICENSE file from source to target repository
               cd "${{ github.workspace }}/target-repo"
-              git branch
-              git  remote  set-branches  --add  'origin'  'github-migration'
-              git  fetch  'origin'
-              git  checkout  --track  'origin/github-migration'
               if cp "${{ github.workspace }}/source-repo/data/LICENSE" "${{ github.workspace }}/target-repo/LICENSE"; then
                 echo "LICENSE file copied successfully."
               else
@@ -71,7 +61,6 @@ jobs:
               
               # Stage and commit the changes
             cd "${{ github.workspace }}/target-repo"
-            git branch
             if [ -n "$(git status --porcelain)" ]; then
                 git pull origin github-migration
                 git add LICENSE
