@@ -59,8 +59,8 @@ jobs:
               echo "License file already exists"
               
               # Stage and commit the changes
-              cd "./target-repo"
-              if [ -n "$(git status --porcelain)" ]; then
+            cd "./target-repo"
+            if [ -n "$(git status --porcelain)" ]; then
                 git pull origin github-migration
                 git add LICENSE
                 git commit -S -m "Add LICENSE File - $(date +"%Y-%m-%d %H:%M:%S")" 
