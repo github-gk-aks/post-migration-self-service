@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.GK_PAT }}
-          path: ./source-repo
+          path: ${{ github.workspace }}/source-repo
 
       - name: Add the custom gpg signing program that passes the passphrase to the gpg CLI
         run: |
@@ -38,7 +38,7 @@ jobs:
             echo "Processing repository: $repo"
 
             # Clone target repository
-            git clone --depth 1  "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./target-repo"
+            git clone --depth 1  "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "${{ github.workspace }}/target-repo"
 
             # # Check default branch
             # #default_branch=$(git ls-remote --symref origin HEAD | grep -oP "refs/heads/\K.*")
@@ -46,7 +46,7 @@ jobs:
             # echo "Default branch of $repo is: $default_branch"
 
             # Check if LICENSE file exists in default branch
-            if [ ! -f "./target-repo/LICENSE" ]; then
+            if [ ! -f "${{ github.workspace }}/target-repo/LICENSE" ]; then
               # Copy LICENSE file from source to target repository
               cd "${{ github.workspace }}/target-repo"
               git  remote  set-branches  --add  'origin'  'github-migration'
