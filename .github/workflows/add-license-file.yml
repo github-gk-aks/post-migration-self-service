@@ -57,6 +57,7 @@ jobs:
               fi
             else
               echo "License file already exists"
+            fi
               
               # Stage and commit the changes
             cd "./target-repo"
