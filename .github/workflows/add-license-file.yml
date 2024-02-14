@@ -79,6 +79,7 @@ jobs:
             fi
            
             # Clean up
+            cd ..
             rm -rf "${{ github.workspace }}/target-repo"
           done
         env:
