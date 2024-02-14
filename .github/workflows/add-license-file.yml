@@ -44,7 +44,7 @@ jobs:
             echo "Processing repository: $repo"
 
             # Clone target repository
-            git clone --depth 1  "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./target-repo"
+            git clone --depth 1  "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "${{ github.workspace }}/target-repo"
 
             # # Check default branch
             # #default_branch=$(git ls-remote --symref origin HEAD | grep -oP "refs/heads/\K.*")
@@ -52,13 +52,13 @@ jobs:
             # echo "Default branch of $repo is: $default_branch"
 
             # Check if LICENSE file exists in default branch
-            if [ ! -f "./target-repo/LICENSE" ]; then
+            if [ ! -f "${{ github.workspace }}/target-repo/LICENSE" ]; then
               # Copy LICENSE file from source to target repository
-              cd "./target-repo"
+              cd "${{ github.workspace }}/target-repo"
               git  remote  set-branches  --add  'origin'  'github-migration'
               git  fetch  'origin'
               git  checkout  --track  'origin/github-migration'
-              if cp "${{ github.workspace }}/source-repo/data/LICENSE" "./target-repo/LICENSE"; then
+              if cp "${{ github.workspace }}/source-repo/data/LICENSE" "${{ github.workspace }}/target-repo/LICENSE"; then
                 echo "LICENSE file copied successfully."
               else
                 echo "Error: Failed to copy LICENSE file."
@@ -68,7 +68,7 @@ jobs:
             fi
               
               # Stage and commit the changes
-            cd "./target-repo"
+            cd "${{ github.workspace }}/target-repo"
             if [ -n "$(git status --porcelain)" ]; then
                 git pull origin github-migration
                 git add LICENSE
@@ -79,8 +79,7 @@ jobs:
             fi
            
             # Clean up
-            cd ${{ github.workspace }}
-            rm -rf "./target-repo"
+            rm -rf "${{ github.workspace }}/target-repo"
           done
         env:
           GPG_KEY_PASSPHRASE: ${{ secrets.PASSPHRASE }}
