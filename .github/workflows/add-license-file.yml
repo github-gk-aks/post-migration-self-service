@@ -44,9 +44,7 @@ jobs:
             echo "Processing repository: $repo"
 
             # Clone target repository
-            mkdir -p ${{ github.workspace }}/target-repo
-            ls ${{ github.workspace }}/target-repo
-            git clone --depth 1  "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "${{ github.workspace }}/target-repo"
+            git clone --depth 1  "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./target-repo"
 
             # # Check default branch
             # #default_branch=$(git ls-remote --symref origin HEAD | grep -oP "refs/heads/\K.*")
