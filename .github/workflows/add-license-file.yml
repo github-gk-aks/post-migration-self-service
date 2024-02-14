@@ -62,7 +62,6 @@ jobs:
               git  checkout  --track  'origin/github-migration'
               if cp "${{ github.workspace }}/source-repo/data/LICENSE" "${{ github.workspace }}/target-repo/LICENSE"; then
                 echo "LICENSE file copied successfully."
-                ls
               else
                 echo "Error: Failed to copy LICENSE file."
               fi
@@ -72,7 +71,7 @@ jobs:
               
               # Stage and commit the changes
             cd "${{ github.workspace }}/target-repo"
-            ls
+            git branch
             if [ -n "$(git status --porcelain)" ]; then
                 git pull origin github-migration
                 git add LICENSE
