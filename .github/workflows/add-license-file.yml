@@ -33,7 +33,7 @@ jobs:
 
       - name: Iterate Over Repos
         run: |
-          mapfile -t repositories < <(awk '{print $1}' "./source-repo/data/repositories.txt" | sort -u)
+          mapfile -t repositories < <(awk '{print $1}' "${{ github.workspace }}/source-repo/data/repositories.txt" | sort -u)
           for repo in "${repositories[@]}"; do
             echo "Processing repository: $repo"
 
@@ -52,7 +52,7 @@ jobs:
               git  remote  set-branches  --add  'origin'  'github-migration'
               git  fetch  'origin'
               git  checkout  --track  'origin/github-migration'
-              if cp "./source-repo/data/LICENSE" "./target-repo/LICENSE"; then
+              if cp "${{ github.workspace }}/source-repo/data/LICENSE" "./target-repo/LICENSE"; then
                 echo "LICENSE file copied successfully."
               else
                 echo "Error: Failed to copy LICENSE file."
