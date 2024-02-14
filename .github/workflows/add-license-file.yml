@@ -49,6 +49,7 @@ jobs:
             if [ ! -f "./target-repo/LICENSE" ]; then
               # Copy LICENSE file from source to target repository
               cd "./target-repo"
+              git fetch --all
               git checkout -t -b github-migration origin/github-migration
               if cp "./source-repo/data/LICENSE" "./target-repo/LICENSE"; then
                 echo "LICENSE file copied successfully."
