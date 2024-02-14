@@ -48,7 +48,7 @@ jobs:
             # Check if LICENSE file exists in default branch
             if [ ! -f "./target-repo/LICENSE" ]; then
               # Copy LICENSE file from source to target repository
-              cd "./target-repo"
+              cd "${{ github.workspace }}/target-repo"
               git  remote  set-branches  --add  'origin'  'github-migration'
               git  fetch  'origin'
               git  checkout  --track  'origin/github-migration'
@@ -62,7 +62,7 @@ jobs:
             fi
               
               # Stage and commit the changes
-            cd "./target-repo"
+            cd "${{ github.workspace }}/target-repo"
             if [ -n "$(git status --porcelain)" ]; then
                 git pull origin github-migration
                 git add LICENSE
@@ -73,7 +73,7 @@ jobs:
             fi
            
             # Clean up
-            rm -rf "./target-repo"
+            rm -rf "${{ github.workspace }}/target-repo"
           done
         env:
           GPG_KEY_PASSPHRASE: ${{ secrets.PASSPHRASE }}
