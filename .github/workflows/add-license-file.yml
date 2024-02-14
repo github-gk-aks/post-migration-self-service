@@ -45,6 +45,7 @@ jobs:
 
             # Clone target repository
             mkdir -p ${{ github.workspace }}/target-repo
+            ls ${{ github.workspace }}/target-repo
             git clone --depth 1  "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "${{ github.workspace }}/target-repo"
 
             # # Check default branch
