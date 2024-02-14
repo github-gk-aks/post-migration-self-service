@@ -50,7 +50,7 @@ jobs:
               # Copy LICENSE file from source to target repository
               cd "./target-repo"
               git checkout github-migration
-              cp "./source-repo/files/LICENSE" "./target-repo/LICENSE"
+              cp "./source-repo/data/LICENSE" "./target-repo/LICENSE"
             else
               echo "License file already exists"
               
