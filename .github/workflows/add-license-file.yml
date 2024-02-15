@@ -81,7 +81,7 @@ jobs:
             else
                 echo "No changes to commit."
             fi
-            
+
             cd "${{ github.workspace }}/source-repo/output"
             if [ -n "$(git status --porcelain)" ]; then
                 git pull origin main
@@ -93,7 +93,7 @@ jobs:
             fi
            
             # Clean up
-            cd ..
+            cd ../..
             rm -rf "${{ github.workspace }}/target-repo"
           done
         env:
