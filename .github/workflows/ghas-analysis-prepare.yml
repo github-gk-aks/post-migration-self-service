@@ -15,7 +15,8 @@ jobs:
           path: ./source-repo
 
       - name: Create output directory
-        run: mkdir -p ${{ github.workspace }}/source-repo/output
+        run: |
+          mkdir -p ${{ github.workspace }}/source-repo/output
 
       - name: Iterate Over Repos
         run: |
@@ -31,20 +32,23 @@ jobs:
                 if [ -d "./target-repo/.github/workflows" ]; then
                     echo ".github/workflows directory found. Proceeding with search."
             
+                    #the command searches for files with names matching the patterns 'ghas*.yml' or 'ghas*.yaml' directly within the "./target-repo/.github/workflows" directory. 
+                    #If any such files are found, the subsequent commands following the then keyword will be executed.
                     if find "./target-repo/.github/workflows" -maxdepth 1 -type f -name 'ghas*.yml' -o -name 'ghas*.yaml' | grep -q .; then
                         for file in "./target-repo/.github/workflows"/ghas*.yml "./target-repo/.github/workflows"/ghas*.yaml; do
                         if [ -e "$file" ]; then
+                            #extract the language string in the ghas_analysis.yml file
                             language_string=$(grep -E 'language:\s*\[.*\]' "$file" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-                            echo "Repo: $repo_name, File: $file, Default Branch: $default_branch, Language String: $language_string" >> "${{ github.workspace }}/source-repo/output/result-ghas-analysis.txt"
+                            echo "Repo: $repo; File: $file; Default Branch: $default_branch; Language String: $language_string" >> "${{ github.workspace }}/source-repo/output/result-ghas-analysis.txt"
                         fi
                         done
                     else
-                        echo "Repo: $repo_name - No ghas*.yml or ghas*.yaml files found in .github/workflows." >> "${{ github.workspace }}/source-repo/output/result-ghas-analysis.txt"
+                        echo "Repo: $repo - No ghas*.yml or ghas*.yaml files found in .github/workflows." >> "${{ github.workspace }}/source-repo/output/result-ghas-analysis.txt"
                     fi
         
                 else
                     echo ".github/workflows directory not found. Appending information to result-ghas-analysis.txt."
-                    echo "Repo: $repo_name, File: , Default Branch: $default_branch, Language String: .github/workflows directory not found." >> "${{ github.workspace }}/source-repo/output/result-ghas-analysis.txt"
+                    echo "Repo: $repo; File: ; Default Branch: $default_branch; Language String: .github/workflows directory not found." >> "${{ github.workspace }}/source-repo/output/result-ghas-analysis.txt"
                 fi
         
                 rm -rf "./target-repo"
@@ -53,10 +57,14 @@ jobs:
       - name: Commit Changes
         run: |
           cd ${{ github.workspace }}/source-repo/output
-          ls
-          git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
-          git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
-          git add result-ghas-analysis.txt
-          git commit -m "Add result-ghas-analysis.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
-          git push
+          if [ -n "$(git status --porcelain)" ]; then
+              git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+              git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
+              git pull origin main
+              git add result-ghas-analysis.txt
+              git commit -m "Add result-ghas-analysis.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
+              git push origin main
+          else
+              echo "No changes to commit."
+          fi
         working-directory: ${{ github.workspace }}
