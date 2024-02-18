@@ -1,0 +1,5 @@
+Repo: github-gk-aks/firstgithubrepo; File: ./target-repo/.github/workflows/ghas-analysis.yml; Default Branch: main; Language String: language: [ 'java' ]
+Repo: github-gk-aks/secondgithubrepo; File: ./target-repo/.github/workflows/ghas-analysis.yml; Default Branch: master; Language String: language: [ 'go' ]
+Repo: github-gk-aks/thirdgithubrepo; File: ./target-repo/.github/workflows/ghas-analysis.yml; Default Branch: main; Language String: language: [ 'javascript', 'go' ]
+Repo: github-gk-aks/fourthgithubrepo; File: ./target-repo/.github/workflows/ghas-analysis.yaml; Default Branch: main; Language String: language: [ 'java', go' ]
+Repo: github-gk-aks/fifthgithubrepo; File: ./target-repo/.github/workflows/ghas.yaml; Default Branch: main; Language String: language: [ 'javascript', go' ]
