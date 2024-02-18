@@ -1,4 +1,4 @@
-name: Find Language String and Default Branch for Ghas Analysis
+name: Prepare for GHAS Replacement
 
 on:
   workflow_dispatch:
