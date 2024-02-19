@@ -54,12 +54,10 @@ jobs:
             # cat -A "${{ github.workspace }}/source-repo/data/replacements_ghas.txt"
             grep_result=$(grep -E "^$(echo "$repo" | sed 's/\//\\\//g')" "${{ github.workspace }}/source-repo/data/replacements_ghas.txt")
             echo "DEBUG: Grep Result: $grep_result"
-            # if [ -n "$grep_result" ]; then
-            #   echo "DEBUG: Found matches in replacements_ghas.txt"
-            # else
-            #   echo "DEBUG: No matches found in replacements_ghas.txt"
-            # fi
-
+            echo "Searching for repository: $repo"
+            grep_result=$(grep -E "^$(echo "$repo" | sed 's/\//\\\//g')" "${{ github.workspace }}/source-repo/data/replacements_ghas.txt")
+            echo "grep_result: $grep_result"
+        
             grep "^$repo" ${{ github.workspace }}/source-repo/data/replacements_ghas.txt | while IFS=$'\t' read -r _ file default_branch language occurance; do
               echo "Inside the while loop now"
               echo "Processing file: $file, Default Branch: $default_branch, Language: $language, occurance: $occurance"
