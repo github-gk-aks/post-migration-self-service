@@ -50,8 +50,11 @@ jobs:
             # Clone target repository
             git clone --depth 1 -b "github-migration" "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./target-repo"
 
-            echo "About to enter the while loop"
             # Iterate through replacement entries for the repository
+
+            grep_result=$(grep "^$repo" "${{ github.workspace }}/source-repo/data/replacements_ghas.txt")
+            echo "DEBUG: Grep Result: $grep_result"
+            
             grep "^$repo" ${{ github.workspace }}/source-repo/data/replacements_ghas.txt | while IFS=$'\t' read -r _ file default_branch language occurance; do
               echo "Inside the while loop now"
               echo "Processing file: $file, Default Branch: $default_branch, Language: $language, occurance: $occurance"

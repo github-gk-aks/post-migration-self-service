@@ -2,4 +2,4 @@
  github-gk-aks/secondgithubrepo	 .github/workflows/ghas-analysis.yml	 master	 [ 'go' ]	M
  github-gk-aks/thirdgithubrepo	 .github/workflows/ghas-analysis.yml	 main	 [ 'javascript', 'go' ]	S
  github-gk-aks/fourthgithubrepo	 .github/workflows/ghas-analysis.yaml	 main	 [ 'java', go' ]	S
- fifthgithubrepo	 .github/workflows/ghas.yaml	 main	 [ 'javascript', go' ]  S
+ github-gk-aks/fifthgithubrepo	 .github/workflows/ghas.yaml	 main	 [ 'javascript', go' ]  S
