@@ -239,6 +239,7 @@ jobs:
                 # fi
               else
                 echo "File $file not found in repository $repo."
+                echo "$repo ; $file not found in the repository" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output.txt"
               fi
             done
 
@@ -254,6 +255,18 @@ jobs:
             # Clean up
             cd ..
             rm -rf "./target-repo"
+
+            cd "${{ github.workspace }}/source-repo/output"
+            if [ -n "$(git status --porcelain)" ]; then
+                git pull origin main
+                git add replace-ghas-output.txt
+                git commit -S -m "Add Output File - $(date +"%Y-%m-%d %H:%M:%S")" 
+                git push origin main
+            else
+                echo "No changes to commit."
+            fi
+
+            cd ../..
           done
         env:
           GPG_KEY_PASSPHRASE: ${{ secrets.PASSPHRASE }}
