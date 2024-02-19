@@ -51,9 +51,9 @@ jobs:
             git clone --depth 1 -b "github-migration" "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./target-repo"
 
             # Iterate through replacement entries for the repository
-            cat "${{ github.workspace }}/source-repo/data/replacements_ghas.txt"
-            # grep_result=$(grep "^$repo" "${{ github.workspace }}/source-repo/data/replacements_ghas.txt")
-            # echo "DEBUG: Grep Result: $grep_result"
+            # cat -A "${{ github.workspace }}/source-repo/data/replacements_ghas.txt"
+            grep_result=$(grep -E "^$(echo "$repo" | sed 's/\//\\\//g')" "${{ github.workspace }}/source-repo/data/replacements_ghas.txt")
+            echo "DEBUG: Grep Result: $grep_result"
             # if [ -n "$grep_result" ]; then
             #   echo "DEBUG: Found matches in replacements_ghas.txt"
             # else
