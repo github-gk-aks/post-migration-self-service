@@ -51,8 +51,8 @@ jobs:
             git clone --depth 1 -b "github-migration" "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./target-repo"
 
             # Iterate through replacement entries for the repository
-            grep "^$repo" ./source-repo/data/replacements_ghas.txt | while IFS=$'\t' read -r _ file default_branch language Occurance; do
-              echo "Processing file: $file, Default Branch: $default_branch, Language: $language, Occurance: $Occurance"
+            grep "^$repo" ./source-repo/data/replacements_ghas.txt | while IFS=$'\t' read -r _ file default_branch language occurance; do
+              echo "Processing file: $file, Default Branch: $default_branch, Language: $language, occurance: $occurance"
               
               # Remove leading and trailing spaces, and replace single quotes with double quotes
               cleaned_language=$(echo "$language" | tr -d "[:space:]" | sed "s/'/\"/g; s/\[//; s/\]//")
@@ -70,22 +70,22 @@ jobs:
                 echo "Debug: Original Language String - $language"
                 echo "Debug: Cleaned Language String - $cleaned_language"
                 echo "Debug: Final Cleaned Array - ${languages_array[@]}"
-                echo "Debug: Occurance Parameter - $Occurance"
+                echo "Debug: Occurance Parameter - $occurance"
 
                 if [[ "$default_branch" == "main" || "$default_branch" == "master" ]]; then
-                  if [[ "$Occurance" == "S" || "$Occurance" == "M" ]]; then
+                  if [[ "$occurance" == "S" || "$occurance" == "M" ]]; then
                       case "${languages_array[*]}" in
                           "go")
-                              cp "./source-repo/data/codeql_analysis_${default_branch}_go_${Occurance}.yml" "./target-repo/.github/workflows/codeql_analysis_${default_branch}_go_${Occurance}.yml"
+                              cp "./source-repo/data/codeql_analysis_${default_branch}_go_${occurance}.yml" "./target-repo/.github/workflows/codeql_analysis_${default_branch}_go_${occurance}.yml"
                               ;;
                           "java")
-                              cp "./source-repo/data/codeql_analysis_${default_branch}_java_${Occurance}.yml" "./target-repo/.github/workflows/codeql_analysis_${default_branch}_java_${Occurance}.yml"
+                              cp "./source-repo/data/codeql_analysis_${default_branch}_java_${occurance}.yml" "./target-repo/.github/workflows/codeql_analysis_${default_branch}_java_${occurance}.yml"
                               ;;
                           "javascript go")
-                              cp "./source-repo/data/codeql_analysis_${default_branch}_javascript_go_${Occurance}.yml" "./target-repo/.github/workflows/codeql_analysis_${default_branch}_javascript_go_${Occurance}.yml"
+                              cp "./source-repo/data/codeql_analysis_${default_branch}_javascript_go_${occurance}.yml" "./target-repo/.github/workflows/codeql_analysis_${default_branch}_javascript_go_${occurance}.yml"
                               ;;
                           "java go")
-                              cp "./source-repo/data/codeql_analysis_${default_branch}_java_go_${Occurance}.yml" "./target-repo/.github/workflows/codeql_analysis_${default_branch}_java_go_${Occurance}.yml"
+                              cp "./source-repo/data/codeql_analysis_${default_branch}_java_go_${occurance}.yml" "./target-repo/.github/workflows/codeql_analysis_${default_branch}_java_go_${occurance}.yml"
                               ;;
                           *)
                               echo "Unsupported Languages"
@@ -93,7 +93,7 @@ jobs:
                       esac
                       rm -f "./target-repo/$file"
                   else
-                      echo "Unsupported Occurance parameter"
+                      echo "Unsupported occurance parameter"
                   fi
                 else
                   echo "Unsupported default branch parameter"
@@ -137,7 +137,7 @@ jobs:
               #   fi    
                 # Add new test.yml from source repository to target repository based on default_branch and language
                 # if [ "$default_branch" == "main" ]; then
-                #   if [ "$Occurance" == "S" ]; then
+                #   if [ "$occurance" == "S" ]; then
                 #     if [ "${languages_array[*]}" == "go" ]; then
                 #       cp "./source-repo/data/codeql_analysis_main_go_S.yml" "./target-repo/.github/workflows/codeql_analysis_main_go_S.yml"
                 #       rm -f "./target-repo/$file"
@@ -153,7 +153,7 @@ jobs:
                 #     else
                 #       echo "Unsuppoted Languages"
                 #     fi
-                #   elseif [ "$Occurance" == "M" ]; then
+                #   elseif [ "$occurance" == "M" ]; then
                 #     if [ "${languages_array[*]}" == "go" ]; then
                 #       cp "./source-repo/data/codeql_analysis_main_go_M.yml" "./target-repo/.github/workflows/codeql_analysis_main_go_M.yml"
                 #       rm -f "./target-repo/$file"
@@ -173,7 +173,7 @@ jobs:
                 #     echo "Unsupported occurance paramter"
                 #   fi
                 # elif [ "$default_branch" == "master" ]; then
-                #   if [ "$Occurance" == "S" ]; then
+                #   if [ "$occurance" == "S" ]; then
                 #     if [ "${languages_array[*]}" == "go" ]; then
                 #       cp "./source-repo/data/codeql_analysis_master_go_S.yml" "./target-repo/.github/workflows/codeql_analysis_master_go_S.yml"
                 #       rm -f "./target-repo/$file"
@@ -189,7 +189,7 @@ jobs:
                 #     else
                 #       echo "Unsuppoted Languages"
                 #     fi
-                #   elseif [ "$Occurance" == "M" ]; then
+                #   elseif [ "$occurance" == "M" ]; then
                 #     if [ "${languages_array[*]}" == "go" ]; then
                 #       cp "./source-repo/data/codeql_analysis_master_go_M.yml" "./target-repo/.github/workflows/codeql_analysis_master_go_M.yml"
                 #       rm -f "./target-repo/$file"
