@@ -81,6 +81,7 @@ jobs:
                               else
                                 error_message=$(tail -n 1 "${{ github.workspace }}/source-repo/output/replace-ghas-errors.txt")
                                 echo "$repo ; Failed to Copy codeql-analysis_${default_branch}_go_${occurance}.yml File. ; $error_message" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output.txt"
+                              fi
                               ;;
                           "java")
                               if cp "./source-repo/data/codeql-analysis_${default_branch}_java_${occurance}.yml" "./target-repo/.github/workflows/codeql-analysis_${default_branch}_java_${occurance}.yml" >> "${{ github.workspace }}/source-repo/output/replace-ghas-errors.txt" 2>&1; then
@@ -89,6 +90,7 @@ jobs:
                               else
                                 error_message=$(tail -n 1 "${{ github.workspace }}/source-repo/output/replace-ghas-errors.txt")
                                 echo "$repo ; Failed to Copy codeql-analysis_${default_branch}_java_${occurance}.yml File. ; $error_message" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output.txt"
+                              fi
                               ;;
                           "javascript go")
                               if cp "./source-repo/data/codeql-analysis_${default_branch}_javascript_go_${occurance}.yml" "./target-repo/.github/workflows/codeql-analysis_${default_branch}_javascript_go_${occurance}.yml" >> "${{ github.workspace }}/source-repo/output/replace-ghas-errors.txt" 2>&1; then
@@ -97,6 +99,7 @@ jobs:
                               else
                                 error_message=$(tail -n 1 "${{ github.workspace }}/source-repo/output/replace-ghas-errors.txt")
                                 echo "$repo ; Failed to Copy codeql-analysis_${default_branch}_javascript_go_${occurance}.yml File. ; $error_message" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output.txt"
+                              fi
                               ;;
                           "java go")
                               if cp "./source-repo/data/codeql-analysis_${default_branch}_java_go_${occurance}.yml" "./target-repo/.github/workflows/codeql-analysis_${default_branch}_java_go_${occurance}.yml" >> "${{ github.workspace }}/source-repo/output/replace-ghas-errors.txt" 2>&1; then
@@ -105,6 +108,7 @@ jobs:
                               else
                                 error_message=$(tail -n 1 "${{ github.workspace }}/source-repo/output/replace-ghas-errors.txt")
                                 echo "$repo ; Failed to Copy codeql-analysis_${default_branch}_java_go_${occurance}.yml File. ; $error_message" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output.txt"
+                              fi
                               ;;
                           *)
                               echo "Unsupported Languages"
