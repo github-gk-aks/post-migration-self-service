@@ -49,17 +49,8 @@ jobs:
             
             # Clone target repository
             git clone --depth 1 -b "github-migration" "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./target-repo"
-
-            # Iterate through replacement entries for the repository
-            # cat -A "${{ github.workspace }}/source-repo/data/replacements_ghas.txt"
-            # grep_result=$(grep "^$repo" "${{ github.workspace }}/source-repo/data/replacements_ghas.txt")
-            # echo "DEBUG: Grep Result: $grep_result"
-            # echo "Searching for repository: $repo"
-            # grep_result=$(grep -E "^$(echo "$repo" | sed 's/\//\\\//g')" "${{ github.workspace }}/source-repo/data/replacements_ghas.txt")
-            # echo "grep_result: $grep_result"        
         
               grep "^$repo" "${{ github.workspace }}/source-repo/data/replacements_ghas.txt" | while IFS=$'\t' read -r _ file default_branch language occurance; do
-              echo "Inside the while loop now"
               echo "Processing file: $file, Default Branch: $default_branch, Language: $language, occurance: $occurance"
               
               # Remove leading and trailing spaces, and replace single quotes with double quotes
@@ -84,16 +75,16 @@ jobs:
                   if [[ "$occurance" == "S" || "$occurance" == "M" ]]; then
                       case "${languages_array[*]}" in
                           "go")
-                              cp "./source-repo/data/codeql_analysis_${default_branch}_go_${occurance}.yml" "./target-repo/.github/workflows/codeql_analysis_${default_branch}_go_${occurance}.yml"
+                              cp "./source-repo/data/codeql-analysis_${default_branch}_go_${occurance}.yml" "./target-repo/.github/workflows/codeql-analysis_${default_branch}_go_${occurance}.yml"
                               ;;
                           "java")
-                              cp "./source-repo/data/codeql_analysis_${default_branch}_java_${occurance}.yml" "./target-repo/.github/workflows/codeql_analysis_${default_branch}_java_${occurance}.yml"
+                              cp "./source-repo/data/codeql-analysis_${default_branch}_java_${occurance}.yml" "./target-repo/.github/workflows/codeql-analysis_${default_branch}_java_${occurance}.yml"
                               ;;
                           "javascript go")
-                              cp "./source-repo/data/codeql_analysis_${default_branch}_javascript_go_${occurance}.yml" "./target-repo/.github/workflows/codeql_analysis_${default_branch}_javascript_go_${occurance}.yml"
+                              cp "./source-repo/data/codeql-analysis_${default_branch}_javascript_go_${occurance}.yml" "./target-repo/.github/workflows/codeql-analysis_${default_branch}_javascript_go_${occurance}.yml"
                               ;;
                           "java go")
-                              cp "./source-repo/data/codeql_analysis_${default_branch}_java_go_${occurance}.yml" "./target-repo/.github/workflows/codeql_analysis_${default_branch}_java_go_${occurance}.yml"
+                              cp "./source-repo/data/codeql-analysis_${default_branch}_java_go_${occurance}.yml" "./target-repo/.github/workflows/codeql-analysis_${default_branch}_java_go_${occurance}.yml"
                               ;;
                           *)
                               echo "Unsupported Languages"
@@ -147,32 +138,32 @@ jobs:
                 # if [ "$default_branch" == "main" ]; then
                 #   if [ "$occurance" == "S" ]; then
                 #     if [ "${languages_array[*]}" == "go" ]; then
-                #       cp "./source-repo/data/codeql_analysis_main_go_S.yml" "./target-repo/.github/workflows/codeql_analysis_main_go_S.yml"
+                #       cp "./source-repo/data/codeql-analysis_main_go_S.yml" "./target-repo/.github/workflows/codeql-analysis_main_go_S.yml"
                 #       rm -f "./target-repo/$file"
                 #     elseif [ "${languages_array[*]}" == "java" ]; then
-                #       cp "./source-repo/data/codeql_analysis_main_java_S.yml" "./target-repo/.github/workflows/codeql_analysis_main_java_S.yml"
+                #       cp "./source-repo/data/codeql-analysis_main_java_S.yml" "./target-repo/.github/workflows/codeql-analysis_main_java_S.yml"
                 #       rm -f "./target-repo/$file"
                 #     elseif [ "${languages_array[*]}" == "javascript go" ]; then
-                #       cp "./source-repo/data/codeql_analysis_main_javascript_go_S.yml" "./target-repo/.github/workflows/codeql_analysis_main_javascript_go_S.yml"
+                #       cp "./source-repo/data/codeql-analysis_main_javascript_go_S.yml" "./target-repo/.github/workflows/codeql-analysis_main_javascript_go_S.yml"
                 #       rm -f "./target-repo/$file"
                 #     elseif [ "${languages_array[*]}" == "java go" ]; then
-                #       cp "./source-repo/data/codeql_analysis_main_java_go_S.yml" "./target-repo/.github/workflows/codeql_analysis_main_java_go_S.yml"
+                #       cp "./source-repo/data/codeql-analysis_main_java_go_S.yml" "./target-repo/.github/workflows/codeql-analysis_main_java_go_S.yml"
                 #       rm -f "./target-repo/$file"
                 #     else
                 #       echo "Unsuppoted Languages"
                 #     fi
                 #   elseif [ "$occurance" == "M" ]; then
                 #     if [ "${languages_array[*]}" == "go" ]; then
-                #       cp "./source-repo/data/codeql_analysis_main_go_M.yml" "./target-repo/.github/workflows/codeql_analysis_main_go_M.yml"
+                #       cp "./source-repo/data/codeql-analysis_main_go_M.yml" "./target-repo/.github/workflows/codeql-analysis_main_go_M.yml"
                 #       rm -f "./target-repo/$file"
                 #     elseif [ "${languages_array[*]}" == "java" ]; then
-                #       cp "./source-repo/data/codeql_analysis_main_java_M.yml" "./target-repo/.github/workflows/codeql_analysis_main_java_M.yml"
+                #       cp "./source-repo/data/codeql-analysis_main_java_M.yml" "./target-repo/.github/workflows/codeql-analysis_main_java_M.yml"
                 #       rm -f "./target-repo/$file"
                 #     elseif [ "${languages_array[*]}" == "javascript go" ]; then
-                #       cp "./source-repo/data/codeql_analysis_main_javascript_go_M.yml" "./target-repo/.github/workflows/codeql_analysis_main_javascript_go_M.yml"
+                #       cp "./source-repo/data/codeql-analysis_main_javascript_go_M.yml" "./target-repo/.github/workflows/codeql-analysis_main_javascript_go_M.yml"
                 #       rm -f "./target-repo/$file"
                 #     elseif [ "${languages_array[*]}" == "java go" ]; then
-                #       cp "./source-repo/data/codeql_analysis_main_java_go_M.yml" "./target-repo/.github/workflows/codeql_analysis_main_java_go_M.yml"
+                #       cp "./source-repo/data/codeql-analysis_main_java_go_M.yml" "./target-repo/.github/workflows/codeql-analysis_main_java_go_M.yml"
                 #       rm -f "./target-repo/$file"
                 #     else
                 #       echo "Unsuppoted Languages"
@@ -183,32 +174,32 @@ jobs:
                 # elif [ "$default_branch" == "master" ]; then
                 #   if [ "$occurance" == "S" ]; then
                 #     if [ "${languages_array[*]}" == "go" ]; then
-                #       cp "./source-repo/data/codeql_analysis_master_go_S.yml" "./target-repo/.github/workflows/codeql_analysis_master_go_S.yml"
+                #       cp "./source-repo/data/codeql-analysis_master_go_S.yml" "./target-repo/.github/workflows/codeql-analysis_master_go_S.yml"
                 #       rm -f "./target-repo/$file"
                 #     elseif [ "${languages_array[*]}" == "java" ]; then
-                #       cp "./source-repo/data/codeql_analysis_master_java_S.yml" "./target-repo/.github/workflows/codeql_analysis_master_java_S.yml"
+                #       cp "./source-repo/data/codeql-analysis_master_java_S.yml" "./target-repo/.github/workflows/codeql-analysis_master_java_S.yml"
                 #       rm -f "./target-repo/$file"
                 #     elseif [ "${languages_array[*]}" == "javascript go" ]; then
-                #       cp "./source-repo/data/codeql_analysis_master_javascript_go_S.yml" "./target-repo/.github/workflows/codeql_analysis_master_javascript_go_S.yml"
+                #       cp "./source-repo/data/codeql-analysis_master_javascript_go_S.yml" "./target-repo/.github/workflows/codeql-analysis_master_javascript_go_S.yml"
                 #       rm -f "./target-repo/$file"
                 #     elseif [ "${languages_array[*]}" == "java go" ]; then
-                #       cp "./source-repo/data/codeql_analysis_master_java_go_S.yml" "./target-repo/.github/workflows/codeql_analysis_master_java_go_S.yml"
+                #       cp "./source-repo/data/codeql-analysis_master_java_go_S.yml" "./target-repo/.github/workflows/codeql-analysis_master_java_go_S.yml"
                 #       rm -f "./target-repo/$file"
                 #     else
                 #       echo "Unsuppoted Languages"
                 #     fi
                 #   elseif [ "$occurance" == "M" ]; then
                 #     if [ "${languages_array[*]}" == "go" ]; then
-                #       cp "./source-repo/data/codeql_analysis_master_go_M.yml" "./target-repo/.github/workflows/codeql_analysis_master_go_M.yml"
+                #       cp "./source-repo/data/codeql-analysis_master_go_M.yml" "./target-repo/.github/workflows/codeql-analysis_master_go_M.yml"
                 #       rm -f "./target-repo/$file"
                 #     elseif [ "${languages_array[*]}" == "java" ]; then
-                #       cp "./source-repo/data/codeql_analysis_master_java_M.yml" "./target-repo/.github/workflows/codeql_analysis_master_java_M.yml"
+                #       cp "./source-repo/data/codeql-analysis_master_java_M.yml" "./target-repo/.github/workflows/codeql-analysis_master_java_M.yml"
                 #       rm -f "./target-repo/$file"
                 #     elseif [ "${languages_array[*]}" == "javascript go" ]; then
-                #       cp "./source-repo/data/codeql_analysis_master_javascript_go_M.yml" "./target-repo/.github/workflows/codeql_analysis_master_javascript_go_M.yml"
+                #       cp "./source-repo/data/codeql-analysis_master_javascript_go_M.yml" "./target-repo/.github/workflows/codeql-analysis_master_javascript_go_M.yml"
                 #       rm -f "./target-repo/$file"
                 #     elseif [ "${languages_array[*]}" == "java go" ]; then
-                #       cp "./source-repo/data/codeql_analysis_master_java_go_M.yml" "./target-repo/.github/workflows/codeql_analysis_master_java_go_M.yml"
+                #       cp "./source-repo/data/codeql-analysis_master_java_go_M.yml" "./target-repo/.github/workflows/codeql-analysis_master_java_go_M.yml"
                 #       rm -f "./target-repo/$file"
                 #     else
                 #       echo "Unsuppoted Languages"
