@@ -1,1 +1,2 @@
 github-gk-aks/firstgithubrepo ; .github/workflows/ghas-analysis.yml not found in the repository
+github-gk-aks/secondgithubrepo ; .github/workflows/ghas-analysis.yml not found in the repository
