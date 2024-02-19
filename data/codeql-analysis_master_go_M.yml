@@ -2,9 +2,9 @@ name: GHAS Analysis
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
   schedule:
     - cron '0 2 30 * *'
 
@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'java' ]
+        language: [ 'go' ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -41,7 +41,7 @@ jobs:
     strategy:
     fail-fast: false
     matrix: 
-      language: [ 'java' ]
+      language: [ 'go' ]
 
     steps:
 

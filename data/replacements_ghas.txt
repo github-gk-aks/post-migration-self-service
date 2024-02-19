@@ -1,2 +1,5 @@
-github-gk-aks/firstgithubrepo	.github/workflows/ghas_analysis.yml	main	[ 'python', 'javascript', 'java', 'ruby', 'csharp' ]    M
-github-gk-aks/secondgithubrepo	.github/workflows/ghas_analysis.yml	main	[ 'python', 'javascript']   S
+ github-gk-aks/firstgithubrepo	 .github/workflows/ghas-analysis.yml	 main	 [ 'java' ]	S
+ github-gk-aks/secondgithubrepo	 .github/workflows/ghas-analysis.yml	 master	 [ 'go' ]	M
+ github-gk-aks/thirdgithubrepo	 .github/workflows/ghas-analysis.yml	 main	 [ 'javascript', 'go' ]	S
+ github-gk-aks/fourthgithubrepo	 .github/workflows/ghas-analysis.yaml	 main	 [ 'java', go' ]	S
+ github-gk-aks/fifthgithubrepo	 .github/workflows/ghas.yaml	 main	 [ 'javascript', go' ]	S
