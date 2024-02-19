@@ -214,7 +214,7 @@ jobs:
               else
                 echo "File $file not found in repository $repo."
               fi
-          done
+            done
 
             cd "./target-repo"
             if git diff --quiet; then
