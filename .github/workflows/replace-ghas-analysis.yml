@@ -157,7 +157,7 @@ jobs:
 
           cd "${{ github.workspace }}/source-repo/output"
           if [ -n "$(git status --porcelain)" ]; then
-              #git pull origin main
+              git fetch origin main
               git add replace-ghas-output-$(date +"%d%b%y").txt
               git commit -S -m "Add Output File - $(date +"%Y-%m-%d %H:%M:%S")" 
               git push origin main
