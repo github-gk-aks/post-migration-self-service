@@ -21,6 +21,11 @@ jobs:
           else
             echo "Output directory already exists."
           fi
+      - name: Git Pull the latest changes from central repository
+        run: |
+          cd "${{ github.workspace }}/source-repo/output"
+          git pull origin main
+          cd "${{ github.workspace }}"
 
       - name: Setup Committer Email and Name
         run: |
