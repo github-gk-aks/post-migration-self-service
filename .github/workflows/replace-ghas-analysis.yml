@@ -161,7 +161,7 @@ jobs:
               git commit -S -m "Copy codeql-analysis.yml file - $(date +"%Y-%m-%d %H:%M:%S")"
               git push origin github-migration
             else
-              echo "No changes to commit"
+              echo "There are no changes to commit"
             fi
 
             # Clean up
@@ -177,7 +177,7 @@ jobs:
               git commit -S -m "Add Output File - $(date +"%Y-%m-%d %H:%M:%S")" 
               git push origin main
           else
-              echo "No changes to commit."
+              echo "There are no changes to commit."
           fi
         env:
           GPG_KEY_PASSPHRASE: ${{ secrets.PASSPHRASE }}
