@@ -28,6 +28,8 @@ jobs:
       #Please move or remove them before you merge.
       #Aborting ...
       #Updating d04a7a4..6526f56
+      #Since re-run of the workflow uses the same commit SHA and Git ref, it was not aware of the latest commit to the central repository which basically had the latest changes to output file.continue-on-error.continue-on-error.
+      #So on rerunning the workflow the output file got changed and on pulling the changes ( the changes from last run), there was a merge conflict
       - name: Git Pull the latest changes from central repository
         run: |
           cd "${{ github.workspace }}/source-repo/output"
@@ -92,6 +94,7 @@ jobs:
                 # echo "Debug: Final Cleaned Array - ${languages_array[@]}"
                 # echo "Debug: Occurance Parameter - $occurance"
 
+                # Based on the default branch, occurance and the language set, the particular codeql file is copied and then remaved to codeql-analysis.yml
                 if [[ "$default_branch" == "main" || "$default_branch" == "master" ]]; then
                   if [[ "$occurance" == "S" || "$occurance" == "M" ]]; then
                       case "${languages_array[*]}" in
