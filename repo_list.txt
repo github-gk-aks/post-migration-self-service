@@ -1,5 +1,4 @@
 github-gk-aks/firstgithubrepo
-github-gk-aks/terraform-aws-eks
 github-gk-aks/post-migration-self-service
 github-gk-aks/secondgithubrepo
 github-gk-aks/thirdgithubrepo
