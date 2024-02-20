@@ -22,6 +22,15 @@ jobs:
             echo "Output directory already exists."
           fi
 
+      # Add caching step to cache the source repository and output directory
+      - name: Cache source repository and output directory
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./source-repo
+            ${{ github.workspace }}/source-repo/output
+          key: ${{ runner.os }}-build-${{ hashFiles('**/source-repo', '**/source-repo/output') }}
+
       - name: Setup Committer Email and Name
         run: |
           git config --global user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
