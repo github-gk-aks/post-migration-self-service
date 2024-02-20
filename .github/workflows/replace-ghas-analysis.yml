@@ -21,6 +21,13 @@ jobs:
           else
             echo "Output directory already exists."
           fi
+      # Inluded the below step because I was getting the below error on re-running the job from workflow log
+      
+      #error: The following untracked working tree files would be overwritten by merge:
+      #output/replace-ghas-output-20Feb2024.txt
+      #Please move or remove them before you merge.
+      #Aborting ...
+      #Updating d04a7a4..6526f56
       - name: Git Pull the latest changes from central repository
         run: |
           cd "${{ github.workspace }}/source-repo/output"
