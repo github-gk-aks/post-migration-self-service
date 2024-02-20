@@ -86,56 +86,56 @@ jobs:
                           "go")
                               if cp "./source-repo/data/codeql-analysis_${default_branch}_go_${occurance}.yml" "./target-repo/.github/workflows/codeql-analysis_${default_branch}_go_${occurance}.yml" >> "${{ github.workspace }}/source-repo/output/replace-ghas-errors.txt" 2>&1; then
                                 echo "File codeql-analysis_${default_branch}_go_${occurance}.yml copied successfully."
-                                echo "$repo ; File codeql-analysis_${default_branch}_go_${occurance}.yml copied successfully" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output.txt"
+                                echo "$repo ; File codeql-analysis_${default_branch}_go_${occurance}.yml copied successfully" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output-$(date +"%d%m%Y").txt"
                               else
                                 error_message=$(tail -n 1 "${{ github.workspace }}/source-repo/output/replace-ghas-errors.txt")
-                                echo "$repo ; Failed to Copy codeql-analysis_${default_branch}_go_${occurance}.yml File. ; $error_message" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output.txt"
+                                echo "$repo ; Failed to Copy codeql-analysis_${default_branch}_go_${occurance}.yml File. ; $error_message" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output-$(date +"%d%m%Y").txt"
                               fi
                               ;;
                           "java")
                               if cp "./source-repo/data/codeql-analysis_${default_branch}_java_${occurance}.yml" "./target-repo/.github/workflows/codeql-analysis_${default_branch}_java_${occurance}.yml" >> "${{ github.workspace }}/source-repo/output/replace-ghas-errors.txt" 2>&1; then
                                 echo "File codeql-analysis_${default_branch}_java_${occurance}.yml copied successfully."
-                                echo "$repo; File codeql-analysis_${default_branch}_java_${occurance}.yml copied successfully" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output.txt"
+                                echo "$repo; File codeql-analysis_${default_branch}_java_${occurance}.yml copied successfully" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output-$(date +"%d%m%Y").txt"
                               else
                                 error_message=$(tail -n 1 "${{ github.workspace }}/source-repo/output/replace-ghas-errors.txt")
-                                echo "$repo ; Failed to Copy codeql-analysis_${default_branch}_java_${occurance}.yml File. ; $error_message" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output.txt"
+                                echo "$repo ; Failed to Copy codeql-analysis_${default_branch}_java_${occurance}.yml File. ; $error_message" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output-$(date +"%d%m%Y").txt"
                               fi
                               ;;
                           "javascript go")
                               if cp "./source-repo/data/codeql-analysis_${default_branch}_javascript_go_${occurance}.yml" "./target-repo/.github/workflows/codeql-analysis_${default_branch}_javascript_go_${occurance}.yml" >> "${{ github.workspace }}/source-repo/output/replace-ghas-errors.txt" 2>&1; then
                                 echo "File codeql-analysis_${default_branch}_javascript_go_${occurance}.yml copied successfully."
-                                echo "$repo; File codeql-analysis_${default_branch}_javascript_go_${occurance}.yml copied successfully" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output.txt"
+                                echo "$repo; File codeql-analysis_${default_branch}_javascript_go_${occurance}.yml copied successfully" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output-$(date +"%d%m%Y").txt"
                               else
                                 error_message=$(tail -n 1 "${{ github.workspace }}/source-repo/output/replace-ghas-errors.txt")
-                                echo "$repo ; Failed to Copy codeql-analysis_${default_branch}_javascript_go_${occurance}.yml File. ; $error_message" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output.txt"
+                                echo "$repo ; Failed to Copy codeql-analysis_${default_branch}_javascript_go_${occurance}.yml File. ; $error_message" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output-$(date +"%d%m%Y").txt"
                               fi
                               ;;
                           "java go")
                               if cp "./source-repo/data/codeql-analysis_${default_branch}_java_go_${occurance}.yml" "./target-repo/.github/workflows/codeql-analysis_${default_branch}_java_go_${occurance}.yml" >> "${{ github.workspace }}/source-repo/output/replace-ghas-errors.txt" 2>&1; then
                                 echo "File codeql-analysis_${default_branch}_java_go_${occurance}.yml copied successfully."
-                                echo "$repo; File codeql-analysis_${default_branch}_java_go_${occurance}.yml copied successfully" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output.txt"
+                                echo "$repo; File codeql-analysis_${default_branch}_java_go_${occurance}.yml copied successfully" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output-$(date +"%d%m%Y").txt"
                               else
                                 error_message=$(tail -n 1 "${{ github.workspace }}/source-repo/output/replace-ghas-errors.txt")
-                                echo "$repo ; Failed to Copy codeql-analysis_${default_branch}_java_go_${occurance}.yml File. ; $error_message" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output.txt"
+                                echo "$repo ; Failed to Copy codeql-analysis_${default_branch}_java_go_${occurance}.yml File. ; $error_message" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output-$(date +"%d%m%Y").txt"
                               fi
                               ;;
                           *)
                               echo "Unsupported Languages"
-                              echo "$repo ; Unsupported Language" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output.txt" 
+                              echo "$repo ; Unsupported Language" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output-$(date +"%d%m%Y").txt" 
                               ;;
                       esac
                       rm -f "./target-repo/$file"
                   else
                       echo "Unsupported occurance parameter"
-                      echo "$repo ; Unsupported occurance parameter" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output.txt"
+                      echo "$repo ; Unsupported occurance parameter" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output-$(date +"%d%m%Y").txt"
                   fi
                 else
                   echo "Unsupported default branch parameter"
-                  echo "$repo ; Unsupported default branch parameter" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output.txt"
+                  echo "$repo ; Unsupported default branch parameter" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output-$(date +"%d%m%Y").txt"
                 fi               
               else
                 echo "File $file not found in repository $repo."
-                echo "$repo ; $file not found in the repository" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output.txt"
+                echo "$repo ; $file not found in the repository" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output-$(date +"%d%m%Y").txt"
               fi
             done
 
@@ -156,7 +156,7 @@ jobs:
             cd "${{ github.workspace }}/source-repo/output"
             if [ -n "$(git status --porcelain)" ]; then
                 git pull origin main
-                git add replace-ghas-output.txt
+                git add replace-ghas-output-$(date +"%d%m%Y").txt
                 git commit -S -m "Add Output File - $(date +"%Y-%m-%d %H:%M:%S")" 
                 git push origin main
             else
