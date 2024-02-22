@@ -139,7 +139,7 @@ jobs:
                               echo "$repo ; $default_branch ; ${languages_array[*]} ; $occurance ; Unsupported Language" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output-$(date +"%d%b%y").txt" 
                               ;;
                       esac
-                      rm -f "./target-repo/$file"
+                      #rm -f "./target-repo/$file"
                   else
                       echo "Unsupported occurance parameter"
                       echo "$repo ; $default_branch ; ${languages_array[*]} ; $occurance ; Unsupported occurance parameter" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output-$(date +"%d%b%y").txt"
