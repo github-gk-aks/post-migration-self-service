@@ -13,3 +13,8 @@ github-gk-aks/secondgithubrepo ; master ; [go] ; M ; .github/workflows/ghas-anal
 github-gk-aks/thirdgithubrepo ; main ; [javascript go] ; S ; Unsupported Language
 github-gk-aks/fourthgithubrepo ; main ; [java go] ; S ; .github/workflows/ghas-analysis.yaml not found in the repository
 github-gk-aks/fifthgithubrepo ; main ; [javascript go] ; S ; .github/workflows/ghas.yaml not found in the repository
+github-gk-aks/firstgithubrepo ; main ; [java] ; S ; .github/workflows/ghas-analysis.yml not found in the repository
+github-gk-aks/secondgithubrepo ; master ; [go] ; M ; .github/workflows/ghas-analysis.yml not found in the repository
+github-gk-aks/thirdgithubrepo ; main ; [javascript go] ; S ; .github/workflows/ghas-analysis.yml not found in the repository
+github-gk-aks/fourthgithubrepo ; main ; [java go] ; S ; .github/workflows/ghas-analysis.yaml not found in the repository
+github-gk-aks/fifthgithubrepo ; main ; [javascript go] ; S ; .github/workflows/ghas.yaml not found in the repository
