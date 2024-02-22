@@ -107,7 +107,7 @@ jobs:
                                 echo "$repo ; $default_branch ; ${languages_array[*]} ; $occurance ; Failed to Copy codeql-analysis_${default_branch}_go_${occurance}.yml File. ; $error_message" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output-$(date +"%d%b%y").txt"
                               fi
                               ;;
-                          "java")
+                          java)
                               if cp "./source-repo/data/codeql-analysis_${default_branch}_java_${occurance}.yml" "./target-repo/.github/workflows/codeql-analysis.yml" >> "${{ github.workspace }}/source-repo/output/replace-ghas-errors.txt" 2>&1; then
                                 echo "File codeql-analysis_${default_branch}_java_${occurance}.yml copied successfully."
                                 echo "$repo ; $default_branch ; ${languages_array[*]} ; $occurance ; File codeql-analysis_${default_branch}_java_${occurance}.yml copied successfully" >> "${{ github.workspace }}/source-repo/output/replace-ghas-output-$(date +"%d%b%y").txt"
