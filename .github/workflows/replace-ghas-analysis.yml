@@ -77,22 +77,22 @@ jobs:
               echo "Processing file: $file, Default Branch: $default_branch, Language: $language, occurance: $occurance"
               
               # Remove leading and trailing spaces, and replace single quotes with double quotes
-              cleaned_language=$(echo "$language" | tr -d "[:space:]" | sed "s/'/\"/g; s/\[//; s/\]//")
+              cleaned_language=$(echo "$language" | tr -d "[:space:]") #| sed "s/'/\"/g; s/\[//; s/\]//")
               #echo "Cleaned Language String: $cleaned_language"
 
               # Convert the string to an array
               #IFS=, read -ra languages_array <<< "${cleaned_language:1:${#cleaned_language}-2}"
-              IFS=, read -ra languages_array <<< "$(echo "$cleaned_language" | tr -d '"')"
+              IFS=, read -ra languages_array <<< "$(echo "$cleaned_language") #| tr -d '"')"
               #echo "Final Cleaned Array: ${languages_array[@]}"
 
               # Check if the specified file exists
               if [ -f "./target-repo/$file" ]; then
-                # echo "File $file found. Proceeding with replacements."    
-                # echo "Debug: Checking Default Branch - $default_branch"
-                # echo "Debug: Original Language String - $language"
-                # echo "Debug: Cleaned Language String - $cleaned_language"
-                # echo "Debug: Final Cleaned Array - ${languages_array[@]}"
-                # echo "Debug: Occurance Parameter - $occurance"
+                echo "File $file found. Proceeding with replacements."    
+                echo "Debug: Checking Default Branch - $default_branch"
+                echo "Debug: Original Language String - $language"
+                echo "Debug: Cleaned Language String - $cleaned_language"
+                echo "Debug: Final Cleaned Array - ${languages_array[@]}"
+                echo "Debug: Occurance Parameter - $occurance"
 
                 # Based on the default branch, occurance and the language set, the particular codeql file is copied and then remaved to codeql-analysis.yml
                 if [[ "$default_branch" == "main" || "$default_branch" == "master" ]]; then
