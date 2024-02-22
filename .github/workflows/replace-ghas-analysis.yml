@@ -82,7 +82,7 @@ jobs:
 
               # Convert the string to an array
               #IFS=, read -ra languages_array <<< "${cleaned_language:1:${#cleaned_language}-2}"
-              IFS=, read -ra languages_array <<< "$(echo "$cleaned_language") #| tr -d '"')"
+              IFS=, read -ra languages_array <<< "$(echo "$cleaned_language")" #| tr -d '"')"
               #echo "Final Cleaned Array: ${languages_array[@]}"
 
               # Check if the specified file exists
