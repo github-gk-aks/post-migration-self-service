@@ -73,8 +73,8 @@ jobs:
 
               echo "Repo: $repo_name"
 
-              if ls "./target-repo/.github/workflows"/*.yml "./target-repo/.github/workflows"/*.yaml &> /dev/null; then
-                  for file in "./target-repo/.github/workflows"/*.yml "./target-repo/.github/workflows"/*.yaml; do
+              if ls "./target-repo/.github/workflows/*.yml" "./target-repo/.github/workflows/*.yaml" &> /dev/null; then
+                  for file in "./target-repo/.github/workflows/*.yml" "./target-repo/.github/workflows/*.yaml"; do
                     
                     if [ -e "$file" ]; then
                       if grep -qE 'workspace' "$file"; then
