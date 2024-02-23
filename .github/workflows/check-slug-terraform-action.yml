@@ -77,8 +77,8 @@ jobs:
 
               if find "./target-repo/.github/workflows" -type f \( -name "*.yaml" -o -name "*.yml" \) -print -quit | grep -q .; then
 
-              #if ls "./target-repo/.github/workflows"/*.yml "./target-repo/.github/workflows"/*.yaml &> /dev/null; then
-                  for file in "./target-repo/.github/workflows/*.yml" "./target-repo/.github/workflows/*.yaml"; do
+              #if ls "./target-repo/.github/workflows/*.yml "./target-repo/.github/workflows"/*.yaml &> /dev/null; then
+                  for file in ./target-repo/.github/workflows/*.yml ./target-repo/.github/workflows/*.yaml; do
                     echo $file
                     # if [ -e "$file" ]; then
                     #   echo "Inside the inner IF loop"
@@ -90,7 +90,7 @@ jobs:
                     #   fi
                     # fi
                   done
-                  
+
               else
               echo "Repo: $repo_name, File: , *.yml and *.yaml files not found." >> ${{ github.workspace }}/source-repo/output/result.txt
               fi
