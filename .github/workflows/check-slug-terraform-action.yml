@@ -22,10 +22,10 @@ jobs:
           else
             echo "Output directory already exists."
           fi
-          - name: Setup Committer Email and Name
-          run: |
-            git config --global user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
-            git config --global user.name ${{ secrets.GIT_COMMITTER_NAME }}
+      - name: Setup Committer Email and Name
+        run: |
+          git config --global user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+          git config --global user.name ${{ secrets.GIT_COMMITTER_NAME }}
   
       - name: Import GPG key
         run: |
