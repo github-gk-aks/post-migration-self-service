@@ -26,3 +26,4 @@ Repo: thirdgithubrepo, File: , *.yml and *.yaml files not found.
 Repo: fourthgithubrepo, File: , *.yml and *.yaml files not found.
 Repo: fifthgithubrepo, File: , *.yml and *.yaml files not found.
 Repo: fifthgithubrepo, File: , *.yml and *.yaml files not found.
+Repo: fifthgithubrepo, File: , *.yml and *.yaml files not found.
