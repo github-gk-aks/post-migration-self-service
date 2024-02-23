@@ -71,7 +71,7 @@ jobs:
             if [ -d "./target-repo/.github/workflows" ]; then
               echo ".github/workflows directory found. Proceeding with search."
 
-              echo "Repo: $repo_name"
+              echo "Repo:$repo_name"
 
               if find "./target-repo/.github/workflows" -type f \( -name "*.yaml" -o -name "*.yml" \) -print -quit | grep -q .; then
                   yaml_count=$(find "./target-repo/.github/workflows" -type f -name "*.yaml" | wc -l)
@@ -82,10 +82,10 @@ jobs:
                   for file in ./target-repo/.github/workflows/*.yml; do
                     if [ -e "$file" ]; then
                       if grep -qE 'github-script' "$file"; then
-                        echo "Processing file: $file"
-                        echo "Repo: $repo, File: $file, Matched String -  github-script" >> "${{ github.workspace }}/source-repo/output/result.txt"
+                        echo "Processing file:$file"
+                        echo "Repo:$repo, File:$file, Matched String -  github-script" >> "${{ github.workspace }}/source-repo/output/result.txt"
                       else
-                        echo "Repo: $repo, File: $file, No match found" >> "${{ github.workspace }}/source-repo/output/result.txt"
+                        echo "Repo:$repo, File:$file, No match found" >> "${{ github.workspace }}/source-repo/output/result.txt"
                       fi
                     fi
                    done 
@@ -93,20 +93,20 @@ jobs:
                     if [ -e "$file" ]; then
                       if grep -qE 'github-script' "$file"; then
                         echo "Processing file: $file"
-                        echo "Repo: $repo, File: $file, Matched String -  github-script" >> "${{ github.workspace }}/source-repo/output/result.txt"
+                        echo "Repo:$repo, File:$file, Matched String -  github-script" >> "${{ github.workspace }}/source-repo/output/result.txt"
                       else
-                        echo "Repo: $repo, File: $file, No match found" >> "${{ github.workspace }}/source-repo/output/result.txt"
+                        echo "Repo:$repo, File:$file, No match found" >> "${{ github.workspace }}/source-repo/output/result.txt"
                       fi
                     fi
                   done
 
               else
-              echo "Repo: $repo, File: , *.yml and *.yaml files not found." >> ${{ github.workspace }}/source-repo/output/result.txt
+              echo "Repo:$repo, File: , *.yml and *.yaml files not found." >> ${{ github.workspace }}/source-repo/output/result.txt
               fi
 
             else
               echo ".github/workflows directory not found. Appending information to result.txt."
-              echo "Repo: $repo, File: , .github/workflows directory not found." >> ${{ github.workspace }}/source-repo/output/result.txt
+              echo "Repo:$repo, File: , .github/workflows directory not found." >> ${{ github.workspace }}/source-repo/output/result.txt
             fi
 
           
