@@ -73,6 +73,8 @@ jobs:
 
               echo "Repo: $repo_name"
 
+              ls -la ./target-repo/.github/workflows
+
               if find "./target-repo/.github/workflows" -type f \( -name "*.yaml" -o -name "*.yml" \) -print -quit | grep -q .; then
               #if ls "./target-repo/.github/workflows/*.yml" "./target-repo/.github/workflows/*.yaml" &> /dev/null; then
                   for file in "./target-repo/.github/workflows/*.yml" "./target-repo/.github/workflows/*.yaml"; do
