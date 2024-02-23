@@ -77,7 +77,7 @@ jobs:
 
               if find "./target-repo/.github/workflows" -type f \( -name "*.yaml" -o -name "*.yml" \) -print -quit | grep -q .; then
                 echo "inside the outer IF loop"
-              #if ls "./target-repo/.github/workflows/*.yml" "./target-repo/.github/workflows/*.yaml" &> /dev/null; then
+              #if ls "./target-repo/.github/workflows"/*.yml "./target-repo/.github/workflows"/*.yaml &> /dev/null; then
                   for file in "./target-repo/.github/workflows/*.yml" "./target-repo/.github/workflows/*.yaml"; do
                     echo "inside the for loop"
                     if [ -e "$file" ]; then
