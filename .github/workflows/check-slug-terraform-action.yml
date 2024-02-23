@@ -85,7 +85,7 @@ jobs:
                       fi
                     fi
                    done 
-                    for file in ./target-repo/.github/workflows/*.yaml; do
+                  for file in ./target-repo/.github/workflows/*.yaml; do
                     if [ -e "$file" ]; then
                       if grep -qE 'workspace' "$file"; then
                         echo "Processing file: $file"
