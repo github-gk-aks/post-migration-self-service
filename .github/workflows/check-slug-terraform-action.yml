@@ -85,7 +85,7 @@ jobs:
                         echo "Processing file: $file"
                         echo "Repo: $repo, File: $file, Matched String -  github-script" >> "${{ github.workspace }}/source-repo/output/result.txt"
                       else
-                        echo "Repo: $repo, File: $file : No match found" >> "${{ github.workspace }}/source-repo/output/result.txt"
+                        echo "Repo: $repo, File: $file, No match found" >> "${{ github.workspace }}/source-repo/output/result.txt"
                       fi
                     fi
                    done 
@@ -95,7 +95,7 @@ jobs:
                         echo "Processing file: $file"
                         echo "Repo: $repo, File: $file, Matched String -  github-script" >> "${{ github.workspace }}/source-repo/output/result.txt"
                       else
-                        echo "Repo: $repo, File: $file : No match found" >> "${{ github.workspace }}/source-repo/output/result.txt"
+                        echo "Repo: $repo, File: $file, No match found" >> "${{ github.workspace }}/source-repo/output/result.txt"
                       fi
                     fi
                   done
