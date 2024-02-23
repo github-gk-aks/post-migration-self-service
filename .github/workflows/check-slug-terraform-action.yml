@@ -75,6 +75,8 @@ jobs:
 
               if find "./target-repo/.github/workflows" -type f \( -name "*.yaml" -o -name "*.yml" \) -print -quit | grep -q .; then
 
+                  # Enable nullglob to handle no-match scenarios gracefully
+                  sshopt -s nullglob
               #if ls "./target-repo/.github/workflows/*.yml "./target-repo/.github/workflows"/*.yaml &> /dev/null; then
                   for file in ./target-repo/.github/workflows/*.yml ./target-repo/.github/workflows/*.yaml; do
                     echo $file
