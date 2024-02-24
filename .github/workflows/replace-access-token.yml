@@ -43,7 +43,7 @@ jobs:
 
       - name: Iterate Over Repos
         run: |
-          mapfile -t repositories < <(awk '{print $1}' "data/replacements_access-token.txt" | sort -u)
+          mapfile -t repositories < <(awk '{print $1}' "./source-repo/data/replacements_access-token.txt" | sort -u)
           for repo in "${repositories[@]}"; do
             echo "Processing repository: $repo"
             
