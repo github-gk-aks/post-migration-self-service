@@ -11,6 +11,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GK_PAT }}
+          path: ./source-repo
 
       - name: Setup Committer Email and Name
         run: |
@@ -42,7 +43,7 @@ jobs:
 
       - name: Iterate Over Repos
         run: |
-          mapfile -t repositories < <(awk '{print $1}' "data/replacements.txt" | sort -u)
+          mapfile -t repositories < <(awk '{print $1}' "data/replacements_access-token.txt" | sort -u)
           for repo in "${repositories[@]}"; do
             echo "Processing repository: $repo"
             
@@ -58,26 +59,60 @@ jobs:
                 echo "File $file found. Proceeding with replacements."
 
                 # Perform replacements in the file
-                sed -i "s/\b$search\b/$replace/g" "./target-repo/$file"
+                if ! sed -i "s/\b$search\b/$replace/g" "./target-repo/$file" >> "${{ github.workspace }}/source-repo/output/replace-access_token-errors.txt" 2>&1; then
+                  error_message=$(tail -n 1 "${{ github.workspace }}/source-repo/output/replace-access_token-errors.txt")
+                  echo "Failed to replace $search with $replace in file $file for repo $repo"
+                  echo "$repo;Failed to replace $search with $replace in file $file;$error_message" >> "${{ github.workspace }}/source-repo/output/replace-access_token-output-$(date +"%d%b%y").txt"
+                else
+                  echo "$repo;String $search is replaced with $replace in file $file" >> "${{ github.workspace }}/source-repo/output/replace-access_token-output-$(date +"%d%b%y").txt"
+                fi
+                #sed -i "s/\b$search\b/$replace/g" "./target-repo/$file"
+                #echo "$repo;String $search is replaced with $replace in file $file >> "${{ github.workspace }}/source-repo/output/replace-access_token-output-$(date +"%d%b%y").txt"
               else
                 echo "File $file not found in repository $repo."
+                echo "$repo; File $file not found in repository  >> "${{ github.workspace }}/source-repo/output/replace-access_token-output-$(date +"%d%b%y").txt"
               fi
             done
+
             cd "./target-repo"
-            if git diff --quiet; then
-              echo "No changes to commit. Skipping commit step."
-            else
+
+            if [ -n "$(git status --porcelain)" ]; then
               git pull origin github-migration
               git add .
-              git commit -S -m "Replace strings - $(date +"%Y-%m-%d %H:%M:%S")"
+              git commit -S -m "Replace Access Token - $(date +"%Y-%m-%d %H:%M:%S")"
               git push origin github-migration
+            else
+              echo "There are no changes to commit"
             fi
-            # go ahead and add the commit signing instructions here
-            # Clean up
+
+            # if git diff --quiet; then
+            #   echo "No changes to commit. Skipping commit step."
+            # else
+            #   git pull origin github-migration
+            #   git add .
+            #   git commit -S -m "Replace Access Token - $(date +"%Y-%m-%d %H:%M:%S")"
+            #   git push origin github-migration
+            # fi
             cd ..
             rm -rf "./target-repo"
           done
         env:
           GPG_KEY_PASSPHRASE: ${{ secrets.PASSPHRASE }}
+
+      - name: Commit Changes
+        run: |
+            cd ${{ github.workspace }}/source-repo/output
+            if [ -n "$(git status --porcelain)" ]; then
+              git pull origin
+              git add replace-access_token-output-$(date +"%d%b%y").txt
+              git commit -S -m "Add replace-access_token-output.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
+              git push
+            else
+              echo "No changes to commit."
+            fi
+            cd ${{ github.workspace }}
+        env:
+          GPG_KEY_PASSPHRASE: ${{ secrets.PASSPHRASE }}
+        working-directory: ${{ github.workspace }}
 
 
