@@ -67,10 +67,10 @@ jobs:
                   echo "$repo;String $search is replaced with $replace in file $file" >> "${{ github.workspace }}/source-repo/output/replace-access_token-output-$(date +"%d%b%y").txt"
                 fi
                 #sed -i "s/\b$search\b/$replace/g" "./target-repo/$file"
-                #echo "$repo;String $search is replaced with $replace in file $file >> "${{ github.workspace }}/source-repo/output/replace-access_token-output-$(date +"%d%b%y").txt"
+                #echo "$repo;String $search is replaced with $replace in file $file" >> "${{ github.workspace }}/source-repo/output/replace-access_token-output-$(date +"%d%b%y").txt"
               else
                 echo "File $file not found in repository $repo."
-                echo "$repo; File $file not found in repository  >> "${{ github.workspace }}/source-repo/output/replace-access_token-output-$(date +"%d%b%y").txt"
+                echo "$repo; File $file not found in repository"  >> "${{ github.workspace }}/source-repo/output/replace-access_token-output-$(date +"%d%b%y").txt"
               fi
 
             done
