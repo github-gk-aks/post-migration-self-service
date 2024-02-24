@@ -51,7 +51,7 @@ jobs:
             git clone --depth 1 -b github-migration "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./target-repo"
 
             # Iterate through replacement entries for the repository
-            grep "^$repo" data/replacements.txt | while IFS=$'\t' read -r _ file search replace; do
+            grep "^$repo" "${{ github.workspace }}/source-repo/data/replacements_access-token.txt" | while IFS=$'\t' read -r _ file search replace; do
               echo "Processing file: $file"
 
               # Check if the specified file exists
@@ -72,6 +72,7 @@ jobs:
                 echo "File $file not found in repository $repo."
                 echo "$repo; File $file not found in repository  >> "${{ github.workspace }}/source-repo/output/replace-access_token-output-$(date +"%d%b%y").txt"
               fi
+
             done
 
             cd "./target-repo"
