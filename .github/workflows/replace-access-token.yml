@@ -57,12 +57,15 @@ jobs:
               # Check if the specified file exists
               if [ -f "./target-repo/$file" ]; then
                 echo "File $file found. Proceeding with replacements."
+                file_content_before=$(< "./target-repo/$file")
+                sed -i "s/\b$search\b/$replace/g" "./target-repo/$file" >> "${{ github.workspace }}/source-repo/output/replace-access_token-errors.txt" 2>&1
+                file_content_after=$(< "./target-repo/$file")
 
                 # Perform replacements in the file
-                if ! sed -i "s/\b$search\b/$replace/g" "./target-repo/$file" >> "${{ github.workspace }}/source-repo/output/replace-access_token-errors.txt" 2>&1; then
+                if [ "$file_content_before" = "$file_content_after" ]; then
                   error_message=$(tail -n 1 "${{ github.workspace }}/source-repo/output/replace-access_token-errors.txt")
-                  echo "Failed to replace $search with $replace in file $file for repo $repo"
-                  echo "$repo;Failed to replace $search with $replace in file $file;$error_message" >> "${{ github.workspace }}/source-repo/output/replace-access_token-output-$(date +"%d%b%y").txt"
+                  echo "$search String not found in file $file for repo $repo"
+                  echo "$repo;$search String not found in file $file;$error_message" >> "${{ github.workspace }}/source-repo/output/replace-access_token-output-$(date +"%d%b%y").txt"
                 else
                   echo "$repo;String $search is replaced with $replace in file $file" >> "${{ github.workspace }}/source-repo/output/replace-access_token-output-$(date +"%d%b%y").txt"
                 fi
