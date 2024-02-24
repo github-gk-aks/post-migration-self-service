@@ -22,3 +22,15 @@ github-gk-aks/secondgithubrepo;A_TOKEN String not found in file .github/workflow
 github-gk-aks/secondgithubrepo;A_TOKEN String not found in file .github/workflows/github-rest-api123.yml;
 github-gk-aks/thirdgithubrepo;A_TOKEN String not found in file .github/workflows/github-rest-api1234.yml;
 github-gk-aks/thirdgithubrepo;A_TOKEN String not found in file .github/workflows/github-rest-api123.yml;
+github-gk-aks/fifthgithubrepo;A_TOKEN String not found in file .github/workflows/github-rest-api1234.yml;
+github-gk-aks/firstgithubrepo;String A_TOKEN is replaced with B_TOKEN in file .github/workflows/github-rest-api1.yaml
+github-gk-aks/firstgithubrepo;TINGA String not found in file .github/workflows/github-rest-api12.yml;
+github-gk-aks/firstgithubrepo;A_TOKEN String not found in file .github/workflows/github-rest-api123.yml;
+github-gk-aks/firstgithubrepo;A_TOKEN String not found in file .github/workflows/github-rest-api1234.yaml;
+github-gk-aks/fourthgithubrepo;A_TOKEN String not found in file .github/workflows/github-rest-api1.yml;
+github-gk-aks/fourthgithubrepo;A_TOKEN String not found in file .github/workflows/github-rest-api1.yml;
+github-gk-aks/secondgithubrepo; File .github/workflows/github-rest-api1.yml not found in repository
+github-gk-aks/secondgithubrepo;A_TOKEN String not found in file .github/workflows/github-rest-api12.yml;
+github-gk-aks/secondgithubrepo;A_TOKEN String not found in file .github/workflows/github-rest-api123.yml;
+github-gk-aks/thirdgithubrepo;A_TOKEN String not found in file .github/workflows/github-rest-api1234.yml;
+github-gk-aks/thirdgithubrepo;A_TOKEN String not found in file .github/workflows/github-rest-api123.yml;
