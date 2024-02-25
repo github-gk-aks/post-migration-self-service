@@ -1,0 +1,5 @@
+github-gk-aks/firstgithubrepo;String A_TOKEN is replaced with B_TOKEN in file .github/workflows/github-rest-api1.yaml
+github-gk-aks/firstgithubrepo;String A_TOKEN is replaced with B_TOKEN in file .github/workflows/github-rest-api12.yml
+github-gk-aks/firstgithubrepo;String A_TOKEN is replaced with C_TOKEN in file .github/workflows/github-rest-api123.yml
+github-gk-aks/firstgithubrepo;A_TOKEN String not found in file .github/workflows/github-rest-api1234.yaml;
+github-gk-aks/fifthgithubrepo;String A_TOKEN is replaced with D_TOKEN in file .github/workflows/github-rest-api1234.yml
