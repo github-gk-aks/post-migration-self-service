@@ -37,8 +37,8 @@ def check_code_owners(repo_name):
     return code_owners_locations  # Return the locations of CODEOWNERS files
 
 if __name__ == "__main__":
-    repos_file = "repositories.txt"
-    results_file = "output/result_codeowners.txt"
+    repos_file = "files/repo_list.txt"
+    results_file = "results.txt"
     if not os.path.exists("temp_repos"):
         os.makedirs("temp_repos")
 

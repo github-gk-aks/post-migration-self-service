@@ -28,11 +28,11 @@ jobs:
    - name: Run Python script
      run: python files/check_code_owners.py
 
-   - name: Upload results.txt as artifact
+   - name: Upload result_codeowners.txt as artifact
      uses: actions/upload-artifact@v4
      with:
       name: results
-      path: results.txt
+      path: output/result_codeowners.txt
 
  commit-results:
    needs: check-code-owners
@@ -41,17 +41,17 @@ jobs:
    - name: Checkout this repository
      uses: actions/checkout@v4
 
-   - name: Download results.txt artifact
+   - name: Download result_codeowners.txt artifact
      uses: actions/download-artifact@v4
      with:
-        name: results
-        path: ./  # Download to the current directory
+        name: result_codeowners.txt
+        path: ./output  # Download to the current directory
 
-   - name: Commit results.txt back to the repository
+   - name: Commit result_codeowners.txt back to the repository
      run: |
         git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
         git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
-        git pull
-        git add results.txt
-        git commit -m "Add results.txt"
-        git push     
+        git pull origin main
+        git add result_codeowners.txt
+        git commit -m "Add result_codeowners.txt"
+        git push origin main  
