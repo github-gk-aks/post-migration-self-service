@@ -1,2 +1,0 @@
-Repo: firstgithubrepo, File: ./target-repo/.github/workflows/ghas_analysis.yml, Default Branch: main, Language String: language: [ 'python', 'javascript', 'java', 'ruby', 'csharp' ]
-Repo: secondgithubrepo, File: ./target-repo/.github/workflows/ghas_analysis.yml, Default Branch: main, Language String: language: [ 'python', 'javascript']

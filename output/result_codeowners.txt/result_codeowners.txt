@@ -1,5 +1,0 @@
-github-gk-aks/firstgithubrepo, .github/CODEOWNERS, docs/CODEOWNERS, CODEOWNERS
-github-gk-aks/secondgithubrepo, .github/CODEOWNERS, CODEOWNERS
-github-gk-aks/thirdgithubrepo, Not found
-github-gk-aks/fourthgithubrepo, Not found
-github-gk-aks/fifthgithubrepo, Not found

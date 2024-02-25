@@ -1,5 +1,0 @@
-github-gk-aks/firstgithubrepo ; main ; java ; S ; File codeql-analysis_main_java_S.yml copied successfully
-github-gk-aks/secondgithubrepo ; master ; go ; M ; File codeql-analysis_master_go_M.yml copied successfully
-github-gk-aks/thirdgithubrepo ; main ; javascript go ; S ; .github/workflows/ghas-analysis.yml not found in the repository
-github-gk-aks/fourthgithubrepo ; main ; java go ; S ; File codeql-analysis_main_java_go_S.yml copied successfully
-github-gk-aks/fifthgithubrepo ; main ; javascript go ; S ; File codeql-analysis_main_javascript_go_S.yml copied successfully
