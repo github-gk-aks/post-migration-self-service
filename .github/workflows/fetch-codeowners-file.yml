@@ -31,7 +31,7 @@ jobs:
    - name: Upload result_codeowners.txt as artifact
      uses: actions/upload-artifact@v4
      with:
-      name: results
+      name: result_codeowners.txt
       path: output/result_codeowners.txt
 
  commit-results:
