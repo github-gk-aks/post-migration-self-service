@@ -45,7 +45,7 @@ jobs:
      uses: actions/download-artifact@v4
      with:
         name: result_codeowners.txt
-        path: output  # Download to the current directory
+        path: output/result_codeowners.txt  # Download to the current directory
 
    - name: Commit result_codeowners.txt back to the repository
      run: |
