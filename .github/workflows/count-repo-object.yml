@@ -67,4 +67,4 @@ jobs:
                 // if (commits.data.length === 0) break;
                 // totalCommits += commits.data.length;
                 // }
-                console.log('Total Open Issues:', openIssues);
+                console.log('Total Open Issues:', openIssues.data.length);
