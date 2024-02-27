@@ -58,4 +58,4 @@ jobs:
                     repo: 'firstgithubrepo',
                     state: 'open'
                 });
-                console.log('Total Open Issues:', openIssues.data.length);
+                console.log('Total Open Issues:', openIssues);
