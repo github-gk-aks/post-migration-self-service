@@ -32,9 +32,9 @@ jobs:
         run: |
           python -m pip install openpyxl
           organization="${{ steps.identify-org.outputs.organization }}"
-          if [ "$organization" == "org1" ]; then
+          if [ "$organization" == "shared" ]; then
             python files/read_teams_shared.py
-          elif [ "$organization" == "org2" ]; then
+          elif [ "$organization" == "confidential" ]; then
             python files/read_teams_confidential.py
           else
             echo "Unsupported organization: $organization"
@@ -50,6 +50,7 @@ jobs:
         with:
           repository: "${{ fromJSON(github.event.issue.body)[matrix.repository].organisation}}/${{ matrix.repository }}"
           path: "./target-repo"
+          ref: "github-migration"
           token: ${{ secrets.GK_PAT }}
 
       - name: Replace Teams in CODEOWNERS
@@ -60,12 +61,42 @@ jobs:
           echo "TEAMS: $TEAMS"
           python files/replace_teams.py
 
-      - name: Commit and Push Changes
+      - name: Setup Committer Email and Name
         run: |
-          cd ./target-repo
-          git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
-          git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
-          git pull
-          git add .
-          git commit -m "Replace teams in CODEOWNERS - $(date +"%Y-%m-%d %H:%M:%S")"
-          git push
+          git config --global user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+          git config --global user.name ${{ secrets.GIT_COMMITTER_NAME }}
+
+      - name: Import GPG key
+        run: |
+          echo "${GPG_PRIVATE_KEY}" | gpg --batch --import
+        env: 
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
+      - name: Add the custom gpg signing program that passes the passphrase to the gpg CLI
+        run: |
+          rm -rf /tmp/gpg.sh
+          echo '#!/bin/bash' >> /tmp/gpg.sh
+          echo 'gpg --batch --pinentry-mode=loopback --passphrase $GPG_KEY_PASSPHRASE $@' >> /tmp/gpg.sh
+          chmod +x /tmp/gpg.sh
+
+      - name: Setup git
+        run: |
+          git config --global commit.gpgsign true
+          git config --global user.signingkey $GPG_KEY_ID
+          git config --global gpg.program /tmp/gpg.sh
+
+      - name: Commit Changes
+        run: |
+            cd ./target-repo
+            if [ -n "$(git status --porcelain)" ]; then
+              git pull origin github-migration
+              git add .
+              git commit -S -m "Replace teams in CODEOWNERS - $(date +"%Y-%m-%d %H:%M:%S")" 
+              git push origin github-migration
+            else
+              echo "No changes to commit."
+            fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GK_PAT }}
+          GPG_KEY_PASSPHRASE: ${{ secrets.PASSPHRASE }}
+        working-directory: ${{ github.workspace }}

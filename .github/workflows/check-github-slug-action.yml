@@ -1,0 +1,125 @@
+name: Find and Record Strings
+
+on:
+  workflow_dispatch:
+
+jobs:
+  find-strings:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout central repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GK_PAT }}
+          path: ./source-repo
+
+      - name: Check if output directory exists
+        run: |
+          if [ ! -d "${{ github.workspace }}/source-repo/output" ]; then
+            echo "Output directory does not exist. Creating..."
+            mkdir -p "${{ github.workspace }}/source-repo/output"
+          else
+            echo "Output directory already exists."
+          fi
+
+      - name: Import GPG key
+        run: |
+          echo "${GPG_PRIVATE_KEY}" | gpg --batch --import
+        env: 
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
+      - name: Add the custom gpg signing program that passes the passphrase to the gpg CLI
+        run: |
+          rm -rf /tmp/gpg.sh
+          echo '#!/bin/bash' >> /tmp/gpg.sh
+          echo 'gpg --batch --pinentry-mode=loopback --passphrase $GPG_KEY_PASSPHRASE $@' >> /tmp/gpg.sh
+          chmod +x /tmp/gpg.sh
+
+      - name: Setup git
+        run: |
+          git config --global user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+          git config --global user.name ${{ secrets.GIT_COMMITTER_NAME }}
+          git config --global commit.gpgsign true
+          git config --global user.signingkey $GPG_KEY_ID
+          git config --global gpg.program /tmp/gpg.sh
+        env:
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+  
+
+      # - name: Read repositories from file
+      #   id: find-repo
+      #   run: | 
+      #     REPOSITORIES=$(<${{ github.workspace }}/source-repo/repositories.txt)
+      #     echo $REOSITORIES
+      #     echo "::set-output name=REPOSITORIES::$REPOSITORIES"
+
+
+      - name: Iterate Over Repos
+        run: |
+          mapfile -t repositories < "${{ github.workspace }}/source-repo/repositories.txt"
+          for repo in "${repositories[@]}"; do
+            IFS='/' read -r org_name repo_name <<< "$repo"
+            echo "Processing repository: $org_name/$repo_name"                       
+            git clone -b github-migration "https://github.com/$repo.git" "./target-repo"
+
+            
+            if [ -d "./target-repo/.github/workflows" ]; then
+              echo ".github/workflows directory found. Proceeding with search."
+
+              echo "Repo:$repo_name"
+
+              if find "./target-repo/.github/workflows" -type f \( -name "*.yaml" -o -name "*.yml" \) -print -quit | grep -q .; then
+                  yaml_count=$(find "./target-repo/.github/workflows" -type f -name "*.yaml" | wc -l)
+                  yml_count=$(find "./target-repo/.github/workflows" -type f -name "*.yml" | wc -l)
+                  echo "Total count of YML files for repo $repo_name is: $yml_count"
+                  echo "Total count of YAML files for repo $repo_name is: $yaml_count"
+              #if ls "./target-repo/.github/workflows/*.yml "./target-repo/.github/workflows"/*.yaml &> /dev/null; then
+                  for file in ./target-repo/.github/workflows/*.yml; do
+                    if [ -e "$file" ]; then
+                      if grep -qE 'github-gk-aks/github-slug-action' "$file"; then
+                        echo "Processing file:$file"
+                        echo "Repo:$repo, File:$file, Matched String-github-gk-aks/github-slug-action" >> "${{ github.workspace }}/source-repo/output/result-check-github-slug-action.txt"
+                      else
+                        echo "Repo:$repo, File:$file, No match found" >> "${{ github.workspace }}/source-repo/output/result-check-github-slug-action.txt"
+                      fi
+                    fi
+                   done 
+                  for file in ./target-repo/.github/workflows/*.yaml; do
+                    if [ -e "$file" ]; then
+                      if grep -qE 'github-gk-aks/github-slug-action' "$file"; then
+                        echo "Processing file: $file"
+                        echo "Repo:$repo, File:$file, Matched String-github-gk-aks/github-slug-action" >> "${{ github.workspace }}/source-repo/output/result-check-github-slug-action.txt"
+                      else
+                        echo "Repo:$repo, File:$file, No match found" >> "${{ github.workspace }}/source-repo/output/result-check-github-slug-action.txt"
+                      fi
+                    fi
+                  done
+
+              else
+              echo "Repo:$repo, File: , *.yml and *.yaml files not found." >> ${{ github.workspace }}/source-repo/output/result-check-github-slug-action.txt
+              fi
+
+            else
+              echo ".github/workflows directory not found. Appending information to result-check-github-slug-action.txt."
+              echo "Repo:$repo, File: , .github/workflows directory not found." >> ${{ github.workspace }}/source-repo/output/result-check-github-slug-action.txt
+            fi
+
+          
+            rm -rf "./target-repo"
+          done
+
+      - name: Commit Changes
+        run: |
+          cd ${{ github.workspace }}/source-repo/output
+          if [ -n "$(git status --porcelain)" ]; then
+            git pull origin main
+            git add result-check-github-slug-action.txt
+            git commit -S -m "Add result-check-github-slug-action.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
+            git push origin main
+          else
+              echo "There are no changes to commit."
+          fi
+        working-directory: ${{ github.workspace }}
+        env:
+          GPG_KEY_PASSPHRASE: ${{ secrets.PASSPHRASE }}

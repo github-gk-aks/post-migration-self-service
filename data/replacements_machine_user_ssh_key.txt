@@ -1,0 +1,12 @@
+github-SHARED/firstgithubrepo	.github/workflows/github-rest-api1.yaml	.github/workflows/github-rest-api1.yaml	MACHINE_USER_SSH_KEY	SHARED_READ_WRITE_SSH_KEY
+github-SHARED/firstgithubrepo	.github/workflows/github-rest-api12.yaml	.github/workflows/github-rest-api12.yaml	MACHINE_USER_SSH_KEY	SHARED_READ_WRITE_SSH_KEY
+github-SHARED/firstgithubrepo	.github/workflows/github-rest-api123.yaml	.github/workflows/github-rest-api123.yaml	MACHINE_USER_SSH_KEY	CONFIDENTIAL_READ_WRITE_SSH_KEY
+github-SHARED/firstgithubrepo	.github/workflows/github-rest-api1234.yaml	.github/workflows/github-rest-api1234.yaml	MACHINE_USER_SSH_KEY	SHARED_READ_WRITE_SSH_KEY
+github-CONFIDENTIAL/secondgithubrepo	.github/workflows/github-rest-api1.yaml	.github/workflows/github-rest-api1.yaml	MACHINE_USER_SSH_KEY	SHARED_READ_WRITE_SSH_KEY
+github-CONFIDENTIAL/secondgithubrepo	.github/workflows/github-rest-api12.yaml	.github/workflows/github-rest-api12.yaml	MACHINE_USER_SSH_KEY	SHARED_READ_WRITE_SSH_KEY
+github-CONFIDENTIAL/secondgithubrepo	.github/workflows/github-rest-api123.yaml	.github/workflows/github-rest-api123.yaml	MACHINE_USER_SSH_KEY	CONFIDENTIAL_READ_WRITE_SSH_KEY
+github-SHARED/thirdgithubrepo	.github/workflows/github-rest-api1234.yaml	.github/workflows/github-rest-api1234.yaml	MACHINE_USER_SSH_KEY	SHARED_READ_WRITE_SSH_KEY
+github-SHARED/thirdgithubrepo	.github/workflows/github-rest-api123.yaml	.github/workflows/github-rest-api123.yaml	MACHINE_USER_SSH_KEY	SHARED_READ_WRITE_SSH_KEY
+github-CONFIDENTIAL/fourthgithubrepo	.github/workflows/github-rest-api1.yaml	.github/workflows/github-rest-api1.yaml	MACHINE_USER_SSH_KEY	CONFIDENTIAL_READ_WRITE_SSH_KEY
+github-CONFIDENTIAL/fourthgithubrepo	.github/workflows/github-rest-api1.yaml	.github/workflows/github-rest-api1.yaml	MACHINE_USER_SSH_KEY	CONFIDENTIAL_READ_WRITE_SSH_KEY
+github-CONFIDENTIAL/fifthgithubrepo	.github/workflows/github-rest-api1234.yaml	.github/workflows/github-rest-api1234.yaml	MACHINE_USER_SSH_KEY	SHARED_READ_WRITE_SSH_KEY

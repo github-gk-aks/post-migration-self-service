@@ -1,0 +1,5 @@
+github-gk-aks/firstgithubrepo;String MACHINE_USER_SSH_KEY is replaced with SHARED_READ_WRITE_SSH_KEY in file .github/workflows/github-rest-api1.yaml
+github-gk-aks/firstgithubrepo;String MACHINE_USER_SSH_KEY is replaced with SHARED_READ_WRITE_SSH_KEY in file .github/workflows/github-rest-api12.yml
+github-gk-aks/firstgithubrepo;String MACHINE_USER_SSH_KEY is replaced with CONFIDENTIAL_READ_WRITE_SSH_KEY in file .github/workflows/github-rest-api123.yml
+github-gk-aks/firstgithubrepo;MACHINE_USER_SSH_KEY String not found in file .github/workflows/github-rest-api1234.yaml;
+github-gk-aks/fifthgithubrepo;String MACHINE_USER_SSH_KEY is replaced with CONFIDENTIAL_READ_WRITE_SSH_KEY in file .github/workflows/github-rest-api1234.yml

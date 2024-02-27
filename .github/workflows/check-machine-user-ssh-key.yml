@@ -22,10 +22,6 @@ jobs:
           else
             echo "Output directory already exists."
           fi
-      - name: Setup Committer Email and Name
-        run: |
-          git config --global user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
-          git config --global user.name ${{ secrets.GIT_COMMITTER_NAME }}
   
       - name: Import GPG key
         run: |
@@ -81,11 +77,11 @@ jobs:
               #if ls "./target-repo/.github/workflows/*.yml "./target-repo/.github/workflows"/*.yaml &> /dev/null; then
                   for file in ./target-repo/.github/workflows/*.yml; do
                     if [ -e "$file" ]; then
-                      if grep -qE 'github-script' "$file"; then
+                      if grep -qE 'MACHINE_USER_SSH_KEY' "$file"; then
                         echo "Processing file:$file"
-                        echo "Repo:$repo, File:$file, Matched String:github-script" >> "${{ github.workspace }}/source-repo/output/result.txt"
+                        echo "Repo:$repo, File:$file, Matched String:MACHINE_USER_SSH_KEY" >> "${{ github.workspace }}/source-repo/output/result-check-MACHINE_USER_SSH_KEY.txt"
                       else
-                        echo "Repo:$repo, File:$file, No match found" >> "${{ github.workspace }}/source-repo/output/result.txt"
+                        echo "Repo:$repo, File:$file, No match found" >> "${{ github.workspace }}/source-repo/output/result-check-MACHINE_USER_SSH_KEY.txt"
                       fi
                     fi
                    done 
@@ -93,23 +89,22 @@ jobs:
                     if [ -e "$file" ]; then
                       if grep -qE 'github-script' "$file"; then
                         echo "Processing file: $file"
-                        echo "Repo:$repo, File:$file, Matched String:github-script" >> "${{ github.workspace }}/source-repo/output/result.txt"
+                        echo "Repo:$repo, File:$file, Matched String:MACHINE_USER_SSH_KEY" >> "${{ github.workspace }}/source-repo/output/result-check-MACHINE_USER_SSH_KEY.txt"
                       else
-                        echo "Repo:$repo, File:$file, No match found" >> "${{ github.workspace }}/source-repo/output/result.txt"
+                        echo "Repo:$repo, File:$file, No match found" >> "${{ github.workspace }}/source-repo/output/result-check-MACHINE_USER_SSH_KEY.txt"
                       fi
                     fi
                   done
 
               else
-              echo "Repo:$repo, File: , *.yml and *.yaml files not found." >> ${{ github.workspace }}/source-repo/output/result.txt
+              echo "Repo:$repo, File: , *.yml and *.yaml files not found." >> ${{ github.workspace }}/source-repo/output/result-check-MACHINE_USER_SSH_KEY.txt
               fi
 
             else
-              echo ".github/workflows directory not found. Appending information to result.txt."
-              echo "Repo:$repo, File: , .github/workflows directory not found." >> ${{ github.workspace }}/source-repo/output/result.txt
+              echo ".github/workflows directory not found. Appending information to result-check-MACHINE_USER_SSH_KEY.txt."
+              echo "Repo:$repo, File: , .github/workflows directory not found." >> ${{ github.workspace }}/source-repo/output/result-check-MACHINE_USER_SSH_KEY.txt
             fi
 
-          
             rm -rf "./target-repo"
           done
 
@@ -118,8 +113,8 @@ jobs:
           cd ${{ github.workspace }}/source-repo/output
           if [ -n "$(git status --porcelain)" ]; then
             git pull origin main
-            git add result.txt
-            git commit -S -m "Add result.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
+            git add result-check-MACHINE_USER_SSH_KEY.txt
+            git commit -S -m "Add result-check-MACHINE_USER_SSH_KEY.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
             git push origin main
           else
               echo "There are no changes to commit."

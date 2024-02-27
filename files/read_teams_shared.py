@@ -4,7 +4,7 @@ import ast
 
 teams = []
 
-workbook = openpyxl.load_workbook('data/CodeOwners-Team-Replacement.xlsx')
+workbook = openpyxl.load_workbook('data/CodeOwners-Team-Replacement-Shared.xlsx')
 sheet = workbook.active
 
 for row in sheet.iter_rows(min_row=2, values_only=True):

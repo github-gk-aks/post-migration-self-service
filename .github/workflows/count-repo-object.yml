@@ -1,0 +1,41 @@
+name: Repository Object Count
+
+on:
+    workflow_dispatch
+#   issues:
+#     types:
+#       - opened
+#       - edited
+
+# expected issue body input should be structured as follows:
+  #     {
+  #         "rep01": {
+  #             "repository": "rep01",
+  #             "organisation": "org01"
+  #         },
+  #         "rep02": {
+  #             "repository": "rep02",
+  #             "organisation": "org02"
+  #         } 
+  #     }
+
+jobs:
+  count-repository-objects:
+    # if: contains(github.event.issue.labels.*.name, 'repo-obj-count')
+    runs-on: ubuntu-latest
+    # strategy:  
+    #   matrix:
+    #     repository: ${{ fromJson(github.event.issue.body).*.repository }}  # rep01, repo02
+    #   max-parallel: 1
+    steps:
+      - name: Commit Count
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GK_PAT}}
+          script: |
+            const commits = await github.rest.repos.listCommits({
+              owner: 'github-gk-aks',
+              repo: 'firstgithubrepo'
+            });
+            const totalCommits = commits.data.length
+            console.log('Total Commits:', totalCommits);
