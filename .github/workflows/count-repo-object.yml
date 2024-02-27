@@ -35,7 +35,8 @@ jobs:
           script: |
             const commits = await github.rest.repos.listCommits({
               owner: 'github-gk-aks',
-              repo: 'firstgithubrepo'
+              repo: 'firstgithubrepo',
+              per_page: 100
             });
             const totalCommits = commits.data.length
             console.log('Total Commits:', totalCommits);
