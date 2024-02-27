@@ -60,7 +60,7 @@ jobs:
                 const openIssues = await github.rest.issues.listForRepo({
                     owner: 'github-gk-aks',
                     repo: 'firstgithubrepo',
-                    state: 'Open'
+                    #state: 'Open'
                     #per_page: perPage,
                     #page: page++
                 });
