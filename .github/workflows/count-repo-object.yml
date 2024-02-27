@@ -56,6 +56,6 @@ jobs:
                 const openIssues = await github.rest.issues.listForRepo({
                     owner: 'github-gk-aks',
                     repo: 'firstgithubrepo',
-                    state: 'Open'
+                    state: 'open'
                 });
                 console.log('Total Open Issues:', openIssues.data.length);
