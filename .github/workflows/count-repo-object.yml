@@ -39,7 +39,7 @@ jobs:
                 while (true) {
                 const commits = await github.rest.repos.listCommits({
                     owner: 'github-gk-aks',
-                    repo: 'post-migration-self-service',
+                    repo: 'firstgithubrepo',
                     per_page: perPage,
                     page: page++
                 });
@@ -47,3 +47,24 @@ jobs:
                 totalCommits += commits.data.length;
                 }
                 console.log('Total Commits:', totalCommits);
+
+      - name: Open Issues Count
+        uses: actions/github-script@v6
+        with:   
+           github-token: ${{ secrets.GK_PAT }}
+           script: |
+                # let totalCommits = 0;
+                # let page = 1;
+                # let perPage = 100;
+                # while (true) {
+                const openIssues = await github.rest.issues.listForRepo({
+                    owner: 'github-gk-aks',
+                    repo: 'firstgithubrepo',
+                    state: 'Open'
+                    #per_page: perPage,
+                    #page: page++
+                });
+                # if (commits.data.length === 0) break;
+                # totalCommits += commits.data.length;
+                # }
+                console.log('Total Open Issues:', openIssues);
