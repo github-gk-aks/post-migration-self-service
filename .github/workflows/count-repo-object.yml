@@ -39,7 +39,7 @@ jobs:
                 while (true) {
                 const commits = await github.rest.repos.listCommits({
                     owner: 'github-gk-aks',
-                    repo: 'firstgithubrepo',
+                    repo: 'post-migration-self-service',
                     per_page: perPage,
                     page: page++
                 });
