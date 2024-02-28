@@ -77,7 +77,7 @@ jobs:
                  });
                  console.log('Total Open Pull Requests:',openPullRequests.data.length)
 
-      - name: List Branches
+      - name: Count Branches
         uses: actions/github-script@v6
         with:
             github-token: ${{ secrets.GK_PAT }}
@@ -87,3 +87,14 @@ jobs:
                     repo: 'firstgithubrepo',
                 })
                 console.log('Total Number of branches', listBranches.data.length)
+
+      - name: Count Releases
+        uses: actions/github-script@v6
+        with:
+            github-token: ${{ secrets.GK_PAT }}
+            script: |
+                const listReleases = await github.rest.repos.listReleases({
+                    owner: 'github-gk-aks',
+                    repo: 'firstgithubrepo',
+                })
+                console.log('Total Number of releases', listReleases.data.length)
