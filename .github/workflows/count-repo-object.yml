@@ -1,7 +1,11 @@
 name: Repository Object Count
 
 on:
-    workflow_dispatch
+    issues:
+        types:
+          - opened
+          - edited
+
 #   issues:
 #     types:
 #       - opened
@@ -21,12 +25,12 @@ on:
 
 jobs:
   count-repository-objects:
-    # if: contains(github.event.issue.labels.*.name, 'repo-obj-count')
+    if: contains(github.event.issue.labels.*.name, 'repo-obj-count')
     runs-on: ubuntu-latest
-    # strategy:  
-    #   matrix:
-    #     repository: ${{ fromJson(github.event.issue.body).*.repository }}  # rep01, repo02
-    #   max-parallel: 1
+    strategy:  
+      matrix:
+        repository: ${{ fromJson(github.event.issue.body).*.repository }}  # rep01, repo02
+      max-parallel: 1
     steps:
       - name: Commit Count
         uses: actions/github-script@v6
@@ -38,8 +42,8 @@ jobs:
                 let perPage = 100;
                 while (true) {
                 const commits = await github.rest.repos.listCommits({
-                    owner: 'github-gk-aks',
-                    repo: 'firstgithubrepo',
+                    owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
+                    repo: '${{ matrix.repository }}',
                     per_page: perPage,
                     page: page++
                 });
@@ -58,8 +62,8 @@ jobs:
              let perPage = 100;
              while (true) {
                 const issues = await github.rest.issues.listForRepo({
-                owner: 'github-gk-aks',
-                repo: 'firstgithubrepo',
+                owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
+                repo: '${{ matrix.repository }}',
                 state: 'open',
                 per_page: perPage,
                 page: page++
@@ -83,8 +87,8 @@ jobs:
                 let perPage = 100;
                 while (true) {
                 const pullRequests = await github.rest.pulls.list({
-                    owner: 'github-gk-aks',
-                    repo: 'firstgithubrepo',
+                    owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
+                    repo: '${{ matrix.repository }}',
                     state: 'open',
                     per_page: perPage,
                     page: page++
@@ -104,8 +108,8 @@ jobs:
                 let perPage = 1;
                 while (true) {
                 const branches = await github.rest.repos.listBranches({
-                    owner: 'github-gk-aks',
-                    repo: 'firstgithubrepo',
+                    owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
+                    repo: '${{ matrix.repository }}',
                     per_page: perPage,
                     page: page++
                 });
@@ -124,8 +128,8 @@ jobs:
                 let perPage = 100;
                 while (true) {
                   const releases = await github.rest.repos.listReleases({
-                    owner: 'github-gk-aks',
-                    repo: 'firstgithubrepo',
+                    owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
+                    repo: '${{ matrix.repository }}',
                     per_page: perPage,
                     page: page++
                   });
@@ -144,8 +148,8 @@ jobs:
                 let perPage = 100;
                 while (true) {
                 const tags = await github.rest.repos.listTags({
-                    owner: 'github-gk-aks',
-                    repo: 'firstgithubrepo',
+                    owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
+                    repo: '${{ matrix.repository }}',
                     per_page: perPage,
                     page: page++
                 });
