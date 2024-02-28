@@ -98,3 +98,14 @@ jobs:
                     repo: 'firstgithubrepo',
                 })
                 console.log('Total Number of releases', listReleases.data.length)
+
+      - name: Count Tags
+        uses: actions/github-script@v6
+        with:
+            github-token: ${{ secrets.GK_PAT }}
+            script: |
+                const listTags = await github.rest.repos.listTags({
+                    owner: 'github-gk-aks',
+                    repo: 'firstgithubrepo',
+                })
+                console.log('Total Number of Tags', listTags.data.length)
