@@ -101,7 +101,7 @@ jobs:
             script: |
                 let totalBranches = 0;
                 let page = 1;
-                let perPage = 100;
+                let perPage = 1;
                 while (true) {
                 const branches = await github.rest.repos.listBranches({
                     owner: 'github-gk-aks',
