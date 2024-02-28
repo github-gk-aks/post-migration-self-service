@@ -75,4 +75,4 @@ jobs:
                     repo: 'firstgithubrepo'
                     state: 'open'
                  });
-                 console.log('Total Open Pull Requests:',OpenPullRequest.data.length)
+                 console.log('Total Open Pull Requests:',OpenPullRequests.data.length)
