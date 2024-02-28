@@ -70,9 +70,20 @@ jobs:
         with:   
             github-token: ${{ secrets.GK_PAT }}
             script: |
-                 const OpenPullRequests = await github.rest.pulls.list({
+                 const openPullRequests = await github.rest.pulls.list({
                     owner: 'github-gk-aks',
                     repo: 'firstgithubrepo',
                     state: 'open'
                  });
-                 console.log('Total Open Pull Requests:',OpenPullRequests.data.length)
+                 console.log('Total Open Pull Requests:',openPullRequests.data.length)
+
+      - name: List Branches
+        uses: actions/github-script@v6
+        with:
+            github-token: ${{ secrets.GK_PAT }}
+            script: |
+                const listBranches = await github.rest.repos.listBranches({
+                    owner: 'github-gk-aks',
+                    repo: 'firstgithubrepo',
+                })
+                console.log('Total Number of branches', listBranches.data.length)
