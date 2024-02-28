@@ -64,3 +64,15 @@ jobs:
                 const filteredIssues = openIssues.data.filter(issue => !issue.pull_request);
 
                 console.log('Total Open Issues:', filteredIssues.length);
+
+      - name: Open Pull Request
+        uses: actions/github-script@V6
+        with:   
+            github-token: ${{ secrets.GK_PAT }}
+            script: |
+                 const OpenPullRequests = await github.rest.pulls.list({
+                    owner: 'github-gk-aks'
+                    repo: 'firstgithubrepo'
+                    state: 'open'
+                 });
+                 console.log('Total Open Pull Requests:',OpenPullRequest.data.length)
