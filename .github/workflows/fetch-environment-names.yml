@@ -64,9 +64,11 @@ jobs:
                 echo "$repo_name No environments configured" >> "${{ github.workspace }}/source-repo/output/get-environment-name.txt"
             else
                 # Parse the response and extract environment names
-                environment_names=$(echo "$response" | jq -r '.environments[].name')
+                environment_names=$(echo "$response" | jq -r '.environments | .[] | .name')
+                for environments in $environment_names; do
                 # Output repository name and environment names to output.txt
-                echo "$repo_name $environment_names" >> "${{ github.workspace }}/source-repo/output/get-environment-name.txt"
+                    echo "$repo_name $environment_names" >> "${{ github.workspace }}/source-repo/output/get-environment-name.txt"
+                done
             fi
           done   
           
