@@ -6,3 +6,9 @@ secondgithubrepo prod
 thirdgithubrepo No environments configured
 fourthgithubrepo uat
 fifthgithubrepo Development
+firstgithubrepo dev
+firstgithubrepo staging
+secondgithubrepo prod
+thirdgithubrepo No environments configured
+fourthgithubrepo uat
+fifthgithubrepo Development
