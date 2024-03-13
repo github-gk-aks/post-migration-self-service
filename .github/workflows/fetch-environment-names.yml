@@ -126,6 +126,9 @@ jobs:
                     echo "$repository;$environment;No secrets" >> "${{ github.workspace }}/source-repo/output/get-environment-secrets.txt"
                   else
                     secrets=$(echo "$response" | jq -r '.secrets | .[] | .name')
+                    for secret in "${secrets[@]}"; do
+                        echo "$secret"
+                    done
                     for secret in $secrets; do
                       echo "$repository $environment $secret" >> "${{ github.workspace }}/source-repo/output/get-environment-secrets.txt"
                     done
