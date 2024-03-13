@@ -131,14 +131,8 @@ jobs:
                       done
                     fi
                   else
-                    echo "No environment found for repository: $repository"
+                    echo "No environment found for repository: $repository" >> "${{ github.workspace }}/source-repo/output/get-environment-secrets.txt"
                   fi
-                    # if [[ $(echo "$response" | jq '.secrets | length') -gt 0 ]]; then
-                    #     secrets=$(echo "$response" | jq -r '.secrets | map(.name) | join(",")')
-                    #     echo "$repository $environment $secrets" >> "${{ github.workspace }}/source-repo/output/get-environment-secrets.txt"
-                    # else
-                    #     echo "No secrets found for repository: $repository, environment: $environment"
-                    # fi
                 done < ./source-repo/output/get-environment-name.txt
 
           - name: Upload environment secrets file as artifact
