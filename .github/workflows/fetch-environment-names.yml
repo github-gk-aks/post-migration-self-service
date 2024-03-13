@@ -119,24 +119,26 @@ jobs:
                   -H "Authorization: Bearer ${{ secrets.GK_PAT }}" \
                   -H "X-GitHub-Api-Version: 2022-11-28" \
                   "https://api.github.com/repos/$repository/environments/$environment/secrets")
-              
-                  total_count=$(echo "$response" | jq -r '.total_count')
-                  echo "$total_count"
 
-                  if [ "$total_count" -eq 0 ]; then
-                    echo "$repository;$environment;No secrets" >> "${{ github.workspace }}/source-repo/output/get-environment-secrets.txt"
+                  if [[ $(echo "$response" | jq '.secrets | length') -gt 0 ]]; then
+                    total_count=$(echo "$response" | jq -r '.total_count')
+                    if [ "$total_count" -eq 0 ]; then
+                      echo "$repository;$environment;No secrets" >> "${{ github.workspace }}/source-repo/output/get-environment-secrets.txt"
+                    else
+                      secrets=$(echo "$response" | jq -r '.secrets | .[] | .name')
+                      for secret in $secrets; do
+                        echo "$repository $environment $secret" >> "${{ github.workspace }}/source-repo/output/get-environment-secrets.txt"
+                      done
+                    fi
                   else
-                    secrets=$(echo "$response" | jq -r '.secrets | .[] | .name')
-                    for secret in $secrets; do
-                      echo "$repository $environment $secret" >> "${{ github.workspace }}/source-repo/output/get-environment-secrets.txt"
-                    done
+                    echo "No environment found for repository: $repository"
                   fi
-                  # if [[ $(echo "$response" | jq '.secrets | length') -gt 0 ]]; then
-                  #     secrets=$(echo "$response" | jq -r '.secrets | map(.name) | join(",")')
-                  #     echo "$repository $environment $secrets" >> "${{ github.workspace }}/source-repo/output/get-environment-secrets.txt"
-                  # else
-                  #     echo "No secrets found for repository: $repository, environment: $environment"
-                  # fi
+                    # if [[ $(echo "$response" | jq '.secrets | length') -gt 0 ]]; then
+                    #     secrets=$(echo "$response" | jq -r '.secrets | map(.name) | join(",")')
+                    #     echo "$repository $environment $secrets" >> "${{ github.workspace }}/source-repo/output/get-environment-secrets.txt"
+                    # else
+                    #     echo "No secrets found for repository: $repository, environment: $environment"
+                    # fi
                 done < ./source-repo/output/get-environment-name.txt
 
           - name: Upload environment secrets file as artifact
