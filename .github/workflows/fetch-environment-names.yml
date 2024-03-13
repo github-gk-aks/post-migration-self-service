@@ -97,6 +97,8 @@ jobs:
   fetch-environments-secrets:
         needs: fetch-environments
         runs-on: ubuntu-latest
+        env:
+          DEST_PAT_TOKEN: Dummy
         steps:
           - name: Checkout central repository
             uses: actions/checkout@v4
@@ -116,7 +118,7 @@ jobs:
                   repository=$(echo "$line" | awk '{print $1}')
                   environment=$(echo "$line" | awk '{print $2}')
                   if [ "$environment" = "No-environments-configured" ]; then
-                      echo "No environment found for repository: $repository" >> "${{ github.workspace }}/source-repo/output/get-environment-secrets.txt"
+                      echo "$repository;No-Environment;NA;${{ env.DEST_PAT_TOKEN }}" >> "${{ github.workspace }}/source-repo/output/get-environment-secrets.txt"
                   else
                       response=$(curl -sSL -H "Accept: application/vnd.github+json" \
                       -H "Authorization: Bearer ${{ secrets.GK_PAT }}" \
@@ -124,11 +126,11 @@ jobs:
                       "https://api.github.com/repos/$repository/environments/$environment/secrets")
 
                       if [[ $(echo "$response" | jq '.secrets | length') -eq 0 ]]; then
-                        echo "$repository;$environment;No secrets" >> "${{ github.workspace }}/source-repo/output/get-environment-secrets.txt"
+                        echo "$repository;$environment;No-Secrets;${{ env.DEST_PAT_TOKEN }}" >> "${{ github.workspace }}/source-repo/output/get-environment-secrets.txt"
                       else
                           secrets=$(echo "$response" | jq -r '.secrets | .[] | .name')
                           for secret in $secrets; do
-                            echo "$repository $environment $secret" >> "${{ github.workspace }}/source-repo/output/get-environment-secrets.txt"
+                            echo "$repository;$environment;$secret;${{ env.DEST_PAT_TOKEN }}" >> "${{ github.workspace }}/source-repo/output/get-environment-secrets.txt"
                           done
                       fi
                   fi
