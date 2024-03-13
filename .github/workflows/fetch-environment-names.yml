@@ -171,4 +171,5 @@ jobs:
                 fi
                 cd ${{ github.workspace }}
             env:
+                GPG_KEY_PASSPHRASE: ${{ secrets.PASSPHRASE }}
                 working-directory: ${{ github.workspace }}
