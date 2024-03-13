@@ -127,7 +127,7 @@ jobs:
                   else
                     secrets=$(echo "$response" | jq -r '.secrets | .[] | .name')
                     for secret in $secrets; do
-                      echo "$repository $environment $secrets" >> "${{ github.workspace }}/source-repo/output/get-environment-secrets.txt"
+                      echo "$repository $environment $secret" >> "${{ github.workspace }}/source-repo/output/get-environment-secrets.txt"
                     done
                   fi
                   # if [[ $(echo "$response" | jq '.secrets | length') -gt 0 ]]; then
