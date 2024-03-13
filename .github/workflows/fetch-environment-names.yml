@@ -121,16 +121,13 @@ jobs:
                   "https://api.github.com/repos/$repository/environments/$environment/secrets")
               
                   total_count=$(echo "$response" | jq -r '.total_count')
+                  echo "$total_count"
 
                   if [ "$total_count" -eq 0 ]; then
                     echo "$repository;$environment;No secrets" >> "${{ github.workspace }}/source-repo/output/get-environment-secrets.txt"
                   else
                     secrets=$(echo "$response" | jq -r '.secrets | .[] | .name')
-                    # for secret in "${secrets[@]}"; do
-                    #     echo "$secret"
-                    # done
                     for secret in $secrets; do
-                      echo "Inside the for loop"
                       echo "$repository $environment $secret" >> "${{ github.workspace }}/source-repo/output/get-environment-secrets.txt"
                     done
                   fi
