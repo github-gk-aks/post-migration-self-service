@@ -114,6 +114,7 @@ jobs:
             run: |
                 while IFS= read -r line; do
                   repository=$(echo "$line" | awk '{print $1}')
+                  echo "$repository"
                   environment=$(echo "$line" | awk '{print $2}')
                   response=$(curl -sSL -H "Accept: application/vnd.github+json" \
                   -H "Authorization: Bearer ${{ secrets.GK_PAT }}" \

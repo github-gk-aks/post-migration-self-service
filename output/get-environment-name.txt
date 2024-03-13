@@ -1,6 +1,6 @@
-firstgithubrepo dev
-firstgithubrepo staging
-secondgithubrepo prod
-thirdgithubrepo No environments configured
-fourthgithubrepo uat
-fifthgithubrepo Development
+github-gk-aks/firstgithubrepo dev
+github-gk-aks/firstgithubrepo staging
+github-gk-aks/secondgithubrepo prod
+github-gk-aks/thirdgithubrepo No environments configured
+github-gk-aks/fourthgithubrepo uat
+github-gk-aks/fifthgithubrepo Development
