@@ -165,18 +165,103 @@ jobs:
             env:
                 GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
 
-          - name: Commit Changes
-            run: |
-                cd ${{ github.workspace }}/source-repo/output
-                if [ -n "$(git status --porcelain)" ]; then
-                git pull origin
-                git add .
-                git commit  -m "Add get-environment-secret.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
-                git push
-                else
-                echo "No changes to commit."
-                fi
-                cd ${{ github.workspace }}
-            env:
-                GPG_KEY_PASSPHRASE: ${{ secrets.PASSPHRASE }}
-                working-directory: ${{ github.workspace }}
+          # - name: Commit Changes
+          #   run: |
+          #       cd ${{ github.workspace }}/source-repo/output
+          #       if [ -n "$(git status --porcelain)" ]; then
+          #       git pull origin
+          #       git add .
+          #       git commit  -m "Add get-environment-secret.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
+          #       git push
+          #       else
+          #       echo "No changes to commit."
+          #       fi
+          #       cd ${{ github.workspace }}
+          #   env:
+          #       GPG_KEY_PASSPHRASE: ${{ secrets.PASSPHRASE }}
+          #       working-directory: ${{ github.workspace }}
+
+  convert-to-excel:
+    needs: fetch-environments-secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout central repository
+        uses: actions/checkout@v4
+        with:
+            token: ${{ secrets.GK_PAT }}
+            path: ./source-repo
+
+      - name: Install python
+        uses: actions/setup-python@v2
+        with:
+            python-version: '3.x'
+        
+      - name: Install pandas
+        run: pip install pandas openpyxl
+
+      - name: Download environment secrets file as artifact
+        uses: actions/download-artifact@v4
+        with:
+            name: get-environment-secrets.txt
+            path: ./source-repo/output  # Download to the current directory
+
+      - name: Listing the files
+        run: |
+            ls ${{ github.workspace }}/source-repo/output
+
+      - name: Convert to Excel
+        run: |
+            python3 <<EOF
+            import pandas as pd
+
+            # Read the data from get-environment-secrets.txt
+            data = pd.read_csv('${{ github.workspace }}/source-repo/output/get-environment-secrets.txt', delimiter=';', names=['Repository', 'Environment', 'Secret', 'Destination PAT'])
+
+            # Save as Excel file
+            data.to_excel('${{ github.workspace }}/source-repo/output/get-environment-secrets.xlsx', index=False)
+            EOF
+
+      - name: Upload get-environment-secrets.xlsx as artifact
+        uses: actions/upload-artifact@v4
+        with:
+            name: get-environment-secrets.xlsx
+            path: ./source-repo/output
+        
+      - name: Import GPG key
+        run: |
+            echo "${GPG_PRIVATE_KEY}" | gpg --batch --import
+        env: 
+            GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
+      - name: Add the custom gpg signing program that passes the passphrase to the gpg CLI
+        run: |
+            rm -rf /tmp/gpg.sh
+            echo '#!/bin/bash' >> /tmp/gpg.sh
+            echo 'gpg --batch --pinentry-mode=loopback --passphrase $GPG_KEY_PASSPHRASE $@' >> /tmp/gpg.sh
+            chmod +x /tmp/gpg.sh
+
+      - name: Setup git
+        run: |
+            git config --global user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+            git config --global user.name ${{ secrets.GIT_COMMITTER_NAME }}
+            git config --global commit.gpgsign true
+            git config --global user.signingkey $GPG_KEY_ID
+            git config --global gpg.program /tmp/gpg.sh
+        env:
+            GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+
+      - name: Commit Changes
+        run: |
+            cd ${{ github.workspace }}/source-repo/output
+            if [ -n "$(git status --porcelain)" ]; then
+            git pull origin
+            git add .
+            git commit  -m "Add get-environment-secret.xlsx - $(date +"%Y-%m-%d %H:%M:%S")" 
+            git push
+            else
+            echo "No changes to commit."
+            fi
+            cd ${{ github.workspace }}
+        env:
+            GPG_KEY_PASSPHRASE: ${{ secrets.PASSPHRASE }}
+            working-directory: ${{ github.workspace }}
