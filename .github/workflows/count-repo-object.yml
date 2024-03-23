@@ -136,12 +136,54 @@ jobs:
               const outputPath = '${{ github.workspace }}/source-repo/output/count_repo_objects.txt';
               fs.writeFileSync(outputPath, outputText);
 
+      - name: Upload count_repo_objects.txt as artifact
+        uses: actions/upload-artifact@v4
+        with:
+            name: count_repo_objects.txt
+            path: ./source-repo/output
+
+  convert-to-excel:
+    needs: count-repository-objects
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout central repository
+        uses: actions/checkout@v4
+        with:
+            token: ${{ secrets.GK_PAT }}
+            path: ./source-repo
+
+      - name: Install python
+        uses: actions/setup-python@v2
+        with:
+            python-version: '3.x'
+        
+      - name: Install pandas
+        run: pip install pandas openpyxl
+    
+      - name: Download count_repo_objects.txt file artifact
+        uses: actions/download-artifact@v4
+        with:
+            name: count_repo_objects.txt
+            path: ./source-repo/output  # Download to the current directory
+
+      - name: Convert to Excel
+        run: |
+          python3 <<EOF
+          import pandas as pd
+
+          # Read the data from repo-scoped-secrets.txt
+          data = pd.read_csv('${{ github.workspace }}/source-repo/output/count_repo_objects.txt', delimiter=',', names=['Repository', 'Commit_Count', 'Issue_Count', 'PR_Count','Branch_Count','Release_Count','Tag_Count'])
+
+          # Save as Excel file
+          data.to_excel('${{ github.workspace }}/source-repo/output/count_repo_objects.xlsx', index=False)
+          EOF
+      
       - name: Import GPG key
         run: |
           echo "${GPG_PRIVATE_KEY}" | gpg --batch --import
         env: 
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-  
+    
       - name: Add the custom gpg signing program that passes the passphrase to the gpg CLI
         run: |
             rm -rf /tmp/gpg.sh
@@ -158,7 +200,7 @@ jobs:
             git config --global gpg.program /tmp/gpg.sh
         env:
             GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
-
+  
       - name: Commit Changes
         run: |
             cd ${{ github.workspace }}/source-repo/output
