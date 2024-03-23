@@ -13,25 +13,28 @@ jobs:
           token: ${{ secrets.GK_PAT }}
           path: ./source-repo
 
-      - name: Read repository names from file
-        id: read-repos
-        run: |
-          # Read repository names from repositories.txt file
-          echo "::set-output name=repos::$(cat ${{ github.workspace }}/source-repo/repositories.txt | jq -R -s 'split("\n")[:-1]')"
-        shell: bash
-        working-directory: ${{ github.workspace }}
-
       - name: Repository Object Count
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GK_PAT}}
           script: |
-              const repos = ${{ toJson(steps.read-repos.outputs.repos) }};
-              console.log('Repositories:', repos);
-              const perPage = 100;
-              for (const repo of repos) {
 
-                  const [orgName, repoName] = repo.split('/');
+            const fs = require('fs');
+
+            // Read repository names from repositories.txt file
+            const repoFilePath = '${{ github.workspace }}/source-repo/repositories.txt';
+            let repoNames = [];
+            try {
+              const data = fs.readFileSync(repoFilePath, 'utf8');
+              repoNames = data.trim().split('\n');
+            } catch (err) {
+              console.error(`Error reading file: ${err}`);
+            }
+              // console.log('Repositories:', repos);
+              const perPage = 100;
+              for (const repoFullName  of repoNames) {
+
+                  const [orgName, repoName] = repoFullName.split('/');
 
                   console.log('Organization:', orgName);
                   console.log('Repository:', repoName);
