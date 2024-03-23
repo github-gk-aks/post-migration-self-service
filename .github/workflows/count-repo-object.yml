@@ -206,8 +206,8 @@ jobs:
             cd ${{ github.workspace }}/source-repo/output
             if [ -n "$(git status --porcelain)" ]; then
             git pull origin
-            git add count_repo_objects.txt
-            git commit -S -m "Add count_repo_objects.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
+            git add count_repo_objects.xlsx
+            git commit -S -m "count_repo_objects.xlsx - $(date +"%Y-%m-%d %H:%M:%S")" 
             git push
             else
             echo "No changes to commit."
