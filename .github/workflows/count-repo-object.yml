@@ -54,7 +54,7 @@ jobs:
                   console.log('Total Commits:', totalCommits);
 
                   let totalOpenIssues = 0;
-                  let page = 1;
+                  page = 1;
                   while (true) {
                       const issues = await github.rest.issues.listForRepo({
                       owner: orgName,
@@ -73,7 +73,7 @@ jobs:
                   console.log('Total Open Issues (excluding pull requests):', totalOpenIssues);
 
                   let totalPullRequests = 0;
-                  let page = 1;
+                  page = 1;
                   while (true) {
                   const pullRequests = await github.rest.pulls.list({
                       owner: orgName,
@@ -88,7 +88,7 @@ jobs:
                   console.log('Total Open Pull Requests:', totalPullRequests);
 
                   let totalBranches = 0;
-                  let page = 1;
+                  page = 1;
                   while (true) {
                   const branches = await github.rest.repos.listBranches({
                       owner: orgName,
@@ -102,7 +102,7 @@ jobs:
                   console.log('Total Number of branches', totalBranches);
 
                   let totalReleases = 0;
-                  let page = 1;
+                  page = 1;
                   while (true) {
                     const releases = await github.rest.repos.listReleases({
                       owner: orgName,
@@ -116,7 +116,7 @@ jobs:
                   console.log('Total Number of releases', totalReleases);
 
                   let totalTags = 0;
-                  let page = 1;
+                  page = 1;
                   while (true) {
                   const tags = await github.rest.repos.listTags({
                       owner: orgName,
