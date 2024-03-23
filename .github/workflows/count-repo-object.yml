@@ -27,6 +27,7 @@ jobs:
           github-token: ${{ secrets.GK_PAT}}
           script: |
               const repos = ${{ toJson(steps.read-repos.outputs.repos) }};
+              console.log('Repositories:', repos);
               const perPage = 100;
               for (const repo of repos) {
 
@@ -34,7 +35,7 @@ jobs:
 
                   console.log('Organization:', orgName);
                   console.log('Repository:', repoName);
-                  
+
                   let totalCommits = 0;
                   let page = 1;
                   while (true) {
