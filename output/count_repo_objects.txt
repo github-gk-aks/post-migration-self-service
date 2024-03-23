@@ -1,6 +1,0 @@
-Repo_Name,Commit_Count,Issue_Count,PR_Count,Branches_Count,Releases_Count,Tags_Count
-github-gk-aks/firstgithubrepo,45,2,1,2,1,1
-github-gk-aks/secondgithubrepo,81,0,0,3,0,0
-github-gk-aks/thirdgithubrepo,2,0,0,2,0,0
-github-gk-aks/fourthgithubrepo,1,0,1,2,0,0
-github-gk-aks/fifthgithubrepo,1,0,0,2,0,0

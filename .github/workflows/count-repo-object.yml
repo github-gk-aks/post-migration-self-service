@@ -173,9 +173,10 @@ jobs:
 
           # Read the data from repo-scoped-secrets.txt
           data = pd.read_csv('${{ github.workspace }}/source-repo/output/count_repo_objects.txt', delimiter=',', names=['Repository', 'Commit_Count', 'Issue_Count', 'PR_Count','Branch_Count','Release_Count','Tag_Count'])
+          data = pd.read_csv('${{ github.workspace }}/source-repo/output/count_repo_objects.txt', delimiter=',')
 
           # Save as Excel file
-          data.to_excel('${{ github.workspace }}/source-repo/output/count_repo_objects.xlsx', index=False)
+          data.to_excel('${{ github.workspace }}/source-repo/output/count_repo_objects.xlsx', index=False, header=True)
           EOF
       
       - name: Import GPG key
