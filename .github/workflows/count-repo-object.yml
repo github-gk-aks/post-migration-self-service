@@ -1,159 +1,119 @@
 name: Repository Object Count
 
 on:
-    issues:
-        types:
-          - opened
-          - edited
-
-#   issues:
-#     types:
-#       - opened
-#       - edited
-
-# expected issue body input should be structured as follows:
-  #     {
-  #         "rep01": {
-  #             "repository": "rep01",
-  #             "organisation": "org01"
-  #         },
-  #         "rep02": {
-  #             "repository": "rep02",
-  #             "organisation": "org02"
-  #         } 
-  #     }
+    workflow_dispatch:
 
 jobs:
   count-repository-objects:
-    if: contains(github.event.issue.labels.*.name, 'repo-obj-count')
     runs-on: ubuntu-latest
-    strategy:  
-      matrix:
-        repository: ${{ fromJson(github.event.issue.body).*.repository }}  # rep01, repo02
-      max-parallel: 1
     steps:
-      - name: Commit Count
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GK_PAT }}
+          path: ./source-repo
+
+      - name: Read repository names from file
+        id: read-repos
+        run: |
+          # Read repository names from repositories.txt file
+          echo "::set-output name=repos::$(cat ${{ github.workspace }}/source-repo/repositories.txt | jq -R -s 'split("\n")[:-1]')"
+        shell: bash
+        working-directory: ${{ github.workspace }}
+
+      - name: Repository Object Count
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GK_PAT}}
           script: |
-                let totalCommits = 0;
-                let page = 1;
-                let perPage = 100;
-                while (true) {
-                const commits = await github.rest.repos.listCommits({
-                    owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
-                    repo: '${{ matrix.repository }}',
-                    per_page: perPage,
-                    page: page++
-                });
-                if (commits.data.length === 0) break;
-                totalCommits += commits.data.length;
-                }
-                console.log('Total Commits:', totalCommits);
+              const repos = ${{ toJson(steps.read-repos.outputs.repos) }};
+              const perPage = 100;
+              for (const repo of repos) {
 
-      - name: Open Issues Count
-        uses: actions/github-script@v6
-        with:   
-           github-token: ${{ secrets.GK_PAT }}
-           script: |
-             let totalOpenIssues = 0;
-             let page = 1;
-             let perPage = 100;
-             while (true) {
-                const issues = await github.rest.issues.listForRepo({
-                owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
-                repo: '${{ matrix.repository }}',
-                state: 'open',
-                per_page: perPage,
-                page: page++
-                });
-                if (issues.data.length === 0) break;
-                /* Filter out pull requests from the list of open issues as - 
-                    Note: GitHub's REST API considers every pull request an issue, but not every issue is a pull request. For this reason, "Issues" endpoints may return both issues and pull requests in the response. You can identify pull requests by the pull_request key. Be aware that the id of a pull request returned from "Issues" endpoints will be an issue id.
-                */
-                const filteredIssues = issues.data.filter(issue => !issue.pull_request);
-                totalOpenIssues += filteredIssues.length;
-             }
-             console.log('Total Open Issues (excluding pull requests):', totalOpenIssues);
-
-      - name: Open Pull Request
-        uses: actions/github-script@v6
-        with:   
-            github-token: ${{ secrets.GK_PAT }}
-            script: |
-                let totalPullRequests = 0;
-                let page = 1;
-                let perPage = 100;
-                while (true) {
-                const pullRequests = await github.rest.pulls.list({
-                    owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
-                    repo: '${{ matrix.repository }}',
-                    state: 'open',
-                    per_page: perPage,
-                    page: page++
-                });
-                if (pullRequests.data.length === 0) break;
-                totalPullRequests += pullRequests.data.length;
-                }
-                console.log('Total Open Pull Requests:', totalPullRequests);
-
-      - name: Count Branches
-        uses: actions/github-script@v6
-        with:
-            github-token: ${{ secrets.GK_PAT }}
-            script: |
-                let totalBranches = 0;
-                let page = 1;
-                let perPage = 1;
-                while (true) {
-                const branches = await github.rest.repos.listBranches({
-                    owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
-                    repo: '${{ matrix.repository }}',
-                    per_page: perPage,
-                    page: page++
-                });
-                if (branches.data.length === 0) break;
-                totalBranches += branches.data.length;
-                }
-                console.log('Total Number of branches', totalBranches);
-
-      - name: Count Releases
-        uses: actions/github-script@v6
-        with:
-            github-token: ${{ secrets.GK_PAT }}
-            script: |
-                let totalReleases = 0;
-                let page = 1;
-                let perPage = 100;
-                while (true) {
-                  const releases = await github.rest.repos.listReleases({
-                    owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
-                    repo: '${{ matrix.repository }}',
-                    per_page: perPage,
-                    page: page++
+                  const [orgName, repoName] = repo.split('/');
+                  let totalCommits = 0;
+                  let page = 1;
+                  while (true) {
+                  const commits = await github.rest.repos.listCommits({
+                      owner: orgName,
+                      repo: repoName,
+                      per_page: perPage,
+                      page: page++
                   });
-                  if (releases.data.length === 0) break;
-                  totalReleases += releases.data.length;
-                }
-                console.log('Total Number of releases', totalReleases);
+                  if (commits.data.length === 0) break;
+                  totalCommits += commits.data.length;
+                  }
+                  console.log('Total Commits:', totalCommits);
 
-      - name: Count Tags
-        uses: actions/github-script@v6
-        with:
-            github-token: ${{ secrets.GK_PAT }}
-            script: |
-                let totalTags = 0;
-                let page = 1;
-                let perPage = 100;
-                while (true) {
-                const tags = await github.rest.repos.listTags({
-                    owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
-                    repo: '${{ matrix.repository }}',
-                    per_page: perPage,
-                    page: page++
-                });
-                if (tags.data.length === 0) break;
-                totalTags += tags.data.length;
-                }
-                console.log('Total Number of Tags', totalTags);
+                  let totalOpenIssues = 0;
+                  while (true) {
+                      const issues = await github.rest.issues.listForRepo({
+                      owner: orgName,
+                      repo: repoName,
+                      state: 'open',
+                      per_page: perPage,
+                      page: page++
+                      });
+                      if (issues.data.length === 0) break;
+                      /* Filter out pull requests from the list of open issues as - 
+                          Note: GitHub's REST API considers every pull request an issue, but not every issue is a pull request. For this reason, "Issues" endpoints may return both issues and pull requests in the response. You can identify pull requests by the pull_request key. Be aware that the id of a pull request returned from "Issues" endpoints will be an issue id.
+                      */
+                      const filteredIssues = issues.data.filter(issue => !issue.pull_request);
+                      totalOpenIssues += filteredIssues.length;
+                  }
+                  console.log('Total Open Issues (excluding pull requests):', totalOpenIssues);
+
+                  let totalPullRequests = 0;
+                  while (true) {
+                  const pullRequests = await github.rest.pulls.list({
+                      owner: orgName,
+                      repo: repoName,
+                      state: 'open',
+                      per_page: perPage,
+                      page: page++
+                  });
+                  if (pullRequests.data.length === 0) break;
+                  totalPullRequests += pullRequests.data.length;
+                  }
+                  console.log('Total Open Pull Requests:', totalPullRequests);
+
+                  let totalBranches = 0;
+                  while (true) {
+                  const branches = await github.rest.repos.listBranches({
+                      owner: orgName,
+                      repo: repoName,
+                      per_page: perPage,
+                      page: page++
+                  });
+                  if (branches.data.length === 0) break;
+                  totalBranches += branches.data.length;
+                  }
+                  console.log('Total Number of branches', totalBranches);
+
+                  let totalReleases = 0;
+                  while (true) {
+                    const releases = await github.rest.repos.listReleases({
+                      owner: orgName,
+                      repo: repoName,
+                      per_page: perPage,
+                      page: page++
+                    });
+                    if (releases.data.length === 0) break;
+                    totalReleases += releases.data.length;
+                  }
+                  console.log('Total Number of releases', totalReleases);
+
+                  let totalTags = 0;
+                  while (true) {
+                  const tags = await github.rest.repos.listTags({
+                      owner: orgName,
+                      repo: repoName,
+                      per_page: perPage,
+                      page: page++
+                  });
+                  if (tags.data.length === 0) break;
+                  totalTags += tags.data.length;
+                  }
+                  console.log('Total Number of Tags', totalTags);
+
+              }
