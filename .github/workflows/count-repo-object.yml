@@ -31,6 +31,10 @@ jobs:
               for (const repo of repos) {
 
                   const [orgName, repoName] = repo.split('/');
+
+                  console.log('Organization:', orgName);
+                  console.log('Repository:', repoName);
+                  
                   let totalCommits = 0;
                   let page = 1;
                   while (true) {
