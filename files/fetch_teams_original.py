@@ -8,27 +8,17 @@ GITHUB_TOKEN = os.environ['GK_PAT']
 ORG_NAME = 'github-gk-aks'
 
 def fetch_teams():
-    url = f'https://api.github.com/orgs/{ORG_NAME}/teams'
-    teams = []
+    url = f'https://api.github.com/orgs/{ORG_NAME}/teams?per_page=5'
 
     headers = {
-        "Authorization": f"Bearer {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28"
+    "Authorization": f"Bearer {GITHUB_TOKEN}",
+    "Accept": "application/vnd.github+json",
+    "X-GitHub-Api-Version": "2022-11-28"
     }
     
-    page = 1
-    while True:
-        params = {'per_page': 100, 'page': page}
-        response = requests.get(url, headers=headers, params=params)
-        page_teams = response.json()
-        teams.extend(page_teams)
-        
-        if len(page_teams) < 100:
-            break
-        
-        page += 1
-    
+    # headers = {'Authorization': f'token {GITHUB_TOKEN}'}
+    response = requests.get(url, headers=headers)
+    teams = response.json()
     return teams
 
 def fetch_team_members(team_id):
