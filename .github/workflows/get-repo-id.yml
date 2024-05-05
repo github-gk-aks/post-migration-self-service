@@ -47,5 +47,5 @@ jobs:
       - name: Upload output file
         uses: actions/upload-artifact@v3
         with:
-          name: output-repo-id.txt
-          path: ./source-repo/output/output-repo-id.txt
+          name: output-repo-id
+          path: ./source-repo/output-repo-id.txt
