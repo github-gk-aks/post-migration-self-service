@@ -41,6 +41,9 @@ jobs:
                 }
             };
 
+            // Call the fetchRepoIds function and wait for it to complete
+            await fetchRepoIds();
+            
             // Close the output file
             outputStream.end();
 
