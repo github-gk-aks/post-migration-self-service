@@ -30,14 +30,16 @@ jobs:
             const outputStream = fs.createWriteStream(outputFilePath);
 
             // Fetch repository IDs
-            for (const repoName of repoNames) {
-              const [owner, repo] = repoName.split('/');
-              const { data } = await github.repos.get({ 
-                owner: owner,
-                repo: repo, 
-              });
-              outputStream.write(`Repo Name: ${repoName}, Repo ID: ${data.id}\n`);
-            }
+            const fetchRepoIds = async () => {
+                for (const repoName of repoNames) {
+                const [owner, repo] = repoName.split('/');
+                const { data } = await github.repos.get({ 
+                    owner: owner,
+                    repo: repo, 
+                });
+                outputStream.write(`Repo Name: ${repoName}, Repo ID: ${data.id}\n`);
+                }
+            };
 
             // Close the output file
             outputStream.end();
