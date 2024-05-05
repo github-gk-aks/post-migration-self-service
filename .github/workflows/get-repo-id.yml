@@ -43,7 +43,7 @@ jobs:
                     repo: repoName,
                 });
 
-                outputText += `Repo Name: ${repoName}, Repo ID: ${data.id}\n`;         
+                outputText += `Repo Name: ${repoName}, Repo ID: ${data.data.id}\n`;         
             };
 
             // Write outputText to count_repo_objects.txt file
