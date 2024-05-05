@@ -38,6 +38,8 @@
     
                 // Close the output file
                 outputStream.end();
+            env:
+                GITHUB_WORKSPACE: ${{ github.workspace }}
     
           - name: Upload output file
             uses: actions/upload-artifact@v3
