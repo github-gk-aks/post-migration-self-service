@@ -1,48 +1,46 @@
-    name: Get Repository ID
+name: Get Repository ID
     
-    on:
-      workflow_dispatch:
-    
-    jobs:
-      get-repository-id:
-        runs-on: ubuntu-latest
-        steps:
-          - name: Checkout Repository
-            uses: actions/checkout@v4
-            with:
-              token: ${{ secrets.GK_PAT }}
-              path: ./source-repo
-    
-          - name: Get Repository ID
-            uses: actions/github-script@v6
-            with:
-              github-token: ${{ secrets.GK_PAT}}
-              script: |
-                const fs = require('fs');
-                const path = require('path');
-    
-                // Read repository names from repositories.txt file
-                const repoFilePath = path.join(process.env.GITHUB_WORKSPACE, 'source-repo', 'repositories.txt');
-                const repoNames = fs.readFileSync(repoFilePath, 'utf-8').split('\n').filter(Boolean);
-    
-                // Prepare output file
-                const outputFilePath = path.join(process.env.GITHUB_WORKSPACE, 'output-repo-id.txt');
-                const outputStream = fs.createWriteStream(outputFilePath);
-    
-                // Fetch repository IDs
-                for (const repoName of repoNames) {
-                  const [owner, repo] = repoName.split('/');
-                  const { data } = await github.repos.get({ owner, repo });
-                  outputStream.write(`Repo Name: ${repoName}, Repo ID: ${data.id}\n`);
-                }
-    
-                // Close the output file
-                outputStream.end();
-            env:
-                GITHUB_WORKSPACE: ${{ github.workspace }}
-    
-          - name: Upload output file
-            uses: actions/upload-artifact@v3
-            with:
-              name: output
-              path: ./output-repo-id.txt
+on:
+  workflow_dispatch:
+
+jobs:
+  get-repository-id:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GK_PAT }}
+          path: ./source-repo
+
+      - name: Get Repository ID
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GK_PAT}}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            // Read repository names from repositories.txt file
+            const repoFilePath = path.join(process.env.GITHUB_WORKSPACE, 'source-repo', 'repositories.txt');
+            const repoNames = fs.readFileSync(repoFilePath, 'utf-8').split('\n').filter(Boolean);
+
+            // Prepare output file
+            const outputFilePath = path.join(process.env.GITHUB_WORKSPACE, 'output-repo-id.txt');
+            const outputStream = fs.createWriteStream(outputFilePath);
+
+            // Fetch repository IDs
+            for (const repoName of repoNames) {
+              const [owner, repo] = repoName.split('/');
+              const { data } = await github.repos.get({ owner, repo });
+              outputStream.write(`Repo Name: ${repoName}, Repo ID: ${data.id}\n`);
+            }
+
+            // Close the output file
+            outputStream.end();
+
+      - name: Upload output file
+        uses: actions/upload-artifact@v3
+        with:
+          name: output-repo-id
+          path: ./output.txt
