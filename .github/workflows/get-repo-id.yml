@@ -37,13 +37,21 @@ jobs:
 
                 // console.log('Organization:', orgName);
                 // console.log('Repository:', repoName);
- 
-                const data  = await github.rest.repos.get({ 
-                    owner: orgName,
-                    repo: repoName,
-                });
+                try {
+                    const data  = await github.rest.repos.get({ 
+                        owner: orgName,
+                        repo: repoName,
+                    });
 
-                outputText += `${repoName}, ${data.data.id}\n`;         
+                    if (data.status != 200) {
+                            outputText += `${repoName}, API call failed with status code: ${data.status}\n`;
+                            continue;
+                    }
+                
+                    outputText += `${repoName}, ${data.data.id}\n`; 
+                } catch (err) {
+                    outputText += `${repoName}, API call errored out with error: ${err}\n`;
+                }    
             };
 
             // Write outputText to count_repo_objects.txt file
