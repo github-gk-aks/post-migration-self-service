@@ -19,36 +19,39 @@ jobs:
           github-token: ${{ secrets.GK_PAT}}
           script: |
             const fs = require('fs');
-            const path = require('path');
 
             // Read repository names from repositories.txt file
-            const repoFilePath = path.join(process.env.GITHUB_WORKSPACE, 'source-repo', 'repositories.txt');
-            const repoNames = fs.readFileSync(repoFilePath, 'utf-8').split('\n').filter(Boolean);
+            const repoFilePath = '${{ github.workspace }}/source-repo/repositories.txt';
+            let repoNames = [];
+            let outputText = 'Repo_Name, Repository-ID\n';
+            try {
+                const data = fs.readFileSync(repoFilePath, 'utf8');
+                repoNames = data.trim().split('\n');
+            } catch (err) {
+                console.error(`Error reading file: ${err}`);
+            }
+                // console.log('Repositories:', repos);
+            for (const repoFullName  of repoNames) {
 
-            // Prepare output file
-            const outputFilePath = path.join(process.env.GITHUB_WORKSPACE, 'output-repo-id.txt');
-            const outputStream = fs.createWriteStream(outputFilePath);
+                const [orgName, repoName] = repoFullName.split('/');
 
-            // Fetch repository IDs
-            const fetchRepoIds = async (github) => {
-                for (const repoName of repoNames) {
-                const [owner, repo] = repoName.split('/');
-                const { data } = await github.repos.get({ 
-                    owner: owner,
-                    repo: repo, 
+                // console.log('Organization:', orgName);
+                // console.log('Repository:', repoName);
+ 
+                const data  = await github.rest.repos.get({ 
+                    owner: orgName,
+                    repo: repoName,
                 });
-                outputStream.write(`Repo Name: ${repoName}, Repo ID: ${data.id}\n`);
-                }
+
+                outputText += `Repo Name: ${repoName}, Repo ID: ${data.id}\n`;         
             };
 
-            // Call the fetchRepoIds function and wait for it to complete
-            await fetchRepoIds(github);
-
-            // Close the output file
-            outputStream.end();
+            // Write outputText to count_repo_objects.txt file
+            const outputPath = '${{ github.workspace }}/source-repo/output/output-repo-id.txt';
+            fs.writeFileSync(outputPath, outputText);
 
       - name: Upload output file
         uses: actions/upload-artifact@v3
         with:
-          name: output-repo-id
-          path: ./output-repo-id.txt
+          name: output-repo-id.txt
+          path: ./source-repo/output
