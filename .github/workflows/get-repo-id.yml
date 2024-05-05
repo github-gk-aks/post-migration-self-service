@@ -30,7 +30,7 @@ jobs:
             const outputStream = fs.createWriteStream(outputFilePath);
 
             // Fetch repository IDs
-            const fetchRepoIds = async () => {
+            const fetchRepoIds = async (github) => {
                 for (const repoName of repoNames) {
                 const [owner, repo] = repoName.split('/');
                 const { data } = await github.repos.get({ 
@@ -42,8 +42,8 @@ jobs:
             };
 
             // Call the fetchRepoIds function and wait for it to complete
-            await fetchRepoIds();
-            
+            await fetchRepoIds(github);
+
             // Close the output file
             outputStream.end();
 
