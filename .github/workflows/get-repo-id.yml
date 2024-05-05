@@ -48,4 +48,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: output-repo-id.txt
-          path: ./source-repo/output
+          path: ./source-repo/output/output-repo-id.txt
