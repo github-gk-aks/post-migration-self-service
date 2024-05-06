@@ -13,12 +13,13 @@ jobs:
           token: ${{ secrets.GK_PAT }}
           path: ./source-repo
 
-      - name: Get Repository ID
+      - name: Unlock Repositories
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GK_PAT}}
           script: |
             const fs = require('fs');
+            const path = require('path');
 
             // Read repository names from repositories.txt file
             const repoFilePath = '${{ github.workspace }}/source-repo/repositories.txt';
