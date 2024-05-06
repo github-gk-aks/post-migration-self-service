@@ -1,0 +1,63 @@
+name: Unlock Repositories
+    
+on:
+  workflow_dispatch:
+
+jobs:
+  unlock-repositories:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GK_PAT }}
+          path: ./source-repo
+
+      - name: Get Repository ID
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GK_PAT}}
+          script: |
+            const fs = require('fs');
+
+            // Read repository names from repositories.txt file
+            const repoFilePath = '${{ github.workspace }}/source-repo/repositories.txt';
+            let repoNames = [];
+            let outputText = 'Repo_Name, Repository-ID\n';
+            try {
+                const data = fs.readFileSync(repoFilePath, 'utf8');
+                repoNames = data.trim().split('\n');
+            } catch (err) {
+                console.error(`Error reading file: ${err}`);
+            }
+                // console.log('Repositories:', repos);
+            for (const repoFullName  of repoNames) {
+
+                const [orgName, repoName] = repoFullName.split('/');
+
+                // console.log('Organization:', orgName);
+                // console.log('Repository:', repoName);
+                // Get migration ID from corresponding file in Files folder
+                const migrationFilePath = path.join('${{ github.workspace }}/source-repo/input', `${repoName}.txt`);
+
+                let migrationId = '';
+                try {
+                    const fileData = fs.readFileSync(migrationFilePath, 'utf8');
+                    const [, , id] = fileData.trim().split(',');
+                    migrationId = id.trim();
+                } catch (err) {
+                    console.error(`Error reading file: ${err}`);
+                }
+                // Unlock the repository
+                console.log(`Unlocking ${repoName} with migration ID ${migrationId}`);
+                try {
+                    await github.rest.migrations.unlockRepoForAuthenticatedUser({
+                        migration_id: migrationId,
+                        repo_name: repoName,
+                    });
+                    console.log(`Successfully unlocked ${repoName}`);
+                } catch (err) {
+                    console.error(`Error unlocking repository ${repoName}: ${err}`);
+                }
+            
+            }
