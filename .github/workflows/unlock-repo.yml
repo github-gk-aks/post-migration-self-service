@@ -36,8 +36,9 @@ jobs:
 
                 const [orgName, repoName] = repoFullName.split('/');
 
-                // console.log('Organization:', orgName);
-                // console.log('Repository:', repoName);
+                console.log('Organization:', orgName);
+                console.log('Repository:', repoName);
+
                 // Get migration ID from corresponding file in Files folder
                 const migrationFilePath = path.join('${{ github.workspace }}/source-repo/input', `${repoName}.txt`);
 
@@ -52,7 +53,8 @@ jobs:
                 // Unlock the repository
                 console.log(`Unlocking ${repoName} with migration ID ${migrationId}`);
                 try {
-                    await github.rest.migrations.unlockRepoForAuthenticatedUser({
+                    await github.rest.migrations.unlockRepoForOrg({
+                        org: orgName,
                         migration_id: migrationId,
                         repo_name: repoName,
                     });
