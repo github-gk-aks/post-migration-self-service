@@ -44,13 +44,13 @@ jobs:
                     });
 
                     if (data.status != 200) {
-                            outputText += `${repoName}, API call failed with status code: ${data.status}\n`;
+                            outputText += `${repoFullName}, API call failed with status code: ${data.status}\n`;
                             continue;
                     }
                 
-                    outputText += `${repoName}, ${data.data.id}\n`; 
+                    outputText += `${repoFullName}, ${data.data.id}\n`; 
                 } catch (err) {
-                    outputText += `${repoName}, API call errored out with error: ${err}\n`;
+                    outputText += `${repoFullName}, API call errored out with error: ${err}\n`;
                 }    
             };
 
@@ -63,3 +63,70 @@ jobs:
         with:
           name: output-repo-id.txt
           path: ./source-repo/output
+
+  update-repo-id:
+    needs: get-repository-id
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout central repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GK_PAT }}
+          path: ./source-repo
+
+      - name: Download output file
+        uses: actions/download-artifact@v3
+        with:
+          name: output-repo-id.txt
+          path: ./source-repo/output
+
+      - name: Update Repository ID in JSON file
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GK_PAT}}
+          script: |
+            const fs = require('fs');
+            const { execSync } = require('child_process');
+
+            // Read repository names and IDs from output-repo-id.txt file
+            const repoFilePath = '${{ github.workspace }}/source-repo/output/output-repo-id.txt';
+            let repoData = [];
+            try {
+                const data = fs.readFileSync(repoFilePath, 'utf8');
+                repoData = data.trim().split('\n').slice(1).map(line => {
+                    const [repoName, repoId] = line.split(', ');
+                    return { repoName, repoId };
+                });
+            } catch (err) {
+                console.error(`Error reading file: ${err}`);
+            }
+
+            for (const { repoName, repoId } of repoData) {
+                const [orgName, repo] = repoName.split('/');
+
+                // Checkout the repository
+                execSync(`git clone -b github-migration https://x-access-token:${process.env.GITHUB_TOKEN}@github.com/${orgName}/${repo}.git`);
+
+                // Read the JSON file
+                const jsonFilePath = `${repo}/${repo}-env-spec.json`;
+                let jsonData;
+                try {
+                    const data = fs.readFileSync(jsonFilePath, 'utf8');
+                    jsonData = JSON.parse(data);
+                } catch (err) {
+                    console.error(`Error reading file: ${err}`);
+                    continue;
+                }
+
+                // Replace the destinationRepositoryId
+                for (const key in jsonData) {
+                    jsonData[key].destinationRepositoryId = repoId;
+                }
+
+                // Write the updated JSON data back to the file
+                fs.writeFileSync(jsonFilePath, JSON.stringify(jsonData, null, 2));
+
+                // Commit and push the changes
+                execSync(`cd ${repo} && git config user.email "github-actions[bot]@users.noreply.github.com" && git config user.name "GitHub Actions" && git add . && git commit -m "Update destinationRepositoryId" && git push`);
+            }
+        
