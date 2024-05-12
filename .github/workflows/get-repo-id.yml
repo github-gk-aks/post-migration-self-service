@@ -105,7 +105,7 @@ jobs:
                 const [orgName, repo] = repoName.split('/');
 
                 // Checkout the repository
-                execSync(`git clone -b github-migration https://${process.env.GITHUB_TOKEN}@github.com/${orgName}/${repo}.git`);
+                execSync(`git clone -b github-migration https://${{ secrets.GK_PAT }}@github.com/${orgName}/${repo}.git`);
 
                 // Read the JSON file
                 const jsonFilePath = `${repo}/${repo}-env-spec.json`;
