@@ -20,7 +20,7 @@ on:
 
 jobs:
   trigger-repo-workflows:
-    if: contains(github.event.issue.labels.*.name, 'post-mg-steps')
+    if: contains(github.event.issue.labels.*.name, 'post-mg-steps1')
     runs-on: ubuntu-latest
     strategy:  
       matrix:
