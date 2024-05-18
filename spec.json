@@ -1,6 +1,6 @@
 {
-    "firstgithubrepo": {
-        "repository": "firstgithubrepo",
+    "production": {
+        "repository": "production",
         "organisation": "github-gk-aks"
     }
 }
