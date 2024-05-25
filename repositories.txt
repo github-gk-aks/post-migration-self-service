@@ -1,1 +1,1 @@
-github-gk-aks/terraform-aws-eks
+github-gk-aks/firstgithubrepo
