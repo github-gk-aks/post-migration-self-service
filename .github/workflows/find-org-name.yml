@@ -1,3 +1,4 @@
+#This GitHub Action, “Search Org Name”, is designed to search for the string ‘gk-aks-DIGITAL’ across multiple repositories listed in a file. It clones each repository, performs the search, logs the results to a text file, and commits any changes to the main branch of the source repository. The action is manually triggered.
 name: Search Org Name
 
 on:
