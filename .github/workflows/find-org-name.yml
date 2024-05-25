@@ -59,8 +59,8 @@ jobs:
             echo "Searching for the string 'gk-aks-DIGITAL' in the entire repository, excluding certain file extensions..."
 
             find ./target-repo -type f ! -iname "*.jpg" ! -iname "*.jpeg" ! -iname "*.xlsx" ! -iname "*.pdf" ! -iname "*.woff" ! -iname "*.woff2" ! -iname "*.png" ! -iname "*.gif" ! -iname "*.ico" ! -path "./target-repo/.git/*" -print0 | while IFS= read -r -d '' file; do
-            if [[ $(file -i "$file") != *charset=binary* ]]; then
-            #if [[ $(file -b --mime-type "$file") == text/* ]] || [[ $(file -b --mime-type "$file") == application/json ]]; then
+            if [[ -s "$file" ]]; then
+              if [[ $(file -i "$file") != *charset=binary* ]]; then
                 if grep -qEi 'gk-aks-DIGITAL' "$file"; then
                   echo "Processing file: $file"
                   echo "Repo:$repo, File:$file, Matched String:gk-aks-DIGITAL" >> "${{ github.workspace }}/source-repo/output/result-check-gk-aks-DIGITAL.txt"
@@ -70,6 +70,9 @@ jobs:
               else
               echo "Repo:$repo, File:$file, Not a text file" >> "${{ github.workspace }}/source-repo/output/result-check-gk-aks-DIGITAL.txt"
               fi
+            else
+              echo "Repo:$repo, File:$file, File is empty" >> "${{ github.workspace }}/source-repo/output/result-check-gk-aks-DIGITAL.txt"
+            fi
             done
 
             rm -rf "./target-repo"
