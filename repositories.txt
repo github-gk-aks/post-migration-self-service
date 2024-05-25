@@ -1,1 +1,1 @@
-github-gk-aks/secondgithubrepo
+github-gk-aks/terraform-aws-eks
