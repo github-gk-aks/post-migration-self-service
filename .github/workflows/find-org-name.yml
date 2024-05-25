@@ -1,4 +1,4 @@
-name: Find and Record Strings
+name: Search Org Name
 
 on:
   workflow_dispatch:
