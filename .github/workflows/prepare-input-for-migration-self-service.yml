@@ -1,0 +1,79 @@
+#This github workflow action file is to prepare a text file that contains all the repository names in a format that is accepted by the github migration self service solution to run. We simply copy the content from the output file generated and paste it in the issue in the github self service migration solution.
+#Here is the format of the output that this automation generates or the input that github migration self service requires
+# https://github.com/ak-gks-SHARED/firstgithubrepo.git gk-aks-SHARED
+# https://github.com/ak-gks-CONFIDENTIAL/secondgithubrepo.git gk-aks-CONFIDENTIAL
+
+name: Converting Excel to Txt input file
+
+on:
+  workflow_dispatch:
+
+jobs:
+  converting-to-txt:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout central repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_GITHUB_PAT }}
+          path: ./source-repo
+
+      - name: Set up jq and xlsx2csv
+        run: sudo apt-get install xlsx2csv jq
+
+      - name: Create output directory
+        run: |
+          if [ ! -d "${{ github.workspace }}/source-repo/output" ]; then
+            mkdir -p "${{ github.workspace }}/source-repo/output"
+          fi
+
+      - name: Iterate Over Excel
+        run: |
+            #!/bin/bash
+
+            # Define the input Excel file and intermediate CSV file
+            INPUT_EXCEL="${{ github.workspace }}/source-repo/repositories.xlsx"
+            INTERMEDIATE_CSV="${{ github.workspace }}/source-repo/intermediate.csv"
+            OUTPUT_TXT="${{ github.workspace }}/source-repo/output/excel-to-txt.txt"
+        
+            # Convert Excel to CSV
+            xlsx2csv "$INPUT_EXCEL" "$INTERMEDIATE_CSV"
+
+            # Clear or create the output file
+            > $OUTPUT_TXT
+
+            # Read the CSV file and process each line
+            awk -F',' 'NR>1 {
+                repo_name = $1
+                classification = $2
+
+                if (classification == "shared") {
+                    org_name = "Legal-and-General-Shared"
+                } else if (classification == "confidential") {
+                    org_name = "Legal-and-General-Confidential"
+                } else {
+                    org_name = "Unknown-Classification"
+                }
+
+                # Print the required format to the output file
+                printf "https://github.com/%s/%s %s\n", org_name, repo_name, org_name >> "'$OUTPUT_TXT'"
+            }' "$INTERMEDIATE_CSV"
+
+            # Clean up intermediate CSV file
+            rm "$INTERMEDIATE_CSV"
+
+            echo "Text file created at $OUTPUT_TXT"
+        
+        
+
+      - name: Upload txt data
+        uses: actions/upload-artifact@v4
+        with:
+            name: rexcel-to-txt.txt.txt
+            path: ${{ github.workspace }}/source-repo/output
+
+  
+        
+        
+      

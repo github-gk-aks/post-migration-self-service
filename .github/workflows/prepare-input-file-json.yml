@@ -1,0 +1,97 @@
+#This github workflow action file is used to prepare a output in json format that is required by most of the automation that we are writing. This workflow accepts input in excel format which contains the repository name, its classification and generates a output json document in the following format
+
+# {
+#     "p": {
+#         "secretname": "p",
+#         "destinationRepositoryName": "repo-01",
+#         "destinationRepositoryOwner": "targetorganization-a",
+#         "destinationPersonalAccessTokenName":"the_pat_a"
+#     },
+#     "q": {
+#         "secretname": "q",
+#         "destinationRepositoryName": "repo-02",
+#         "destinationRepositoryOwner": "targetorganization-b",
+#         "destinationPersonalAccessTokenName":"the_pat_b"
+#     }
+# }
+
+name: creating json input file
+
+on:
+  workflow_dispatch:
+
+jobs:
+  converting-json:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout central repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_GITHUB_PAT }}
+          path: ./source-repo
+
+      - name: Set up jq and xlsx2csv
+        run: sudo apt-get install xlsx2csv jq
+
+      - name: Create output directory
+        run: |
+          if [ ! -d "${{ github.workspace }}/source-repo/output" ]; then
+            mkdir -p "${{ github.workspace }}/source-repo/output"
+          fi
+
+      - name: Iterate Over Excel
+        run: |
+            #!/bin/bash
+
+            # Define the input Excel file and intermediate CSV file
+            INPUT_EXCEL="${{ github.workspace }}/source-repo/repositories.xlsx"
+            INTERMEDIATE_CSV="${{ github.workspace }}/source-repo/intermediate.csv"
+            OUTPUT_JSON="${{ github.workspace }}/source-repo/output/repositories.json"
+        
+            # Convert Excel to CSV
+            xlsx2csv "$INPUT_EXCEL" "$INTERMEDIATE_CSV"
+        
+            # Initialize the JSON object
+            echo "{" > $OUTPUT_JSON
+        
+            # Read the CSV file and process each line
+            awk -F',' 'NR>1 {
+                repo_name = $1
+                classification = $2
+        
+                if (classification == "shared") {
+                    organisation = "Legal-and-General-Shared"
+                } else if (classification == "confidential") {
+                    organisation = "Legal-and-General-Confidential"
+                } else {
+                    organisation = "Unknown-Classification"
+                }
+        
+                # Print the JSON entry
+                printf "    \"%s\": {\n        \"repository\": \"%s\",\n        \"organisation\": \"%s\"\n    },\n", repo_name, repo_name, organisation
+            }' "$INTERMEDIATE_CSV" >> $OUTPUT_JSON
+        
+            # Remove the trailing comma from the last entry
+            sed -i '$ s/,$//' $OUTPUT_JSON
+        
+            # Close the JSON object
+            echo "}" >> $OUTPUT_JSON
+        
+            # Clean up intermediate CSV file
+            rm "$INTERMEDIATE_CSV"
+        
+            echo "JSON file created at $OUTPUT_JSON"
+        
+        
+
+      - name: Upload json data
+        uses: actions/upload-artifact@v4
+        with:
+            name: repositories_input.json
+            path: ${{ github.workspace }}/source-repo/output
+
+  
+        
+        
+      
