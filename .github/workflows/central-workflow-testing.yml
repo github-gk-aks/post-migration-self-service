@@ -48,7 +48,7 @@ jobs:
         id: step-1
         run: |
           echo "Triggering workflow in ${{ matrix.repository }}"
-          curl -X POST \
+          response=$(curl -X POST \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.GK_PAT }}" \
           https://api.github.com/repos/${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}/${{ matrix.repository }}/dispatches \
@@ -58,7 +58,8 @@ jobs:
                 "repository": "${{ matrix.repository }}",
                 "ref": "github-migration"
               }
-            }'
+            }')
+            echo "Response: $response"
 
       # - name: Wait for 1 minute
       #   run: sleep 60
