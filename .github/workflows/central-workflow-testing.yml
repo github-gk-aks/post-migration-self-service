@@ -59,7 +59,15 @@ jobs:
                 "ref": "github-migration"
               }
             }')
-            echo "Response: $response"
+            http_code=$(cat response.txt)
+            echo "HTTP Response Code: $http_code"
+            if [ "$http_code" -ne 204 ]; then
+              echo "Error: Failed to trigger workflow"
+              echo "Response: $(cat response.txt)"
+              exit 1
+            else
+              echo "Successfully triggered workflow"
+            fi
 
       # - name: Wait for 1 minute
       #   run: sleep 60
