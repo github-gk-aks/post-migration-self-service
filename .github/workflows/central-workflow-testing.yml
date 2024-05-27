@@ -48,10 +48,11 @@ jobs:
         id: step-1
         run: |
           echo "Triggering workflow in ${{ matrix.repository }}"
-          response=$(curl -X POST \
+          echo "Triggering workflow in ${{ matrix.repository }}"
+          http_code=$(curl -s -o response_body.txt -w "%{http_code}" -X POST \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.GK_PAT }}" \
-          https://api.github.com/repos/${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}/${{ matrix.repository }}/dispatches \
+            https://api.github.com/repos/${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}/${{ matrix.repository }}/dispatches \
             -d '{
               "event_type": "replace-string-all",
               "client_payload": {
@@ -59,15 +60,14 @@ jobs:
                 "ref": "github-migration"
               }
             }')
-            http_code=$(cat response.txt)
-            echo "HTTP Response Code: $http_code"
-            if [ "$http_code" -ne 204 ]; then
-              echo "Error: Failed to trigger workflow"
-              echo "Response: $(cat response.txt)"
-              exit 1
-            else
-              echo "Successfully triggered workflow"
-            fi
+          echo "HTTP Response Code: $http_code"
+          if [ "$http_code" -ne 204 ]; then
+            echo "Error: Failed to trigger workflow"
+            cat response_body.txt
+            exit 1
+          else
+            echo "Successfully triggered workflow"
+          fi
 
       # - name: Wait for 1 minute
       #   run: sleep 60
