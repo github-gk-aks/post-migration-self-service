@@ -78,8 +78,8 @@ jobs:
             echo "Workflow run completed successfully."
           fi
 
-      # - name: Wait for 1 minute
-      #   run: sleep 60
+      - name: Wait for 1 minute
+        run: sleep 60
 
       # - name: Trigger Replace String All in Other Repositories
       #   id: step-1
