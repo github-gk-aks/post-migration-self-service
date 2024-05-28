@@ -27,47 +27,80 @@ jobs:
         repository: ${{ fromJson(github.event.issue.body).*.repository }}  # rep01, repo02
       max-parallel: 5
     steps:
-      # - name: Trigger Organization Change Workflow
-      #   id: step-1
-      #   uses: actions/github-script@v6
-      #   with:
-      #     github-token: ${{ secrets.GK_PAT}}
-      #     script: |
-      #       const response = await github.rest.actions.createWorkflowDispatch({
-      #         owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
-      #         repo: '${{ matrix.repository}}',
-      #         workflow_id: 'replace-string-all.yml', 
-      #         ref: 'github-migration'  
-      #       });
-      #       console.log(response.data);
+      - name: Trigger Organization Change Workflow
+        id: step-1
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GK_PAT}}
+          script: |
+            const response = await github.rest.actions.createWorkflowDispatch({
+              owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
+              repo: '${{ matrix.repository}}',
+              workflow_id: 'replace-string-all.yml', 
+              ref: 'github-migration'  
+            });
+            console.log(response.data);
+
+      - name: Wait for Workflow Run to Complete
+        id: wait-for-workflow
+        run: |
+          owner='${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}'
+          repo='${{ matrix.repository }}'
+          branch='github-migration'
+          workflow_run_id=$(curl -s \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: Bearer ${{ secrets.GK_PAT }}" \
+            "https://api.github.com/repos/$owner/$repo/actions/runs?branch=$branch&event=workflow_dispatch" \
+            | jq -r '.workflow_runs[0].id')
+          echo "Workflow Run ID: $workflow_run_id"
+
+          status="queued"
+          conclusion="null"
+          while [[ "$status" != "completed" ]]; do
+            sleep 30
+            response=$(curl -s \
+              -H "Accept: application/vnd.github.v3+json" \
+              -H "Authorization: Bearer ${{ secrets.GK_PAT }}" \
+              "https://api.github.com/repos/$owner/$repo/actions/runs/$workflow_run_id")
+            status=$(echo "$response" | jq -r '.status')
+            conclusion=$(echo "$response" | jq -r '.conclusion')
+            echo "Status: $status, Conclusion: $conclusion"
+          done
+
+          if [ "$conclusion" != "success" ]; then
+            echo "Workflow run failed or cancelled. Exiting..."
+            exit 1
+          else
+            echo "Workflow run completed successfully."
+          fi
 
       # - name: Wait for 1 minute
       #   run: sleep 60
 
-      - name: Trigger Replace String All in Other Repositories
-        id: step-1
-        run: |
-          echo "Triggering workflow in ${{ matrix.repository }}"
-          echo "Triggering workflow in ${{ matrix.repository }}"
-          http_code=$(curl -s -o response_body.txt -w "%{http_code}" -X POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GK_PAT }}" \
-            https://api.github.com/repos/${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}/${{ matrix.repository }}/dispatches \
-            -d '{
-              "event_type": "replace-string-all",
-              "client_payload": {
-                "repository": "${{ matrix.repository }}",
-                "ref": "github-migration"
-              }
-            }')
-          echo "HTTP Response Code: $http_code"
-          if [ "$http_code" -ne 204 ]; then
-            echo "Error: Failed to trigger workflow"
-            cat response_body.txt
-            exit 1
-          else
-            echo "Successfully triggered workflow"
-          fi
+      # - name: Trigger Replace String All in Other Repositories
+      #   id: step-1
+      #   run: |
+      #     echo "Triggering workflow in ${{ matrix.repository }}"
+      #     echo "Triggering workflow in ${{ matrix.repository }}"
+      #     http_code=$(curl -s -o response_body.txt -w "%{http_code}" -X POST \
+      #       -H "Accept: application/vnd.github+json" \
+      #       -H "Authorization: Bearer ${{ secrets.GK_PAT }}" \
+      #       https://api.github.com/repos/${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}/${{ matrix.repository }}/dispatches \
+      #       -d '{
+      #         "event_type": "replace-string-all",
+      #         "client_payload": {
+      #           "repository": "${{ matrix.repository }}",
+      #           "ref": "github-migration"
+      #         }
+      #       }')
+      #     echo "HTTP Response Code: $http_code"
+      #     if [ "$http_code" -ne 204 ]; then
+      #       echo "Error: Failed to trigger workflow"
+      #       cat response_body.txt
+      #       exit 1
+      #     else
+      #       echo "Successfully triggered workflow"
+      #     fi
 
       # - name: Wait for 1 minute
       #   run: sleep 60
