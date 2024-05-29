@@ -1,0 +1,79 @@
+#This file is prepare by Krushna. This workflow action file will get you all the environment settings for each environment for the repositories you provide.
+#It will take input from repositories.txt and it will generate output in artifacts
+
+name: Get Environment Data
+
+on:
+  workflow_dispatch:
+
+jobs:
+  environment-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout central repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_GITHUB_PAT }}
+          path: ./source-repo
+
+      - name: Set up jq
+        run: sudo apt-get install -y jq
+
+      - name: Create output directory
+        run: |
+          if [ ! -d "${{ github.workspace }}/source-repo/output" ]; then
+            mkdir -p "${{ github.workspace }}/source-repo/output"
+          fi
+
+      - name: Iterate Over Repos
+        run: |
+            #!/bin/bash
+
+            # Define the GitHub token and output file
+            GITHUB_TOKEN="${{ secrets.GH_GITHUB_PAT }}"
+            OUTPUT_FILE="${{ github.workspace }}/source-repo/output/environments_and_settings.json"
+        
+            # Clear or create the output file
+            > $OUTPUT_FILE
+        
+            # Read the repositories from the file
+            mapfile -t repositories < "${{ github.workspace }}/source-repo/repositories.txt"
+        
+            # Loop through each repository
+            for repo in "${repositories[@]}"; do
+                IFS='/' read -r org_name repo_name <<< "$repo"
+                echo "Processing repository: $org_name/$repo_name"
+            
+                # Get all environments for the repository
+                environments=$(curl -s -L \
+                    -H "Accept: application/vnd.github+json" \
+                    -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+                    -H "X-GitHub-Api-Version: 2022-11-28" \
+                    "https://api.github.com/repos/$org_name/$repo_name/environments" | jq -r '.environments[].name')
+            
+                # Loop through each environment
+                for environment in $environments; do
+                    # Get the environment settings
+                    environment_settings=$(curl -s -L \
+                        -H "Accept: application/vnd.github+json" \
+                        -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+                        -H "X-GitHub-Api-Version: 2022-11-28" \
+                        "https://api.github.com/repos/$org_name/$repo_name/environments/$environment" | jq '{can_admins_bypass, protection_rules, deployment_branch_policy}')
+                
+                    # Save the results to the output file
+                    echo -e "Repository: ${org_name}/${repo_name}\nEnvironment: ${environment}\nSettings:\n${environment_settings}\n" >> $OUTPUT_FILE
+                done
+            done
+        
+            echo "Completed processing all repositories. Results saved in ${OUTPUT_FILE}"
+        
+
+      - name: Upload environments and settings data
+        uses: actions/upload-artifact@v4
+        with:
+            name: environments_and_settings.json
+            path: ${{ github.workspace }}/source-repo/output
+
+
+  
