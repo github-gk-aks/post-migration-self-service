@@ -120,7 +120,8 @@ jobs:
             conclusion=$(echo "$response" | jq -r '.conclusion')
             echo "Status: $status, Conclusion: $conclusion"
           done
-
+          
+          echo "Final Status: $status, Final Conclusion: $conclusion"
           if [ "$conclusion" != "success" ]; then
             echo "Workflow run failed or cancelled. Exiting..."
             exit 1
