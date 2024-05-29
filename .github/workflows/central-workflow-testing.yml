@@ -27,7 +27,7 @@ jobs:
         repository: ${{ fromJson(github.event.issue.body).*.repository }}  # rep01, repo02
       max-parallel: 5
     steps:
-      - name: Trigger Replace String  org/repo in Other Repositories
+      - name: Trigger Replace String org/repo in Other Repositories
         id: step-1
         uses: actions/github-script@v6
         with:
@@ -44,6 +44,9 @@ jobs:
               }
             });
             console.log(response.data);
+
+      - name: Wait for 1 minute
+        run: sleep 30
 
       - name: Wait for org/rep Workflow Run to Complete
         id: wait-for-workflow
@@ -97,6 +100,9 @@ jobs:
                   "repository": "${{ matrix.repository }}"
               }
               }'
+
+      - name: Wait for 1 minute
+        run: sleep 60
 
       - name: Wait for team Workflow Run to Complete
         run: |
