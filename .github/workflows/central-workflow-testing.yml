@@ -54,7 +54,7 @@ jobs:
           response=$(curl -s \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: Bearer ${{ secrets.GK_PAT }}" \
-            "https://api.github.com/repos/$owner/$repo/actions/runs?branch=$branch&event=workflow_dispatch")
+            "https://api.github.com/repos/$owner/$repo/actions/runs?branch=$branch&event=workflow_dispatch&per_page=1&sort=created&direction=desc")
           workflow_run_id=$(echo "$response" | jq -r '.workflow_runs[0].id')
           workflow_name=$(echo "$response" | jq -r '.workflow_runs[0].name')
           echo "Workflow Run ID: $workflow_run_id"
@@ -106,7 +106,7 @@ jobs:
           response=$(curl -s \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: Bearer ${{ secrets.GK_PAT }}" \
-            "https://api.github.com/repos/$owner/$repo/actions/runs?branch=$branch&event=workflow_dispatch")
+            "https://api.github.com/repos/$owner/$repo/actions/runs?branch=$branch&event=workflow_dispatch&per_page=1&sort=created&direction=desc")
           workflow_run_id=$(echo "$response" | jq -r '.workflow_runs[0].id')
           workflow_name=$(echo "$response" | jq -r '.workflow_runs[0].name')
           echo "Workflow Run ID: $workflow_run_id"
