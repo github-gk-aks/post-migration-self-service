@@ -126,7 +126,7 @@ jobs:
               repo: '${{ matrix.repository}}',
               enabled: true
             });
-s
+
       - name: Allowing access to components in an internal repository
         run: |
           curl -L \
