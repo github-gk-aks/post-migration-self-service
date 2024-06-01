@@ -138,6 +138,7 @@ jobs:
           -d '{
             "access_level":"enterprise"
           }'
+
       - name: Replace Repository Topics
         uses: actions/github-script@v6
         with:
@@ -146,9 +147,7 @@ jobs:
             await github.rest.repos.replaceAllTopics({
               owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
               repo: '${{ matrix.repository}}',
-              names: [
-                'hello'
-              ]
+              names: []
             });
       
 
