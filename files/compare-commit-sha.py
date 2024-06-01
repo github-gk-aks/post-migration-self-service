@@ -1,4 +1,8 @@
 import pandas as pd
+from openpyxl import load_workbook
+from openpyxl.styles import PatternFill, Alignment
+from openpyxl.utils.dataframe import dataframe_to_rows
+import os
 
 # Load the two Excel files
 df_source = pd.read_excel('Branches_and_Commit_Source.xlsx')
@@ -23,21 +27,62 @@ df.loc[(df['_merge'] == 'right_only') & ~df['Branch'].str.startswith('dependabot
 # Drop the '_merge' column
 df = df.drop(columns='_merge')
 
-# Apply cell coloring based on 'colour-code' values
-def color_cells(val):
-    if val == 'GREEN':
-        return 'background-color: green'
-    elif val == 'RED':
-        return 'background-color: red'
-    elif val == 'YELLOW':
-        return 'background-color: yellow'
-    else:
-        return ''  # No coloring for other values
+# Save the main DataFrame to a temporary Excel file
+temp_file = 'report.xlsx'
+df.to_excel(temp_file, index=False)
 
-styled_df = df.style.applymap(color_cells, subset=['colour-code'])
+# Load the workbook and the first worksheet
+wb = load_workbook(temp_file)
+ws = wb.active
 
-# Write the styled result to a new Excel file
-styled_df.to_excel('final_report.xlsx', index=False)
+# Define the legends as a DataFrame
+legends = pd.DataFrame({
+    'Repository': [''] * 3,
+    'Branch': [''] * 3,
+    'Commit SHA': [''] * 3,
+    'colour-code': ['GREEN', 'RED', 'YELLOW'],
+    'Remark': [
+        'Entries which are added at target but not present in Source. These entries are Dependabot related',
+        'Entries which are present in Source but not present in Target',
+        'Entries which are added at target but not present in Source. These entries are not Dependabot related'
+    ]
+})
 
-# Write the result to a new Excel file
-# df.to_excel('final_report.xlsx', index=False)
+# Append a blank row
+ws.append([''] * len(df.columns))
+
+# Append the legends to the worksheet
+for r in dataframe_to_rows(legends, index=False, header=False):
+    ws.append(r)
+
+# Define colors for the color codes
+color_map = {
+    'GREEN': '00FF00',
+    'RED': 'FF0000',
+    'YELLOW': 'FFFF00',
+}
+
+# Apply cell coloring based on 'colour-code' values in the main data
+for row in ws.iter_rows(min_row=2, max_row=len(df)+1, min_col=4, max_col=4):
+    for cell in row:
+        fill_color = color_map.get(cell.value, 'FFFFFF')
+        cell.fill = PatternFill(start_color=fill_color, end_color=fill_color, fill_type='solid')
+
+# Apply cell coloring to the legend
+legend_start_row = len(df) + 3
+for row in ws.iter_rows(min_row=legend_start_row, max_row=legend_start_row+2, min_col=4, max_col=4):
+    for cell in row:
+        fill_color = color_map.get(cell.value, 'FFFFFF')
+        cell.fill = PatternFill(start_color=fill_color, end_color=fill_color, fill_type='solid')
+
+# Center align the legend text
+for row in ws.iter_rows(min_row=legend_start_row, max_row=legend_start_row+2, min_col=5, max_col=5):
+    for cell in row:
+        cell.alignment = Alignment(horizontal='center')
+
+# Save the final workbook
+final_file = 'final_report.xlsx'
+wb.save(final_file)
+
+# Remove the temporary file
+os.remove(temp_file)
