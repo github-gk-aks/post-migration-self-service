@@ -1,3 +1,19 @@
+"""
+This script processes and compares two Excel files containing branch and commit information. It performs the following tasks:
+
+1. Loads two Excel files ('Branches_and_Commit_Source.xlsx' and 'Branches_and_Commit_Target.xlsx') into pandas DataFrames.
+2. Merges these DataFrames to identify and classify differences between the source and target files.
+3. Adds 'colour-code' and 'Remark' columns based on the comparison:
+   - 'RED' for entries present only in the source file.
+   - 'GREEN' for 'dependabot/' branches present only in the target file.
+   - 'YELLOW' for other branches present only in the target file.
+4. Drops the merge indicator column and saves the updated DataFrame to a temporary Excel file.
+5. Appends legend information explaining the color codes to the worksheet.
+6. Applies cell coloring based on 'colour-code' values and centers the legend text.
+7. Saves the final annotated workbook as 'final_report.xlsx'.
+8. Removes the temporary Excel file used during processing.
+"""
+
 import pandas as pd
 from openpyxl import load_workbook
 from openpyxl.styles import PatternFill, Alignment
