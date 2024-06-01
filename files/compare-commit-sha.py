@@ -23,5 +23,21 @@ df.loc[(df['_merge'] == 'right_only') & ~df['Branch'].str.startswith('dependabot
 # Drop the '_merge' column
 df = df.drop(columns='_merge')
 
+# Apply cell coloring based on 'colour-code' values
+def color_cells(val):
+    if val == 'GREEN':
+        return 'background-color: green'
+    elif val == 'RED':
+        return 'background-color: red'
+    elif val == 'YELLOW':
+        return 'background-color: yellow'
+    else:
+        return ''  # No coloring for other values
+
+styled_df = df.style.applymap(color_cells, subset=['colour-code'])
+
+# Write the styled result to a new Excel file
+styled_df.to_excel('final_report.xlsx', index=False)
+
 # Write the result to a new Excel file
-df.to_excel('final_report.xlsx', index=False)
+# df.to_excel('final_report.xlsx', index=False)
