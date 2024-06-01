@@ -11,7 +11,7 @@ jobs:
       - name: Checkout central repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GH_GITHUB_PAT }}
+          token: ${{ secrets.GK_PAT }}
           path: ./source-repo
 
       - name: Set up jq
@@ -28,7 +28,7 @@ jobs:
             #!/bin/bash
 
             # Define the GitHub token and output file
-            GITHUB_TOKEN="${{ secrets.GH_GITHUB_PAT }}"
+            GITHUB_TOKEN="${{ secrets.GK_PAT }}"
             OUTPUT_FILE="${{ github.workspace }}/source-repo/output/branches_and_commits.txt"
         
             # Clear or create the output file
@@ -73,7 +73,7 @@ jobs:
 
   convert-to-excel:
     runs-on: ubuntu-latest
-    needs: find-strings
+    needs: find-commit-sha
             
     steps:
         - name: Download branches and commits artifact
