@@ -69,7 +69,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
             name: branches_and_commits
-            path: ${{ github.workspace }}/source-repo/output/branches_and_commits.txt
+            path: ${{ github.workspace }}/source-repo/output
 
   convert-to-excel:
     runs-on: ubuntu-latest
@@ -80,7 +80,7 @@ jobs:
           uses: actions/download-artifact@v4
           with:
             name: branches_and_commits
-            path: ${{ github.workspace }}/source-repo/output/branches_and_commits.txt
+            path: ${{ github.workspace }}/source-repo/output
             
         - name: Set up Python
           uses: actions/setup-python@v5
@@ -106,7 +106,7 @@ jobs:
           uses: actions/upload-artifact@v4
           with:
             name: branches_and_commits_excel
-            path: ${{ github.workspace }}/source-repo/output/branches_and_commits.xlsx
+            path: ${{ github.workspace }}/source-repo/output
         
         
       
