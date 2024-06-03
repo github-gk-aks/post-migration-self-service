@@ -45,7 +45,7 @@ jobs:
             pip install requests
 
         - name: Run Python script
-          run: python files/check_repo_size.py "${{ matrix.repository }}"
+          run: python ${{ github.workspace }}/files/check_repo_size.py "${{ matrix.repository }}"
        
         - name: Upload repo migration status
           uses: actions/upload-artifact@v3
