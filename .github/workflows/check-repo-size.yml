@@ -1,0 +1,55 @@
+name: Run Python Script to Get Repo Size
+
+on:
+    issues:
+      types:
+        - opened
+        - edited
+  
+  # expected issue body input should be structured as follows:
+    #     {
+    #         "rep01": {
+    #             "repository": "rep01",
+    #             "organisation": "org01"
+    #         },
+    #         "rep02": {
+    #             "repository": "rep02",
+    #             "organisation": "org02"
+    #         } 
+    #     }
+  
+
+jobs:
+  trigger-repo-workflows:
+      if: contains(github.event.issue.labels.*.name, 'post-mg-steps1')
+      runs-on: ubuntu-latest
+      env:
+        GK_PAT: ${{ secrets.GK_PAT }}
+      strategy:  
+        matrix:
+            repository: ${{ fromJson(github.event.issue.body).*.repository }}  # rep01, repo02
+        max-parallel: 1
+
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
+
+        - name: Set up Python
+          uses: actions/setup-python@v2
+          with:
+            python-version: '3.x'
+
+        - name: Install dependencies
+          run: |
+            python -m pip install --upgrade pip
+            pip install requests
+
+        - name: Run Python script
+          run: python files/check_repo_size.py "${{ matrix.repository }}"
+       
+        - name: Upload repo migration status
+          uses: actions/upload-artifact@v3
+          with:
+            name: statuses_repo_size
+            path: ${{ github.workspace }}/report_${{ matrix.repository }}.txt
+        
