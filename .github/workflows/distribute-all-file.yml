@@ -95,11 +95,26 @@ jobs:
                   has_changes=true
               fi
           done
+
+          # Copy JSON files that match the repository name
+          for json_file in $files_path/${repo}-*spec.json; do
+              if [[ "$json_file" == *"${repo}-spec.json" || "$json_file" == *"${repo}-env-spec.json" ]]; then
+                  json_file_name=$(basename "$json_file")
+              
+                  if [ -e "$target_repo_path/$json_file_name" ]; then
+                      echo "JSON file $json_file_name already exists in the root directory of $target_repo_path. Skipping..."
+                  else
+                      cp "$json_file" "$target_repo_path/"
+                      echo "Copied $json_file to $target_repo_path/"
+                      has_changes=true
+                  fi
+              fi
+          done
                     
           if [ "$has_changes" = true ]; then
             cd "$target_repo_path"
             git add .
-            git commit -m "Distribute YML, PY, and XLSX files"
+            git commit -m "Distribute YML, PY, JSON and XLSX files"
             git push origin "$branch"
           else
             echo "No changes to commit. Skipping commit step."
