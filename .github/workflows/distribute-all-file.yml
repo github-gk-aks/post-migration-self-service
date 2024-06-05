@@ -64,6 +64,8 @@ jobs:
           workflows_folder="$target_repo_path/.github/workflows"
           has_changes=false
 
+          shopt -s nullglob  # Ensure no match patterns expand to nothing
+
           for file in $files_path/*.{yml,py,json,xlsx}; do
               file_extension="${file##*.}"
               target_folder=""
@@ -78,8 +80,6 @@ jobs:
                   target_folder="script_migration"
               elif [ "$file_extension" == "xlsx" ]; then
                   target_folder="input_migration"
-              elfi ["$file_extension" == "json" ]; then
-                  target_folder="input_secret"
               fi
               
               if [ -e "$target_repo_path/$target_folder/$(basename $file)" ]; then
