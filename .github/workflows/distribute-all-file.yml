@@ -100,16 +100,22 @@ jobs:
           for json_file in $files_path/${repo}-*spec.json; do
               if [[ "$json_file" == *"${repo}-spec.json" || "$json_file" == *"${repo}-env-spec.json" ]]; then
                   json_file_name=$(basename "$json_file")
-              
-                  if [ -e "$target_repo_path/$json_file_name" ]; then
-                      echo "JSON file $json_file_name already exists in the root directory of $target_repo_path. Skipping..."
+                  target_folder="input_json"  # New target folder for JSON files
+        
+                  if [ ! -d "$target_repo_path/$target_folder" ]; then
+                      echo "Creating folder: $target_folder"
+                      mkdir -p "$target_repo_path/$target_folder"
+                  fi
+                  
+                  if [ -e "$target_repo_path/$target_folder/$json_file_name" ]; then
+                      echo "JSON file $json_file_name already exists in $target_repo_path/$target_folder/. Skipping..."
                   else
-                      cp "$json_file" "$target_repo_path/"
-                      echo "Copied $json_file to $target_repo_path/"
+                      cp "$json_file" "$target_repo_path/$target_folder/"
+                      echo "Copied $json_file to $target_repo_path/$target_folder/"
                       has_changes=true
                   fi
               fi
-          done
+           done
                     
           if [ "$has_changes" = true ]; then
             cd "$target_repo_path"
