@@ -25,7 +25,7 @@ jobs:
     strategy:  
       matrix:
         repository: ${{ fromJson(github.event.issue.body).*.repository }}  # rep01, repo02
-      max-parallel: 1
+      max-parallel: 5
     steps:
       - name: Trigger Organization Change Workflow
         id: step-1

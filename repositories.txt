@@ -1,1 +1,1 @@
-github-gk-aks/firstgithubrepo
+github-gk-aks/secondgithubrepo
