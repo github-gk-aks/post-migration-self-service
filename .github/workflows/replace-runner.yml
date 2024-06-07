@@ -81,7 +81,7 @@ jobs:
                         *)
                             # Replace ubuntu-latest with windows-latest (case insensitive)
                             sed -i 's/ubuntu-latest/windows-latest/Ig' "$file"
-                            echo "$repo_name;$ile;String Replaced Successfully >> "${{ github.workspace }}/source-repo/replace_runner_output.txt"
+                            echo "$repo_name;$file;String Replaced Successfully" >> "${{ github.workspace }}/source-repo/replace_runner_output.txt"
                             ;;
                     esac
                   fi
@@ -95,7 +95,7 @@ jobs:
                           *)
                               # Replace ubuntu-latest with windows-latest (case insensitive)
                               sed -i 's/ubuntu-latest/windows-latest/Ig' "$file"
-                              echo "$repo_name;$ile;String Replaced Successfully >> "${{ github.workspace }}/source-repo/replace_runner_output.txt"
+                              echo "$repo_name;$file;String Replaced Successfully" >> "${{ github.workspace }}/source-repo/replace_runner_output.txt"
                               ;;
                       esac
                   fi
