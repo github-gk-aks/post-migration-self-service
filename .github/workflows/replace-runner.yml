@@ -16,8 +16,7 @@ jobs:
         with:
             token: ${{ secrets.GK_PAT }}
             path: ./source-repo
-
-     
+   
       - name: Import GPG key
         run: |
           echo "${GPG_PRIVATE_KEY}" | gpg --batch --import
@@ -104,6 +103,7 @@ jobs:
               cd "./target-repo"
 
               if [ -n "$(git status --porcelain)" ]; then
+                echo "Inside the commit loop"
                 #git pull origin github-migration
                 git add .
                 git commit -S -m "Replace Runner - $(date +"%Y-%m-%d %H:%M:%S")"
