@@ -101,6 +101,18 @@ jobs:
                   fi
                 done
               fi
+              cd "./target-repo"
+
+              if [ -n "$(git status --porcelain)" ]; then
+                #git pull origin github-migration
+                git add .
+                git commit -S -m "Replace Runner - $(date +"%Y-%m-%d %H:%M:%S")"
+                git push origin github-migration
+              else
+                echo "There are no changes to commit"
+              fi
+              cd ..
+              rm -rf "./target-repo"
           done
         
       - name: Upload runner change report as artifact
@@ -109,25 +121,25 @@ jobs:
             name: runner-change-report
             path: ${{ github.workspace }}/source-repo
 
-      # - name: Check for Changes
-      #   id: check_changes
-      #   run: |
-      #     if git diff --quiet; then
-      #       echo "No changes to commit. Skipping commit step."
-      #       echo "::set-output name=changes::false"
-      #     else
-      #       echo "::set-output name=changes::true"
-      #     fi
-      #   shell: bash
+      - name: Check for Changes
+        id: check_changes
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit. Skipping commit step."
+            echo "::set-output name=changes::false"
+          else
+            echo "::set-output name=changes::true"
+          fi
+        shell: bash
 
-      # - name: Commit Changes
-      #   if: steps.check_changes.outputs.changes == 'true'
-      #   run: |
-      #       git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
-      #       git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
-      #       git add .
-      #       git commit -m "Replace runs-on parameter - $(date +"%Y-%m-%d %H:%M:%S")"
-      #       git push  
-      #   working-directory: ${{ github.workspace }}
-      #   env:
-      #       GITHUB_TOKEN: ${{ secrets.GK_PAT }}
+      - name: Commit Changes
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+            git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+            git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
+            git add .
+            git commit -m "Replace runs-on parameter - $(date +"%Y-%m-%d %H:%M:%S")"
+            git push  
+        working-directory: ${{ github.workspace }}
+        env:
+            GITHUB_TOKEN: ${{ secrets.GK_PAT }}
