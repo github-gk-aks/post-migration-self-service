@@ -18,20 +18,28 @@ jobs:
             path: ./source-repo
 
      
-      - name: Add the custom gpg siging program that passes the passphrase to the gpg CLI
+      - name: Import GPG key
         run: |
-            rm -rf /tmp/gpg.sh
-            echo '#!/bin/bash' >> /tmp/gpg.sh
-            echo 'gpg --batch --pinentry-mode=loopback --passphrase $GPG_KEY_PASSPHRASE $@' >> /tmp/gpg.sh
-            chmod +x /tmp/gpg.sh
+          echo "${GPG_PRIVATE_KEY}" | gpg --batch --import
+        env: 
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
+      - name: Add the custom gpg signing program that passes the passphrase to the gpg CLI
+        run: |
+          rm -rf /tmp/gpg.sh
+          echo '#!/bin/bash' >> /tmp/gpg.sh
+          echo 'gpg --batch --pinentry-mode=loopback --passphrase $GPG_KEY_PASSPHRASE $@' >> /tmp/gpg.sh
+          chmod +x /tmp/gpg.sh
 
       - name: Setup git
         run: |
-            git config commit.gpgsign true
-            git config user.signingkey $GPG_KEY_ID
-            git config gpg.program /tmp/gpg.sh
+          git config --global user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+          git config --global user.name ${{ secrets.GIT_COMMITTER_NAME }}
+          git config --global commit.gpgsign true
+          git config --global user.signingkey $GPG_KEY_ID
+          git config --global gpg.program /tmp/gpg.sh
         env:
-            GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
 
       - name: Replace Strings in Workflow Files
         run: |
