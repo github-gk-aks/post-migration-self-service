@@ -108,7 +108,7 @@ jobs:
                 execSync(`git clone -b github-migration https://${{ secrets.GK_PAT }}@github.com/${orgName}/${repo}.git`);
 
                 // Read the JSON file
-                const jsonFilePath = `${repo}/${repo}-env-spec.json`;
+                const jsonFilePath = `${repo}/json_migration/${repo}-env-spec.json`;
                 let jsonData;
                 try {
                     const data = fs.readFileSync(jsonFilePath, 'utf8');
@@ -127,6 +127,42 @@ jobs:
                 fs.writeFileSync(jsonFilePath, JSON.stringify(jsonData, null, 2));
 
                 // Commit and push the changes
-                execSync(`cd ${repo} && git config user.email "github-actions[bot]@users.noreply.github.com" && git config user.name "GitHub Actions" && git add . && git commit -m "Update destinationRepositoryId" && git push`);
+                //execSync(`cd ${repo} && git config user.email "github-actions[bot]@users.noreply.github.com" && git config user.name "GitHub Actions" && git add . && git commit -m "Update destinationRepositoryId" && git push`);
             }
-        
+    
+      - name: Import GPG key
+        run: |
+            echo "${GPG_PRIVATE_KEY}" | gpg --batch --import
+        env: 
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+  
+      - name: Add the custom gpg siging program that passes the passphrase to the gpg CLI
+        run: |
+            rm -rf /tmp/gpg.sh
+            echo '#!/bin/bash' >> /tmp/gpg.sh
+            echo 'gpg --batch --pinentry-mode=loopback --passphrase $GPG_KEY_PASSPHRASE $@' >> /tmp/gpg.sh
+            chmod +x /tmp/gpg.sh
+  
+      - name: Setup git
+        run: |
+              git config commit.gpgsign true
+              git config user.signingkey $GPG_KEY_ID
+              git config gpg.program /tmp/gpg.sh
+        env:
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+
+      - name: Commit Changes
+        run: |
+            # cd ${{ github.workspace }}/source-repo/output
+            if [ -n "$(git status --porcelain)" ]; then
+              git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+              git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
+              git add create-pr-output.txt
+              git commit -S -m "Update destinationRepositoryId- $(date +"%Y-%m-%d %H:%M:%S")" 
+              git push
+            else
+              echo "No changes to commit."
+            fi
+        env:
+          GPG_KEY_PASSPHRASE: ${{ secrets.PASSPHRASE }}
+        working-directory: ${{ github.workspace }}
