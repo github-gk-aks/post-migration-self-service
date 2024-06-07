@@ -103,13 +103,11 @@ jobs:
               cd "./target-repo"
 
               if [ -n "$(git status --porcelain)" ]; then
-                echo "Inside the commit loop"
-                #git pull origin github-migration
                 git add .
                 git commit -S -m "Replace Runner - $(date +"%Y-%m-%d %H:%M:%S")"
                 git push origin github-migration
               else
-                echo "There are no changes to commit"
+              cho "$repo_name;NA;String Not Found" >> "${{ github.workspace }}/source-repo/replace_runner_output.txt"
               fi
               cd ..
               rm -rf "./target-repo"
