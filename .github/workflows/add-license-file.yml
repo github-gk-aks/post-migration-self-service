@@ -52,45 +52,47 @@ jobs:
           for repo in "${repositories[@]}"; do
             echo "Processing repository: $repo"
 
-            # Clone target repository
-            git clone --depth 1  "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./target-repo"
+            # Get default branch using GitHub API
+            default_branch=$(curl -s -H "Authorization: token ${{ secrets.GK_PAT }}" "https://api.github.com/repos/$repo" | jq -r .default_branch)
+
+            echo "Default branch for $repo is $default_branch"
+
+            # Clone default branch to check for LICENSE file
+            git clone --depth 1 -b "$default_branch" "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./default-branch-repo"
 
             # Check if LICENSE file exists in default branch
-            if [ ! -f "${{ github.workspace }}/target-repo/LICENSE" ]; then
+            if [ ! -f "./default-branch-repo/LICENSE" ]; then
+              echo "LICENSE file does not exist in the default branch. Proceeding to add it to the github-migration branch."
 
-              cd "${{ github.workspace }}/target-repo"
+              # Clone target repository's github-migration branch
+              git clone --depth 1 -b "github-migration" "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./target-repo"
 
-              if git show-ref --verify --quiet refs/heads/github-migration; then
-                git checkout github-migration origin/github-migration
-                git pull origin github-migration
-              else
-                git checkout -b github-migration
-                git pull origin github-migration
-              fi
-
-              if cp "${{ github.workspace }}/source-repo/data/LICENSE" "${{ github.workspace }}/target-repo/LICENSE" >> "${{ github.workspace }}/source-repo/output/add-license-file-errors.txt" 2>&1; then
+              # Copy LICENSE file from source to target repository
+              if cp "${{ github.workspace }}/source-repo/data/LICENSE" "./target-repo/LICENSE" >> "${{ github.workspace }}/source-repo/output/add-license-file-errors.txt" 2>&1; then
                 echo "LICENSE file copied successfully."
                 echo "$repo;License File Copied Successfully." >> "${{ github.workspace }}/source-repo/output/add-license-file.txt"
               else
                 error_message=$(tail -n 1 "${{ github.workspace }}/source-repo/output/add-license-file-errors.txt")
                 echo "Error: Failed to copy LICENSE file."
-                echo "$repo;Failed to Copy License File.;$error_message" >> "${{ github.workspace }}/source-repo/output/add-license-file.txt"
+                echo "$repo;Failed to Copy License File. ; $error_message" >> "${{ github.workspace }}/source-repo/output/add-license-file.txt"
               fi
-            else
-              echo "License file already exists"
-              echo "$repo;License File Already Exists." >> "${{ github.workspace }}/source-repo/output/add-license-file.txt"
-            fi
               
               # Stage and commit the changes for target repository
-
-            if [ -n "$(git status --porcelain)" ]; then
-                git add LICENSE
-                git commit -S -m "Add LICENSE File - $(date +"%Y-%m-%d %H:%M:%S")" 
-                git push origin github-migration
+              cd "./target-repo"
+              if [ -n "$(git status --porcelain)" ]; then
+                  git pull origin github-migration
+                  git add LICENSE
+                  git commit -S -m "Add LICENSE File - $(date +"%Y-%m-%d %H:%M:%S")" 
+                  git push origin github-migration
+              else
+                  echo "No changes to commit."
+              fi
             else
-                echo "No changes to commit."
+              echo "LICENSE file already exists in the default branch."
+              echo "$repo ; License File Already Exists in Default Branch." >> "${{ github.workspace }}/source-repo/output/add-license-file.txt"
             fi
 
+            # Update output file in central repository
             # cd "${{ github.workspace }}/source-repo/output"
             # if [ -n "$(git status --porcelain)" ]; then
             #     git pull origin main
@@ -100,10 +102,16 @@ jobs:
             # else
             #     echo "No changes to commit."
             # fi
-           
+
             # Clean up
             cd ..
-            rm -rf "${{ github.workspace }}/target-repo"
+            rm -rf "./default-branch-repo" "./target-repo"
           done
         env:
           GPG_KEY_PASSPHRASE: ${{ secrets.PASSPHRASE }}
+
+      - name: Upload License File Check Output
+        uses: actions/upload-artifact@v4
+        with:
+            name: license_file_report
+            path: ${{ github.workspace }}/source-repo/output     
