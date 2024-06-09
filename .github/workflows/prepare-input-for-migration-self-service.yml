@@ -16,7 +16,7 @@ jobs:
       - name: Checkout central repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GH_GITHUB_PAT }}
+          token: ${{ secrets.GK_PAT }}
           path: ./source-repo
 
       - name: Set up jq and xlsx2csv

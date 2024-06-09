@@ -2,6 +2,10 @@ name: Find and Record Strings
 
 on:
   workflow_dispatch:
+    inputs:
+      search_string:
+        description: 'Search String'
+        required: true
 
 jobs:
   find-strings:
@@ -81,9 +85,9 @@ jobs:
               #if ls "./target-repo/.github/workflows/*.yml "./target-repo/.github/workflows"/*.yaml &> /dev/null; then
                   for file in ./target-repo/.github/workflows/*.yml; do
                     if [ -e "$file" ]; then
-                      if grep -qE 'github-script' "$file"; then
+                      if grep -qE '${{ github.event.inputs.search_string }}' "$file"; then
                         echo "Processing file:$file"
-                        echo "Repo:$repo, File:$file, Matched String:ACCESS_TOKEN" >> "${{ github.workspace }}/source-repo/output/result-check-access_token.txt"
+                        echo "Repo:$repo, File:$file, Matched String:${{ github.event.inputs.search_string }}" >> "${{ github.workspace }}/source-repo/output/result-check-access_token.txt"
                       else
                         echo "Repo:$repo, File:$file, No match found" >> "${{ github.workspace }}/source-repo/output/result-check-access_token.txt"
                       fi
@@ -93,7 +97,7 @@ jobs:
                     if [ -e "$file" ]; then
                       if grep -qE 'github-script' "$file"; then
                         echo "Processing file: $file"
-                        echo "Repo:$repo, File:$file, Matched String:ACCESS_TOKEN" >> "${{ github.workspace }}/source-repo/output/result-check-access_token.txt"
+                        echo "Repo:$repo, File:$file, Matched String:${{ github.event.inputs.search_string }}" >> "${{ github.workspace }}/source-repo/output/result-check-access_token.txt"
                       else
                         echo "Repo:$repo, File:$file, No match found" >> "${{ github.workspace }}/source-repo/output/result-check-access_token.txt"
                       fi
@@ -119,7 +123,7 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             git pull origin main
             git add result-check-access_token.txt
-            git commit -S -m "Add result-check-access_token.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
+            git commit -S -m "Add result-${{ github.event.inputs.search_string }}.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
             git push origin main
           else
               echo "There are no changes to commit."
