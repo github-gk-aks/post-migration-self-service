@@ -52,13 +52,13 @@ jobs:
           for repo in "${repositories[@]}"; do
             echo "Processing repository: $repo"
 
-            # Get default branch using GitHub API
-            default_branch=$(curl -s -H "Authorization: token ${{ secrets.GK_PAT }}" "https://api.github.com/repos/$repo" | jq -r .default_branch)
+            # # Get default branch using GitHub API
+            # default_branch=$(curl -s -H "Authorization: token ${{ secrets.GK_PAT }}" "https://api.github.com/repos/$repo" | jq -r .default_branch)
 
-            echo "Default branch for $repo is $default_branch"
+            # echo "Default branch for $repo is $default_branch"
 
             # Clone default branch to check for LICENSE file
-            git clone --depth 1 -b "$default_branch" "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./default-branch-repo"
+            git clone --depth 1 "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./default-branch-repo"
 
             # Check if LICENSE file exists in default branch
             if [ ! -f "./default-branch-repo/LICENSE" ]; then
