@@ -87,9 +87,9 @@ jobs:
                     if [ -e "$file" ]; then
                       if grep -qE '${{ github.event.inputs.search_string }}' "$file"; then
                         echo "Processing file:$file"
-                        echo "Repo:$repo, File:$file, Matched String:${{ github.event.inputs.search_string }}" >> "${{ github.workspace }}/source-repo/output/result-check-access_token.txt"
+                        echo "Repo:$repo, File:$file, Matched String:${{ github.event.inputs.search_string }}" >> "${{ github.workspace }}/source-repo/output/result-check-${{ github.event.inputs.search_string }}.txt"
                       else
-                        echo "Repo:$repo, File:$file, No match found" >> "${{ github.workspace }}/source-repo/output/result-check-access_token.txt"
+                        echo "Repo:$repo, File:$file, No match found" >> "${{ github.workspace }}/source-repo/output/result-check-${{ github.event.inputs.search_string }}.txt"
                       fi
                     fi
                    done 
@@ -97,20 +97,20 @@ jobs:
                     if [ -e "$file" ]; then
                       if grep -qE 'github-script' "$file"; then
                         echo "Processing file: $file"
-                        echo "Repo:$repo, File:$file, Matched String:${{ github.event.inputs.search_string }}" >> "${{ github.workspace }}/source-repo/output/result-check-access_token.txt"
+                        echo "Repo:$repo, File:$file, Matched String:${{ github.event.inputs.search_string }}" >> "${{ github.workspace }}/source-repo/output/result-check-${{ github.event.inputs.search_string }}.txt"
                       else
-                        echo "Repo:$repo, File:$file, No match found" >> "${{ github.workspace }}/source-repo/output/result-check-access_token.txt"
+                        echo "Repo:$repo, File:$file, No match found" >> "${{ github.workspace }}/source-repo/output/result-check-${{ github.event.inputs.search_string }}.txt"
                       fi
                     fi
                   done
 
               else
-              echo "Repo:$repo, File: , *.yml and *.yaml files not found." >> ${{ github.workspace }}/source-repo/output/result-check-access_token.txt
+              echo "Repo:$repo, File: , *.yml and *.yaml files not found." >> ${{ github.workspace }}/source-repo/output/result-check-${{ github.event.inputs.search_string }}.txt
               fi
 
             else
-              echo ".github/workflows directory not found. Appending information to result-check-access_token.txt."
-              echo "Repo:$repo, File: , .github/workflows directory not found." >> ${{ github.workspace }}/source-repo/output/result-check-access_token.txt
+              echo ".github/workflows directory not found. Appending information to result-check-${{ github.event.inputs.search_string }}.txt."
+              echo "Repo:$repo, File: , .github/workflows directory not found." >> ${{ github.workspace }}/source-repo/output/result-check-${{ github.event.inputs.search_string }}.txt
             fi
 
           
@@ -122,8 +122,8 @@ jobs:
           cd ${{ github.workspace }}/source-repo/output
           if [ -n "$(git status --porcelain)" ]; then
             git pull origin main
-            git add result-check-access_token.txt
-            git commit -S -m "Add result-${{ github.event.inputs.search_string }}.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
+            git add result-check-${{ github.event.inputs.search_string }}.txt
+            git commit -S -m "Add result-check-${{ github.event.inputs.search_string }}.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
             git push origin main
           else
               echo "There are no changes to commit."
