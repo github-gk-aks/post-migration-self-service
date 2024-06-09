@@ -61,7 +61,7 @@ jobs:
               cd "${{ github.workspace }}/target-repo"
 
               if git show-ref --verify --quiet refs/heads/github-migration; then
-                git checkout github-migration
+                git checkout github-migration origin/github-migration
                 git pull origin github-migration
               else
                 git checkout -b github-migration
@@ -84,7 +84,6 @@ jobs:
               # Stage and commit the changes for target repository
 
             if [ -n "$(git status --porcelain)" ]; then
-                git pull origin github-migration
                 git add LICENSE
                 git commit -S -m "Add LICENSE File - $(date +"%Y-%m-%d %H:%M:%S")" 
                 git push origin github-migration
