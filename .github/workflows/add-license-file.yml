@@ -61,7 +61,7 @@ jobs:
               cd "${{ github.workspace }}/target-repo"
 
               # Switch to the github-migration branch
-              git checkout -b github-migration origin/github-migration
+              git checkout github-migration origin/github-migration
 
               if cp "${{ github.workspace }}/source-repo/data/LICENSE" "${{ github.workspace }}/target-repo/LICENSE" >> "${{ github.workspace }}/source-repo/output/add-license-file-errors.txt" 2>&1; then
                 echo "LICENSE file copied successfully."
