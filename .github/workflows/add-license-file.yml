@@ -60,7 +60,7 @@ jobs:
 
               cd "${{ github.workspace }}/target-repo"
 
-              # if git show-ref --verify --quiet refs/heads/github-migration; then
+              if git show-ref --verify --quiet refs/heads/github-migration; then
                 git checkout github-migration
                 git pull origin github-migration
               else
