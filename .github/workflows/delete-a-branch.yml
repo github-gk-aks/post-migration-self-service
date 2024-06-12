@@ -53,6 +53,8 @@ jobs:
             status_code=$(curl -X DELETE -s -o /dev/null -w "%{http_code}" -H "Authorization: token ${{ secrets.GK_PAT }}" \
                 "https://api.github.com/repos/$org/$repo/git/refs/heads/github-migration")
 
+            echo "Status code is: $status_code"
+
             if [ "$status_code" -eq 204 ]; then
                 echo "Branch 'github-migration' deleted in $org/$repo"
             else
