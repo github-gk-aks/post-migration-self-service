@@ -124,7 +124,8 @@ jobs:
                 // Fetch the list of teams for the repository
                 const teamsResponse = await github.rest.repos.listTeams({
                   owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
-                  repo: '${{ matrix.repository }}'
+                  repo: '${{ matrix.repository }}',
+                  per_page: 100
                 });
         
                 if (teamsResponse.status !== 200) {
