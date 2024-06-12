@@ -50,9 +50,14 @@ jobs:
 
           if [ "$branch_name" == "github-migration" ]; then
             # Delete the branch
-            curl -X DELETE -s -H "Authorization: token ${{ secrets.GK_PAT }}" \
+            status_code=$(curl -X DELETE -s -o /dev/null -w "%{http_code}" -H "Authorization: token ${{ secrets.GK_PAT }}" \
                 "https://api.github.com/repos/$org/$repo/git/refs/heads/github-migration"
-            echo "Branch 'github-migration' deleted in $org/$repo"
+
+            if [ "$status_code" -eq 204 ]; then
+                echo "Branch 'github-migration' deleted in $org/$repo"
+            else
+                echo "Failed to delete branch 'github-migration' in $org/$repo. Status code: $status_code"
+            fi
           else
             echo "Branch 'github-migration' not found in $org/$repo"
           fi
