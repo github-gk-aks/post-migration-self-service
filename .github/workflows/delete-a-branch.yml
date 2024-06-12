@@ -1,0 +1,58 @@
+name: Delete Branch in Repos
+
+on:
+  issues:
+    types:
+      - opened
+      - edited
+
+# Expected issue body input should be structured as follows:
+#     {
+#         "rep01": {
+#             "repository": "rep01",
+#             "organisation": "org01"
+#         },
+#         "rep02": {
+#             "repository": "rep02",
+#             "organisation": "org02"
+#         } 
+#     }
+
+jobs:
+  delete-branch:
+    if: contains(github.event.issue.labels.*.name, 'branch-deletion')
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        repository: ${{ fromJson(github.event.issue.body).*.repository }} # Using JSON to pass the repo info
+      max-parallel: 10
+      fail-fast: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Delete branch
+        run: |
+          repo='${{ matrix.repository }}'
+          org='${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}'
+
+          echo "Processing repository: $org/$repo"
+
+          # Check if the branch exists
+          branch_info=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              "https://api.github.com/repos/$org/$repo/branches/github-migration")
+
+          branch_name=$(echo "$branch_info" | jq -r '.name')
+
+          if [ "$branch_name" == "github-migration" ]; then
+            # Delete the branch
+            curl -X DELETE -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                "https://api.github.com/repos/$org/$repo/git/refs/heads/github-migration"
+            echo "Branch 'github-migration' deleted in $org/$repo"
+          else
+            echo "Branch 'github-migration' not found in $org/$repo"
+          fi
