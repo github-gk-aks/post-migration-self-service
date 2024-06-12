@@ -50,7 +50,7 @@ jobs:
 
           if [ "$branch_name" == "github-migration" ]; then
             # Delete the branch
-            curl -X DELETE -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            curl -X DELETE -s -H "Authorization: token ${{ secrets.GK_PAT }}" \
                 "https://api.github.com/repos/$org/$repo/git/refs/heads/github-migration"
             echo "Branch 'github-migration' deleted in $org/$repo"
           else
