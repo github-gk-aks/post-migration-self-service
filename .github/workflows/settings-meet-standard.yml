@@ -120,6 +120,22 @@ jobs:
             const defaultBranch = '${{ steps.default-branch.outputs.default_branch }}';
             const repoName = '${{ matrix.repository }}';
             try {
+
+                // Fetch the list of teams for the repository
+                const teamsResponse = await github.rest.repos.listTeams({
+                  owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
+                  repo: '${{ matrix.repository }}'
+                });
+        
+                if (teamsResponse.status !== 200) {
+                  throw new Error(`Failed to fetch teams for repository ${repoName}`);
+                }
+        
+                // Filter out the 'security-write' team
+                const teams = teamsResponse.data
+                  .filter(team => team.slug !== 'security-write')
+                  .map(team => team.slug);
+    
                 const response = await github.rest.repos.updateBranchProtection({
                 owner: '${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}',
                 repo: '${{ matrix.repository }}',
@@ -140,7 +156,7 @@ jobs:
                 enforce_admins: true,
                 restrictions: {
                     users: [],
-                    teams: ['firstgithubrepo-teamadmin']
+                    teams: teams
                 },
                 required_linear_history: true,
                 allow_force_pushes: false,
