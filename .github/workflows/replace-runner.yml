@@ -71,7 +71,7 @@ jobs:
                 fi
 
                 # Iterate over .yml and .yaml files in .github/workflows folder
-                for file in ./target-repo/.github/workflows/*.yml; do
+                for file in "./target-repo/.github/workflows"/*.yml; do
                   if [ -e "$file" ]; then
                     case "$(basename "$file")" in
                         secret-migration-environment.yml|secret-migration-repository.yml|call-env-secret.yml|call-rep-secret.yml|replace-string-org-only.yml|replace-string-org-repo.yml|replace-string-team-only.yml|replace-string-team-url.yml)
@@ -79,7 +79,7 @@ jobs:
                             ;;
                         *)
                             # Replace ubuntu-latest with windows-latest (case insensitive)
-                            if grep -qi 'ubuntu-latest' $file;  then
+                            if grep -qi 'ubuntu-latest' "$file";  then
                               sed -i 's/ubuntu-latest/windows-latest/Ig' "$file"
                               echo "$repo_name;$file;String Replaced Successfully" >> "${{ github.workspace }}/source-repo/replace_runner_output.txt"
                             fi
@@ -87,7 +87,7 @@ jobs:
                     esac
                   fi
                 done
-                for file in ./target-repo/.github/workflows/*.yaml; do
+                for file in "./target-repo/.github/workflows"/*.yaml; do
                   if [ -e "$file" ]; then
                       case "$(basename "$file")" in
                           secret-migration-environment.yml|secret-migration-repository.yml|call-env-secret.yml|call-rep-secret.yml|replace-string-org-only.yml|replace-string-org-repo.yml|replace-string-team-only.yml|replace-string-team-url.yml)
@@ -95,7 +95,7 @@ jobs:
                               ;;
                           *)
                               # Replace ubuntu-latest with windows-latest (case insensitive)
-                              if grep -qi 'ubuntu-latest' $file; then
+                              if grep -qi 'ubuntu-latest' "$file"; then
                                 sed -i 's/ubuntu-latest/windows-latest/Ig' "$file"
                                 echo "$repo_name;$file;String Replaced Successfully" >> "${{ github.workspace }}/source-repo/replace_runner_output.txt"
                               fi
