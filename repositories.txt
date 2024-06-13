@@ -1,1 +1,14 @@
+github-gk-aks/firstgithubrepo
+github-gk-aks/secondgithubrepo
+github-gk-aks/thirdgithubrepo
+github-gk-aks/fourthgithubrepo
+github-gk-aks/fifthgithubrepo
 github-gk-aks/action-test1
+github-gk-aks/action-test2
+github-gk-aks/action-test3
+github-gk-aks/action-test4
+github-gk-aks/post-migration-self-service
+github-gk-aks/configure-teams-access
+github-gk-aks/production
+github-gk-aks/prep-secrets-migration-inputs
+github-gk-aks/github-secret-new
