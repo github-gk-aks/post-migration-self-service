@@ -49,9 +49,9 @@ jobs:
           run: python ${{ github.workspace }}/files/check_repo_size.py "${{ matrix.repository }}" "${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}"
        
         - name: Upload repo migration status
-          uses: actions/upload-artifact@v4
+          uses: actions/upload-artifact@v3
           with:
             name: statuses_repo_size
             path: ${{ github.workspace }}/report_${{ matrix.repository }}.txt
-            overwrite: false
+
         
