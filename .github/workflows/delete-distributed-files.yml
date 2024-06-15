@@ -119,6 +119,8 @@ jobs:
           else
             echo "No changes to commit." 
           fi
+        env:
+            GPG_KEY_PASSPHRASE: ${{ secrets.PASSPHRASE }}
 
       - name: Upload distribution delete report
         uses: actions/upload-artifact@v3
