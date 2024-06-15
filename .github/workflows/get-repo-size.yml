@@ -51,7 +51,7 @@ jobs:
         - name: Upload repo migration status
           uses: actions/upload-artifact@v4
           with:
-            name: statuses_repo_size
-            path: ${{ github.workspace }}/report_*.txt
+            name: statuses_repo_size_${{ matrix.repository }}
+            path: ${{ github.workspace }}/report_${{ matrix.repository }}.txt
             overwrite: false
         
