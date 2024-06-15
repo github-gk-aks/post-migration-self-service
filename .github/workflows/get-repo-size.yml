@@ -28,11 +28,12 @@ jobs:
       strategy:  
         matrix:
             repository: ${{ fromJson(github.event.issue.body).*.repository }}  # rep01, repo02
-        max-parallel: 1
+        max-parallel: 10
+        fail-fast: false
 
       steps:
         - name: Checkout repository
-          uses: actions/checkout@v2
+          uses: actions/checkout@v4
 
         - name: Set up Python
           uses: actions/setup-python@v3
@@ -48,7 +49,7 @@ jobs:
           run: python ${{ github.workspace }}/files/check_repo_size.py "${{ matrix.repository }}" "${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}"
        
         - name: Upload repo migration status
-          uses: actions/upload-artifact@v3
+          uses: actions/upload-artifact@v4
           with:
             name: statuses_repo_size
             path: ${{ github.workspace }}/report_${{ matrix.repository }}.txt
