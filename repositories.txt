@@ -12,3 +12,4 @@ github-gk-aks/configure-teams-access
 github-gk-aks/production
 github-gk-aks/prep-secrets-migration-inputs
 github-gk-aks/github-secret-new
+github-gk-aks/github-migration-self-service
