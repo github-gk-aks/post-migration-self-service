@@ -3,7 +3,7 @@ import json
 import requests
 import sys
 
-ORG_NAME = "github-gk-aks"
+ORG_NAME = sys.argv[2] # organization name passed as a command line argument
 GITHUB_TOKEN = os.environ['GK_PAT']
 repo_name = sys.argv[1]  # Repository name passed as a command line argument
 

@@ -1,4 +1,4 @@
-name: Run Python Script to Get Repo Size
+name: Get Repo Size
 
 on:
     issues:
@@ -21,7 +21,7 @@ on:
 
 jobs:
   trigger-repo-workflows:
-      if: contains(github.event.issue.labels.*.name, 'check-repo-size')
+      if: contains(github.event.issue.labels.*.name, 'get-repo-size')
       runs-on: ubuntu-latest
       env:
         GK_PAT: ${{ secrets.GK_PAT }}
@@ -35,7 +35,7 @@ jobs:
           uses: actions/checkout@v2
 
         - name: Set up Python
-          uses: actions/setup-python@v2
+          uses: actions/setup-python@v3
           with:
             python-version: '3.x'
 
@@ -45,7 +45,7 @@ jobs:
             pip install requests
 
         - name: Run Python script
-          run: python ${{ github.workspace }}/files/check_repo_size.py "${{ matrix.repository }}"
+          run: python ${{ github.workspace }}/files/check_repo_size.py "${{ matrix.repository }}" "${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}"
        
         - name: Upload repo migration status
           uses: actions/upload-artifact@v3

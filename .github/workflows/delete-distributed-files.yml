@@ -37,7 +37,7 @@ jobs:
       - name: Checkout target repository
         uses: actions/checkout@v4
         with:
-          repository: "${{ matrix.repository }}"
+          repository: "${{ fromJSON(github.event.issue.body)[matrix.repository].organisation }}/${{ matrix.repository }}"
           path: "./target-repo"
           ref: "github-migration"
           token: ${{ secrets.GK_PAT }}
@@ -102,7 +102,8 @@ jobs:
               if [ -f "$workflows_folder/$workflow_file" ]; then
                 rm "$workflows_folder/$workflow_file"
                 echo "Deleted file: $workflows_folder/$workflow_file" >> "${{ github.workspace }}/source-repo/output/${{ matrix.repository }}-delete-distributed-files.txt" 2>&1
-                has_changes=true              else
+                has_changes=true              
+              else
                 echo "File not found: $workflows_folder/$workflow_file" >> "${{ github.workspace }}/source-repo/output/${{ matrix.repository }}-delete-distributed-files.txt" 2>&1
               fi
             done
