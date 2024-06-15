@@ -52,6 +52,6 @@ jobs:
           uses: actions/upload-artifact@v4
           with:
             name: statuses_repo_size
-            path: ${{ github.workspace }}/report_${{ matrix.repository }}.txt
+            path: ${{ github.workspace }}/report_*.txt
             overwrite: true
         
