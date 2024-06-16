@@ -74,7 +74,7 @@ jobs:
         $StatusReportPath = 'migration_status_report.txt'
 
         # Clear previous status report if first run
-        if (${{ matrix.repository }} -eq ${{ matrix.repository[0] }}) {
+        if ('${{ matrix.repository }}' -eq '${{ matrix.repository[0] }}') {
           if (Test-Path $StatusReportPath) {
             Remove-Item $StatusReportPath
           }
