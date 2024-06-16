@@ -102,7 +102,7 @@ jobs:
               } elseif ($statusMessage) {
                 return $statusMessage.Matches.Groups[1].Value
               } else {
-                return "unknown status"
+                return "Migration could have failed. Please check the log"
               }
             }
           }
