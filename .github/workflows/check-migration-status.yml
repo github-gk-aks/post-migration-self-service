@@ -90,20 +90,27 @@ jobs:
           function Check-MigrationStatus {
             param ($MigrationID, $RepoName)
 
-            $inProgress = $true
-            while ($inProgress) {
-              $migrationStatus = & gei wait-for-migration --migration-id $MigrationID
-              $statusMessage = $migrationStatus | Select-String -Pattern "Migration.*for $RepoName is (\w+)"
-              $successMessage = $migrationStatus | Select-String -Pattern "Migration $MigrationID succeeded for $RepoName"
+            # Start the gei process
+            $process = Start-Process gei -ArgumentList "wait-for-migration --migration-id $MigrationID" -NoNewWindow -PassThru -RedirectStandardOutput "migration_output.txt"
+            Start-Sleep -Seconds 10
 
-              if ($successMessage) {
-                $inProgress = $false
-                return "succeeded"
-              } elseif ($statusMessage) {
-                return $statusMessage.Matches.Groups[1].Value
-              } else {
-                return "Migration could have failed. Please check the log"
-              }
+            # Check the status from the output file
+            $migrationStatus = Get-Content "migration_output.txt" | Out-String
+            $statusMessage = $migrationStatus | Select-String -Pattern "Migration.*for $RepoName is (\w+)"
+            $successMessage = $migrationStatus | Select-String -Pattern "Migration $MigrationID succeeded for $RepoName"
+
+            # Stop the process if it is still running
+            if (!$process.HasExited) {
+              Stop-Process -Id $process.Id
+            }
+
+            if ($successMessage) {
+              $inProgress = $false
+              return "succeeded"
+            } elseif ($statusMessage) {
+              return $statusMessage.Matches.Groups[1].Value
+            } else {
+              return "Migration could have failed. Please check the log"
             }
           }
 
