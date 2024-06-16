@@ -71,14 +71,14 @@ jobs:
         $repoName = '${{ matrix.repository }}'
         $migrationStatusDir = 'migration_status'
         $MigrationStatusFilePath = "$migrationStatusDir/$repoName.txt"
-        $StatusReportPath = 'migration_status_report.txt'
+        $StatusReportPath = "migration_status_report_$repoName.txt"
 
-        # Clear previous status report if first run
-        if ('${{ matrix.repository }}' -eq '${{ matrix.repository[0] }}') {
-          if (Test-Path $StatusReportPath) {
-            Remove-Item $StatusReportPath
-          }
-        }
+        # # Clear previous status report if first run
+        # if ('${{ matrix.repository }}' -eq '${{ matrix.repository[0] }}') {
+        #   if (Test-Path $StatusReportPath) {
+        #     Remove-Item $StatusReportPath
+        #   }
+        # }
 
         # Check if the migration status file exists
         if (Test-Path $MigrationStatusFilePath) {
