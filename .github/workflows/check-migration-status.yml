@@ -127,4 +127,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: migration-status-report
-        path: migration_status_report.txt
+        path: migration_status_report_*.txt
