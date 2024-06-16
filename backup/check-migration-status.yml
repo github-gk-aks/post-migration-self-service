@@ -99,10 +99,13 @@ jobs:
               if ($successMessage) {
                 $inProgress = $false
                 return "succeeded"
-              } elseif ($statusMessage) {
-                return $statusMessage.Matches.Groups[1].Value
+              } elseif ($statusMessage -and $statusMessage.Matches.Groups[1].Value -eq 'IN_PROGRESS') {
+                Write-Output "[INFO] Migration $MigrationID for $RepoName is IN_PROGRESS"
+                Write-Output "[INFO] Waiting 10 seconds..."
+                Start-Sleep -Seconds 10
               } else {
-                return "unknown status"
+                $inProgress = $false
+                return $statusMessage.Matches.Groups[1].Value
               }
             }
           }
