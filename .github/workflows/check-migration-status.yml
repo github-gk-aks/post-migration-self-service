@@ -1,0 +1,130 @@
+name: Check Migration Status
+
+on:
+  issues:
+    types:
+      - opened
+      - edited
+
+jobs:
+  check-migration-status:
+    if: contains(github.event.issue.labels.*.name, 'check-migration-status')
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        repository: ${{ fromJson(github.event.issue.body).*.repository }}
+      fail-fast: false
+      max-parallel: 5
+    env:
+      # switch to 'false' if you don't want to run the apt-get commands and GEI
+      INSTALL_PREREQS: "true"
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install common dependencies
+      if: ${{ env.INSTALL_PREREQS == 'true' }}
+      run: |
+        sudo apt-get update
+        sudo apt-get install --yes git unzip curl wget apt-transport-https software-properties-common
+
+    - name: Install GitHub Enterprise Importer
+      if: ${{ env.INSTALL_PREREQS == 'true' }}
+      run: |
+        if [ -z "$(command -v gei)" ]
+        then
+          wget https://github.com/github/gh-gei/releases/latest/download/gei-linux-amd64
+          sudo install --owner root --group root --mode 755 gei-linux-amd64 /usr/local/bin/gei
+        fi
+
+    - if: ${{ runner.debug == '1' }}
+      name: GEI version number
+      run: gei --version
+
+    - name: Install PowerShell
+      if: ${{ env.INSTALL_PREREQS == 'true' }}
+      run: |
+        if [ -z "$(command -v pwsh)" ]
+        then
+          wget "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb"
+          sudo dpkg --install packages-microsoft-prod.deb
+          sudo apt-get update
+          sudo apt-get install --yes powershell
+        fi
+
+    - if: ${{ runner.debug == '1' }}
+      name: PowerShell version number
+      run: pwsh --version
+
+    - name: Setup Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - run: |
+        npm i octokit@2.1.0 fs
+
+    - name: Read and check migration status
+      id: check-status
+      shell: pwsh
+      run: |
+        $repoName = '${{ matrix.repository }}'
+        $migrationStatusDir = 'migration_status'
+        $MigrationStatusFilePath = "$migrationStatusDir/$repoName.txt"
+        $StatusReportPath = 'migration_status_report.txt'
+
+        # Clear previous status report if first run
+        if (${{ matrix.repository }} -eq ${{ matrix.repository[0] }}) {
+          if (Test-Path $StatusReportPath) {
+            Remove-Item $StatusReportPath
+          }
+        }
+
+        # Check if the migration status file exists
+        if (Test-Path $MigrationStatusFilePath) {
+          # Read the migration status file
+          $migrationData = Get-Content $MigrationStatusFilePath | Out-String
+          $migrationId = $migrationData.Split(",")[2].Trim()
+
+          # Function to check migration status
+          function Check-MigrationStatus {
+            param ($MigrationID, $RepoName)
+
+            $inProgress = $true
+            while ($inProgress) {
+              $migrationStatus = & gei wait-for-migration --migration-id $MigrationID
+              $statusMessage = $migrationStatus | Select-String -Pattern "Migration.*for $RepoName is (\w+)"
+              $successMessage = $migrationStatus | Select-String -Pattern "Migration $MigrationID succeeded for $RepoName"
+
+              if ($successMessage) {
+                $inProgress = $false
+                return "succeeded"
+              } elseif ($statusMessage -and $statusMessage.Matches.Groups[1].Value -eq 'IN_PROGRESS') {
+                Write-Output "[INFO] Migration $MigrationID for $RepoName is IN_PROGRESS"
+                Write-Output "[INFO] Waiting 10 seconds..."
+                Start-Sleep -Seconds 10
+              } else {
+                $inProgress = $false
+                return $statusMessage.Matches.Groups[1].Value
+              }
+            }
+          }
+
+          # Check the migration status
+          $finalStatus = Check-MigrationStatus -MigrationID $migrationId -RepoName $repoName
+
+          # Append the result to the status report
+          "$repoName, $migrationId, $finalStatus" | Out-File -FilePath $StatusReportPath -Append
+        } else {
+          # Log a message if the migration status file is not found
+          "$repoName, No migration status file found" | Out-File -FilePath $StatusReportPath -Append
+        }
+      env:
+        GH_PAT: ${{ secrets.TARGET_ADMIN_TOKEN }}
+
+    - name: Upload migration status report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: migration-status-report
+        path: migration_status_report.txt
