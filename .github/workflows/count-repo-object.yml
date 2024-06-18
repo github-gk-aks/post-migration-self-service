@@ -38,7 +38,7 @@ jobs:
                   const [orgName, repoName] = repoFullName.split('/');
 
                   // console.log('Organization:', orgName);
-                  // console.log('Repository:', repoName);
+                  console.log('Processing Repository:', repoName);
 
                   let totalCommits = 0;
                   let page = 1;
