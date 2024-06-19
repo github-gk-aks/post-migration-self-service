@@ -98,6 +98,7 @@ jobs:
             $migrationStatus = Get-Content "migration_output.txt" | Out-String
             $statusMessage = $migrationStatus | Select-String -Pattern "Migration.*for $RepoName is (\w+)"
             $successMessage = $migrationStatus | Select-String -Pattern "Migration $MigrationID succeeded for $RepoName"
+            $errorMessage = $migrationStatus | Select-String -Pattern "\[Error\]"
 
             # Stop the process if it is still running
             if (!$process.HasExited) {
@@ -109,6 +110,10 @@ jobs:
               return "succeeded"
             } elseif ($statusMessage) {
               return $statusMessage.Matches.Groups[1].Value
+            } elseif ($errorMessage) {
+              $errorDetails = $migrationStatus | Select-String -Pattern "\[Error\].*"
+              $errorMessage = $errorDetails -join "`n"
+              return "failed: $errorMessage"
             } else {
               return $migrationStatus
             }
