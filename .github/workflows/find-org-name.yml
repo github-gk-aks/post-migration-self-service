@@ -59,8 +59,8 @@ jobs:
             echo "Searching for the string 'gk-aks-DIGITAL' in the entire repository, excluding certain file extensions..."
 
             #find ./target-repo -type f ! -iname "*.jpg" ! -iname "*.jpeg" ! -iname "*.xlsx" ! -iname "*.pdf" ! -iname "*.woff" ! -iname "*.woff2" ! -iname "*.png" ! -iname "*.gif" ! -iname "*.ico" ! -path "./target-repo/.git/*" -print0 | while IFS= read -r -d '' file; do
-            find ./target-repo -type f ! -iname "*.jpg" ! -iname "*.jpeg" ! -iname "*.xlsx" ! -iname "*.pdf" ! -iname "*.woff" ! -iname "*.woff2" ! -iname "*.png" ! -iname "*.gif" ! -iname "*.ico" ! -path "./target-repo/.git/*" \
-            ! -path "./target-repo/input_migration/*" ! -path "./target-repo/script_migration/*" \
+            find ./target-repo -type d \( -path "./target-repo/input_migration" -o -path "./target-repo/script_migration" \) -prune -o \
+            -type f ! -iname "*.jpg" ! -iname "*.jpeg" ! -iname "*.xlsx" ! -iname "*.pdf" ! -iname "*.woff" ! -iname "*.woff2" ! -iname "*.png" ! -iname "*.gif" ! -iname "*.ico" ! -path "./target-repo/.git/*" \
             ! -path "./target-repo/.github/workflows/replace-string-org-only.yml" \
             ! -path "./target-repo/.github/workflows/replace-string-org-repo.yml" \
             ! -path "./target-repo/.github/workflows/replace-string-team-only.yml" \
