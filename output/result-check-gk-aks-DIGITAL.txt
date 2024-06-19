@@ -1,0 +1,10 @@
+Repo:github-gk-aks/production, File:./target-repo/README.md, Matched String:gk-aks-DIGITAL
+Repo:github-gk-aks/production, File:./target-repo/docs/CODEOWNERS, No match found
+Repo:github-gk-aks/production, File:./target-repo/LICENSE, No match found
+Repo:github-gk-aks/production, File:./target-repo/bck/string-replaces-org.py, No match found
+Repo:github-gk-aks/production, File:./target-repo/bck/replace-string-all.yml, No match found
+Repo:github-gk-aks/production, File:./target-repo/.github/workflows/setting-meets-standard-testing.yml, No match found
+Repo:github-gk-aks/production, File:./target-repo/.github/workflows/find-org-name.yml, Matched String:gk-aks-DIGITAL
+Repo:github-gk-aks/production, File:./target-repo/.github/workflows/replace-string-team.yml, No match found
+Repo:github-gk-aks/production, File:./target-repo/.github/workflows/replace-string-org.yml, No match found
+Repo:github-gk-aks/production, File:./target-repo/.github/workflows/replace-string-all.yml, No match found
