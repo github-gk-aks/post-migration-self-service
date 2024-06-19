@@ -90,15 +90,18 @@ jobs:
           function Check-MigrationStatus {
             param ($MigrationID, $RepoName)
 
+            $outputFile = "migration_output.txt"
+            $errorFile = "migration_error.txt"
+
             # Start the gei process
-            $process = Start-Process gei -ArgumentList "wait-for-migration --migration-id $MigrationID" -NoNewWindow -PassThru -RedirectStandardOutput "migration_output.txt"
+            $process = Start-Process gei -ArgumentList "wait-for-migration --migration-id $MigrationID" -NoNewWindow -PassThru -RedirectStandardOutput $outputFile -RedirectStandardError $errorFile
             Start-Sleep -Seconds 10
 
             # Check the status from the output file
-            $migrationStatus = Get-Content "migration_output.txt" | Out-String
+            $migrationStatus = Get-Content $outputFile, $errorFile | Out-String
             $statusMessage = $migrationStatus | Select-String -Pattern "Migration.*for $RepoName is (\w+)"
             $successMessage = $migrationStatus | Select-String -Pattern "Migration $MigrationID succeeded for $RepoName"
-            $errorMessage = $migrationStatus | Select-String -Pattern "\[Error\]"
+            $errorMessage = $migrationStatus | Select-String -Pattern "Migration $MigrationID failed for $RepoName"
 
             # Stop the process if it is still running
             if (!$process.HasExited) {
@@ -111,9 +114,7 @@ jobs:
             } elseif ($statusMessage) {
               return $statusMessage.Matches.Groups[1].Value
             } elseif ($errorMessage) {
-              $errorDetails = $migrationStatus | Select-String -Pattern "\[Error\].*"
-              $errorMessage = $errorDetails -join "`n"
-              return "failed: $errorMessage"
+              return "failed"
             } else {
               return $migrationStatus
             }
