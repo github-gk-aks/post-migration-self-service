@@ -1,4 +1,4 @@
-name: Get Repository ID
+name: Replace Repository ID
     
 on:
   workflow_dispatch:
