@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
- supdate-repo-id:
+ update-repo-id:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout central repository
