@@ -13,12 +13,6 @@ jobs:
             token: ${{ secrets.GK_PAT }}
             path: ./source-repo
 
-      - name: Download output file
-        uses: actions/download-artifact@v3
-        with:
-            name: output-repo-id.txt
-            path: ./source-repo/output
-
       - name: Import GPG key
         run: |
             echo "${GPG_PRIVATE_KEY}" | gpg --batch --import
@@ -49,7 +43,7 @@ jobs:
                 const { execSync } = require('child_process');
 
                 // Read repository names and IDs from output-repo-id.txt file
-                const repoFilePath = '${{ github.workspace }}/source-repo/output/output-repo-id.txt';
+                const repoFilePath = '${{ github.workspace }}/source-repo/input/output-repo-id.txt';
                 let repoData = [];
                 try {
                     const data = fs.readFileSync(repoFilePath, 'utf8');
