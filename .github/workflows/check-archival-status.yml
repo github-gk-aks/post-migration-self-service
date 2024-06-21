@@ -14,7 +14,7 @@ jobs:
             token: ${{ secrets.GK_PAT }}
             path: ./source-repo
 
-       - name: Check Archive Status of Repositories
+      - name: Check Archive Status of Repositories
         id: check-status
         env:
           GH_TOKEN: ${{ secrets.GK_PAT }}
