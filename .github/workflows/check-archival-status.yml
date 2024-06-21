@@ -1,0 +1,75 @@
+name: Check Repository Archive Status
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check-archived-status:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+            token: ${{ secrets.GK_PAT }}
+            path: ./source-repo
+
+      - name: Import GPG key
+        run: |
+          echo "${GPG_PRIVATE_KEY}" | gpg --batch --import
+        env: 
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
+      - name: Add the custom gpg signing program that passes the passphrase to the gpg CLI
+        run: |
+          rm -rf /tmp/gpg.sh
+          echo '#!/bin/bash' >> /tmp/gpg.sh
+          echo 'gpg --batch --pinentry-mode=loopback --passphrase $GPG_KEY_PASSPHRASE $@' >> /tmp/gpg.sh
+          chmod +x /tmp/gpg.sh
+
+      - name: Setup git
+        run: |
+          git config  user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
+          git config  user.name ${{ secrets.GIT_COMMITTER_NAME }}
+          git config  commit.gpgsign true
+          git config  user.signingkey $GPG_KEY_ID
+          git config  gpg.program /tmp/gpg.sh
+        env:
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+
+      - name: Check Archive Status of Repositories
+        id: check-status
+        env:
+          GH_TOKEN: ${{ secrets.GK_PAT }}
+        run: |
+          mapfile -t repositories < "${{ github.workspace }}/source-repo/repositories.txt"
+          for repo in "${repositories[@]}"; do
+              IFS='/' read -r org_name repo_name <<< "$repo"
+              echo "Processing repository: $org_name/$repo_name"
+
+              # Fetch the repository details
+              http_status_and_response=$(curl -s -w "%{http_code}\n" -L \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              https://api.github.com/repos/$org_name/$repo_name)
+
+              http_status=$(echo "$http_status_and_response" | tail -n 1)
+              repid_response=$(echo "$http_status_and_response" | sed '$d')
+
+              if [[ $http_status == 200 ]]; then
+                archived=$(echo "$repid_response" | jq -r '.archived')
+                if [[ $archived == "true" ]]; then
+                  echo "$org_name/$repo_name;archived" >> "${GITHUB_WORKSPACE}/source-repo/output/repo-archive-status.txt"
+                else
+                  echo "$org_name/$repo_name;not-archived" >> "${GITHUB_WORKSPACE}/source-repo/output/repo-archive-status.txt"
+                fi
+              else
+                echo "$org_name/$repo_name;failed to fetch status" >> "${GITHUB_WORKSPACE}/source-repo/output/repo-archive-status.txt"
+              fi
+          done
+
+      - name: Upload Archive Status Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: repo-archive-status-report
+          path: ./source-repo/output/repo-archive-status.txt
