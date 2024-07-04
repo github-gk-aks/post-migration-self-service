@@ -1,4 +1,4 @@
 github-gk-aks/production
-github-gk-aks/secondgithubrepo
+github-gk-aks/firstgithubrepo
 github-gk-aks/thirdgithubrepo
 github-gk-aks/fourthgithubrepo
