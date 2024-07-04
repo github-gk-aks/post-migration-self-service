@@ -44,24 +44,24 @@ jobs:
               if [ "$total_yaml_files" -eq 0 ] && [ "$total_yml_files" -eq 0 ]; then
                 echo "Repo:$repo,File:,*.yaml and *.yml files not found." >> ${{ github.workspace }}/source-repo/output/result-check-${search_string}.txt
               else
-                for file in "$yaml_files"; do
+                while IFS= read -r file; do
                   if [ -e "$file" ]; then
-                    if grep -iqE "$search_string" "$file"; then
-                      echo "Repo:$repo,File:$file,Matched String:$search_string" >> "${{ github.workspace }}/source-repo/output/result-check-${search_string}.txt"
+                    if grep -iq "$search_string" "$file"; then
+                      echo "Repo:$repo,File:$file,Matched String:$search_string" >> "${{ github.workspace }}/source-repo/output/result-check-${search_string}}.txt"
                     else
-                      echo "Repo:$repo,File:$file,No match found" >> "${{ github.workspace }}/source-repo/output/result-check-${search_string}.txt"
+                      echo "Repo:$repo,File:$file,No match found" >> "${{ github.workspace }}/source-repo/output/result-check-${search_string}}.txt"
                     fi
                   fi
-                done
-                for file in "$yml_files"; do
+                done <<< "$yaml_files"
+                while IFS= read -r file; do
                   if [ -e "$file" ]; then
-                    if grep -iqE "$search_string" "$file"; then
-                      echo "Repo:$repo,File:$file,Matched String:$search_string" >> "${{ github.workspace }}/source-repo/output/result-check-${search_string}.txt"
+                    if grep -iq "$search_string" "$file"; then
+                      echo "Repo:$repo,File:$file,Matched String:$search_string" >> "${{ github.workspace }}/source-repo/output/result-check-${search_string}}.txt"
                     else
-                      echo "Repo:$repo,File:$file,No match found" >> "${{ github.workspace }}/source-repo/output/result-check-${search_string}.txt"
+                      echo "Repo:$repo,File:$file,No match found" >> "${{ github.workspace }}/source-repo/output/result-check-${search_string}}.txt"
                     fi
                   fi
-                done
+                done <<< "$yml_files"
               fi
             else
               echo ".github directory not found. Appending information to result-check-${search_string}.txt."
