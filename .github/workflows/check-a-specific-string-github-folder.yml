@@ -30,37 +30,26 @@ jobs:
             git clone "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./target-repo"
             
             if [ -d "./target-repo/.github" ]; then
-              echo ".github/workflows directory found. Proceeding with search."
+              echo ".github directory found. Proceeding with search."
 
-              if find "./target-repo/.github" -type f \( -name "*.yaml" -o -name "*.yml" \) -print -quit | grep -q .; then
-                  yaml_count=$(find "./target-repo/.github" -type f -name "*.yaml" | wc -l)
-                  yml_count=$(find "./target-repo/.github" -type f -name "*.yml" | wc -l)
-                  echo "Total count of YML files for repo $repo_name is: $yml_count"
-                  echo "Total count of YAML files for repo $repo_name is: $yaml_count"
+              
+              yaml_count=$(find "./target-repo/.github" -type f -name "*.yaml" | wc -l)
+              yml_count=$(find "./target-repo/.github" -type f -name "*.yml" | wc -l)
+              echo "Total count of YML files for repo $repo_name is: $yml_count"
+              echo "Total count of YAML files for repo $repo_name is: $yaml_count"
               #if ls "./target-repo/.github"/*.yml "./target-repo/.github"/*.yaml &> /dev/null; then
 
-                  for file in "./target-repo/.github"/*.yml; do              
-                    if [ -e "$file" ]; then
-                      if grep -iqE '${{ github.event.inputs.search_string }}' "$file"; then
-                        echo "Repo:$repo,File:$file,Matched String:${{ github.event.inputs.search_string }}" >> "${{ github.workspace }}/source-repo/output/result-check-${{ github.event.inputs.search_string }}.txt"
-                      else
-                        echo "Repo:$repo,File:$file,No match found" >> "${{ github.workspace }}/source-repo/output/result-check-${{ github.event.inputs.search_string }}.txt"
-                      fi
-                    fi
-                  done
-                  for file in ./target-repo/.github/*.yaml; do
-                    if [ -e "$file" ]; then
-                      if grep -iqE '${{ github.event.inputs.search_string }}' "$file"; then
-                        echo "Repo:$repo,File:$file,Matched String:${{ github.event.inputs.search_string }}" >> "${{ github.workspace }}/source-repo/output/result-check-${{ github.event.inputs.search_string }}.txt"
-                      else
-                        echo "Repo:$repo,File:$file,No match found" >> "${{ github.workspace }}/source-repo/output/result-check-${{ github.event.inputs.search_string }}.txt"
-                      fi
-                    fi
-                  done
+              if [ "$total_yaml_files" -eq 0 ] && [ "$total_yml_files" -eq 0 ]; then
+                echo "Repo:$repo,File:,*.yaml and *.yml files not found." >> ${{ github.workspace }}/source-repo/output/result-check-${{ github.event.inputs.search_string }}.txt
               else
-                  echo "Repo:$repo,File:,*.yml and *.yaml files not found." >> ${{ github.workspace }}/source-repo/output/result-check-${{ github.event.inputs.search_string }}.txt
+                echo "$yaml_files" "$yml_files" | while read -r file; do
+                  if grep -iqE "${{ github.event.inputs.search_string }}" "$file"; then
+                    echo "Repo:$repo,File:$file,Matched String:${{ github.event.inputs.search_string }}" >> "${{ github.workspace }}/source-repo/output/result-check-${{ github.event.inputs.search_string }}.txt"
+                  else
+                    echo "Repo:$repo,File:$file,No match found" >> "${{ github.workspace }}/source-repo/output/result-check-${{ github.event.inputs.search_string }}.txt"
+                  fi
+                done
               fi    
-
             else
               echo ".github directory not found. Appending information to result-check-${{ github.event.inputs.search_string }}.txt."
               echo "Repo:$repo,File:,.github directory not found." >> ${{ github.workspace }}/source-repo/output/result-check-${{ github.event.inputs.search_string }}.txt
