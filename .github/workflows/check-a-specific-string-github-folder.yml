@@ -62,7 +62,7 @@ jobs:
                     fi
                   fi
                 done
-              fi    
+              fi
             else
               echo ".github directory not found. Appending information to result-check-${search_string}.txt."
               echo "Repo:$repo,File:,.github directory not found." >> ${{ github.workspace }}/source-repo/output/result-check-${search_string}.txt
