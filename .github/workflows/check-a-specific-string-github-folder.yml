@@ -27,7 +27,7 @@ jobs:
           for repo in "${repositories[@]}"; do
             IFS='/' read -r org_name repo_name <<< "$repo"
             echo "Processing repository: $org_name/$repo_name"                       
-            git clone "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./target-repo"
+            git clone -b github-migration "https://${{ secrets.GK_PAT }}@github.com/$repo.git" "./target-repo"
             
             if [ -d "./target-repo/.github" ]; then
               echo ".github directory found. Proceeding with search."
