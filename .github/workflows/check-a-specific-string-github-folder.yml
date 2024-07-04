@@ -24,6 +24,7 @@ jobs:
       - name: Iterate Over Repos
         run: |
           mapfile -t repositories < "${{ github.workspace }}/source-repo/repositories.txt"
+          search_string="${{ github.event.inputs.search_string }}"
           for repo in "${repositories[@]}"; do
             IFS='/' read -r org_name repo_name <<< "$repo"
             echo "Processing repository: $org_name/$repo_name"                       
@@ -31,45 +32,46 @@ jobs:
             
             if [ -d "./target-repo/.github" ]; then
               echo ".github directory found. Proceeding with search."
-              
+
               yaml_files=$(find "./target-repo/.github" -type f -name "*.yaml")
               yml_files=$(find "./target-repo/.github" -type f -name "*.yml")
 
-              total_yaml_files=$(echo "$yaml_files" | grep -c '^')
-              total_yml_files=$(echo "$yml_files" | grep -c '^')
+              total_yaml_files=$(echo "$yaml_files" | grep -c '^' || echo 0)
+              total_yml_files=$(echo "$yml_files" | grep -c '^' || echo 0)
               echo "Total count of YAML files for repo $repo_name is: $total_yaml_files"
               echo "Total count of YML files for repo $repo_name is: $total_yml_files"
 
               if [ "$total_yaml_files" -eq 0 ] && [ "$total_yml_files" -eq 0 ]; then
-                echo "Repo:$repo,File:,*.yaml and *.yml files not found." >> ${{ github.workspace }}/source-repo/output/result-check-${{ github.event.inputs.search_string }}.txt
+                echo "Repo:$repo,File:,*.yaml and *.yml files not found." >> ${{ github.workspace }}/source-repo/output/result-check-${search_string}.txt
               else
-                for file in $yaml_files $yml_files; do
-                  if grep -iq "${{ github.event.inputs.search_string }}" "$file"; then
-                    echo "Repo:$repo,File:$file,Matched String:${{ github.event.inputs.search_string }}" >> "${{ github.workspace }}/source-repo/output/result-check-${{ github.event.inputs.search_string }}.txt"
-                  else
-                    echo "Repo:$repo,File:$file,No match found" >> "${{ github.workspace }}/source-repo/output/result-check-${{ github.event.inputs.search_string }}.txt"
+                for file in $yaml_files; do
+                  if [ -e "$file" ]; then
+                    if grep -iq "$search_string" "$file"; then
+                      echo "Repo:$repo,File:$file,Matched String:$search_string" >> "${{ github.workspace }}/source-repo/output/result-check-${search_string}.txt"
+                    else
+                      echo "Repo:$repo,File:$file,No match found" >> "${{ github.workspace }}/source-repo/output/result-check-${search_string}.txt"
+                    fi
+                  fi
+                done
+                for file in $yml_files; do
+                  if [ -e "$file" ]; then
+                    if grep -iq "$search_string" "$file"; then
+                      echo "Repo:$repo,File:$file,Matched String:$search_string" >> "${{ github.workspace }}/source-repo/output/result-check-${search_string}.txt"
+                    else
+                      echo "Repo:$repo,File:$file,No match found" >> "${{ github.workspace }}/source-repo/output/result-check-${search_string}.txt"
+                    fi
                   fi
                 done
               fi    
             else
-              echo ".github directory not found. Appending information to result-check-${{ github.event.inputs.search_string }}.txt."
-              echo "Repo:$repo,File:,.github directory not found." >> ${{ github.workspace }}/source-repo/output/result-check-${{ github.event.inputs.search_string }}.txt
+              echo ".github directory not found. Appending information to result-check-${search_string}.txt."
+              echo "Repo:$repo,File:,.github directory not found." >> ${{ github.workspace }}/source-repo/output/result-check-${search_string}.txt
             fi
 
             rm -rf "./target-repo"
           done
 
-      # - name: Commit Changes
-      #   run: |
-      #     cd ${{ github.workspace }}/source-repo/output
-      #     git config user.email ${{ secrets.GIT_COMMITTER_EMAIL }}
-      #     git config user.name ${{ secrets.GIT_COMMITTER_NAME }}
-      #     git add result-${{ github.event.inputs.search_string }}.txt
-      #     git commit -m "Add result-${{ github.event.inputs.search_string }}.txt - $(date +"%Y-%m-%d %H:%M:%S")" 
-      #     git push
-      #   working-directory: ${{ github.workspace }}
-
-      - name: Upload Excel artifact
+      - name: Upload result artifact
         uses: actions/upload-artifact@v4
         with:
           name: result-check-${{ github.event.inputs.search_string }}
