@@ -1,0 +1,38 @@
+name: Check Github Migration Branch
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check-migration-branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout central repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GK_PAT }}
+          path: ./source-repo
+
+      - name: Create output directory
+        run: mkdir -p ${{ github.workspace }}/source-repo/output
+
+      - name: Iterate Over Repos
+        run: |
+          mapfile -t repositories < "${{ github.workspace }}/source-repo/repositories.txt"
+          for repo in "${repositories[@]}"; do
+            IFS='/' read -r org_name repo_name <<< "$repo"
+            echo "Processing repository: $org_name/$repo_name"
+            
+            if git ls-remote --heads "https://${{ secrets.GK_PAT }}@github.com/$repo.git" | grep -q "refs/heads/github-migration"; then
+              echo "$repo;github-migration;YES" >> "${{ github.workspace }}/source-repo/output/github-migration-report.txt"
+            else
+              echo "$repo;github-migration;NO" >> "${{ github.workspace }}/source-repo/output/github-migration-report.txt"
+            fi
+          done
+
+      - name: Upload result artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-migration-report
+          path: ${{ github.workspace }}/source-repo/output/github-migration-report.txt
