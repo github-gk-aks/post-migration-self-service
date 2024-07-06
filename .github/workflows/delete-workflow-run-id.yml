@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       workflow-names:
-        description: 'Comma-separated list of workflow names to delete'
+        description: 'Comma-separated list of workflow names to delete (e.g., "Check Migration Status","Check Github Migration Branch")'
         required: true
 
 jobs:
