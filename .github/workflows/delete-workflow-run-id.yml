@@ -1,0 +1,61 @@
+name: Delete Specific Workflow Runs from Multiple Repositories
+
+on:
+  workflow_dispatch:
+    inputs:
+      workflow-names:
+        description: 'Comma-separated list of workflow names to delete'
+        required: true
+
+jobs:
+  delete-selected-workflows:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GK_PAT }}
+          path: ./source-repo
+
+      - name: Read Repositories List
+        id: read-repos
+        run: |
+          mapfile -t repositories < "${{ github.workspace }}/source-repo/repositories.txt"
+          echo "REPOSITORIES=${repositories[*]}" >> $GITHUB_ENV
+
+      - name: Delete Workflow Runs
+        env:
+          REPOSITORIES: ${{ env.REPOSITORIES }}
+        run: |
+          WORKFLOW_NAMES="${{ github.event.inputs['workflow-names'] }}"
+          IFS=',' read -ra NAMES_ARRAY <<< "$WORKFLOW_NAMES"
+
+          for repo in "${REPOSITORIES[@]}"; do
+              IFS='/' read -r org_name repo_name <<< "$repo"
+              echo "Processing repository: $org_name/$repo_name"
+
+              for workflow_name in "${NAMES_ARRAY[@]}"; do
+                echo "Fetching runs for workflow: $workflow_name in repository: $org_name/$repo_name"
+                workflow_id=$(gh api -H "Accept: application/vnd.github.v3+json" /repos/$org_name/$repo_name/actions/workflows | jq -r --arg NAME "$workflow_name" '.workflows[] | select(.name == $NAME) | .id')
+
+                if [ -n "$workflow_id" ]; then
+                  echo "Workflow ID for $workflow_name: $workflow_id"
+                  runs=$(gh api -H "Accept: application/vnd.github.v3+json" /repos/$org_name/$repo_name/actions/workflows/$workflow_id/runs | jq -r '.workflow_runs[].id')
+
+                  echo "Runs for workflow $workflow_name: $runs"
+
+                #   for run_id in $runs; do
+                #     echo "Deleting run ID: $run_id"
+                #     response=$(gh api --method DELETE -H "Accept: application/vnd.github.v3+json" /repos/$org_name/$repo_name/actions/runs/$run_id)
+
+                #     if [ $? -eq 0 ]; then
+                #       echo "Successfully deleted run ID: $run_id"
+                #     else
+                #       echo "Failed to delete run ID: $run_id"
+                #     fi
+                #   done
+                else
+                  echo "No workflow found with name: $workflow_name in repository: $org_name/$repo_name"
+                fi
+              done
+          done
