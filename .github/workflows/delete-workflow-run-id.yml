@@ -24,15 +24,13 @@ jobs:
     #       echo "REPOSITORIES=${repositories[*]}" >> $GITHUB_ENV
 
       - name: Delete Workflow Runs
-        env:
-          REPOSITORIES: ${{ env.REPOSITORIES }}
         run: |
           mapfile -t repositories < "${{ github.workspace }}/source-repo/repositories.txt"
 
           WORKFLOW_NAMES=${{ github.event.inputs['workflow-names'] }}
           IFS=',' read -ra NAMES_ARRAY <<< "$WORKFLOW_NAMES"
 
-          for repo in "${REPOSITORIES[@]}"; do
+          for repo in "${repositories[@]}"; do
               IFS='/' read -r org_name repo_name <<< "$repo"
               echo "Processing repository: $org_name/$repo_name"
 
