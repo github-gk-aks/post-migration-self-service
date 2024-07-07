@@ -39,8 +39,10 @@ jobs:
 
               for workflow_name in "${NAMES_ARRAY[@]}"; do
                 workflow_name=$(echo "$workflow_name" | xargs)  # Remove surrounding quotes and leading/trailing whitespace
-                echo "Fetching runs for workflow: $workflow_name in repository: $org_name/$repo_name"
-                workflow_id=$(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/$org_name/$repo_name/actions/workflows | jq -r --arg NAME "$workflow_name" '.workflows[] | select(.name == $NAME) | .id')
+                echo "Fetching runs for workflow: "$workflow_name" in repository: $org_name/$repo_name"
+                workflow_id=$(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/$org_name/$repo_name/actions/workflows)
+                echo "Workflow ID's are : @workflow_id"
+                #workflow_id=$(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/$org_name/$repo_name/actions/workflows | jq -r --arg NAME "$workflow_name" '.workflows[] | select(.name == $NAME) | .id')
 
                 if [ -n "$workflow_id" ]; then
                   echo "Workflow ID for $workflow_name: $workflow_id"
