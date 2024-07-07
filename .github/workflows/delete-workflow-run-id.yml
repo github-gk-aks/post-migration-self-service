@@ -9,6 +9,8 @@ on:
 
 jobs:
   delete-selected-workflows:
+    env:
+        GH_TOKEN: ${{ secrets.GK_PAT }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -25,6 +27,7 @@ jobs:
 
       - name: Delete Workflow Runs
         run: |
+        
           mapfile -t repositories < "${{ github.workspace }}/source-repo/repositories.txt"
 
           WORKFLOW_NAMES=${{ github.event.inputs['workflow-names'] }}
@@ -35,7 +38,7 @@ jobs:
               echo "Processing repository: $org_name/$repo_name"
 
               for workflow_name in "${NAMES_ARRAY[@]}"; do
-                workflow_name=$(echo "$workflow_name" | xargs)  # Remove surrounding quotes and leading/trailing whitespace
+                #workflow_name=$(echo "$workflow_name" | xargs)  # Remove surrounding quotes and leading/trailing whitespace
                 echo "Fetching runs for workflow: $workflow_name in repository: $org_name/$repo_name"
                 workflow_id=$(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/$org_name/$repo_name/actions/workflows | jq -r --arg NAME "$workflow_name" '.workflows[] | select(.name == $NAME) | .id')
 
