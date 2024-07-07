@@ -82,8 +82,8 @@ jobs:
                 #       echo "Failed to delete run ID: $run_id"
                 #     fi
                 #   done
-                # else
-                #   echo "No workflow found with name: $workflow_name in repository: $org_name/$repo_name"
-                # fi
+                else
+                  echo "No workflow found with name: $workflow_name in repository: $org_name/$repo_name"
+                fi
             done
           done
