@@ -81,16 +81,16 @@ jobs:
                       
                       echo "Runs for workflow $workflow_name_input (Page $page): $runs"
 
-                    #   for run_id in $runs; do
-                    #     echo "Deleting run ID: $run_id"
-                    #     response=$(gh api --method DELETE -H "Accept: application/vnd.github.v3+json" /repos/$org_name/$repo_name/actions/runs/$run_id)
+                      for run_id in $runs; do
+                        echo "Deleting run ID: $run_id"
+                        response=$(gh api --method DELETE -H "Accept: application/vnd.github.v3+json" /repos/$org_name/$repo_name/actions/runs/$run_id)
 
-                    #     if [ $? -eq 0 ]; then
-                    #       echo "Successfully deleted run ID: $run_id"
-                    #     else
-                    #       echo "Failed to delete run ID: $run_id"
-                    #     fi
-                    #   done
+                        if [ $? -eq 0 ]; then
+                          echo "Successfully deleted run ID: $run_id"
+                        else
+                          echo "Failed to delete run ID: $run_id"
+                        fi
+                      done
                       
                       ((page++))
                     done
