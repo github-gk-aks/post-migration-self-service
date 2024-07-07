@@ -73,11 +73,9 @@ jobs:
                     while : ; do
                       # Fetch runs for the current page
                       response=$(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" "/repos/$org_name/$repo_name/actions/workflows/$workflow_id/runs?per_page=100&page=$page")
-                      total_count=$(echo "$response" | jq -r '.total_count')
                       runs=$(echo "$response" | jq -r '.workflow_runs[].id')
-                      echo "Total Count is $total_count"
 
-                      if [ "$total_count" -eq 0 ]; then
+                      if [ -z "$runs" ]; then
                         break
                       fi
                       
