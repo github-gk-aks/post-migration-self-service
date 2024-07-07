@@ -19,12 +19,6 @@ jobs:
           token: ${{ secrets.GK_PAT }}
           path: ./source-repo
 
-    #   - name: Read Repositories List
-    #     id: read-repos
-    #     run: |
-    #       mapfile -t repositories < "${{ github.workspace }}/source-repo/repositories.txt"
-    #       echo "REPOSITORIES=${repositories[*]}" >> $GITHUB_ENV
-
       - name: Delete Workflow Runs
         run: |
         
@@ -50,6 +44,7 @@ jobs:
                   # Merge current page workflows with the total workflows
                   workflows=$(echo "$workflows $current_page_workflows" | jq -s '.[0] + .[1]')
                   ((page++))
+                  sleep 0.1
               done
 
             for workflow_name_input in "${NAMES_ARRAY[@]}"; do
@@ -58,14 +53,6 @@ jobs:
                 echo "Fetching runs for workflow: "$workflow_name_input" in repository: $org_name/$repo_name"
 
                 workflow_id=$(echo "$workflows" | jq -r --arg NAME "$workflow_name_input" '.[] | select(.name == $NAME) | .id') 
-
-                # workflow_name_input=$(echo "$workflow_name_input" | xargs)  # Remove surrounding quotes and leading/trailing whitespace
-                # echo "Fetching runs for workflow: "$workflow_name_input" in repository: $org_name/$repo_name"
-                # workflows=$(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/$org_name/$repo_name/actions/workflows?per_page=100&page=1)
-                # workflow_names=$(echo "$workflows" | jq -r '.workflows[].name')
-                # echo "Workflow names: $workflow_names"
-
-                #workflow_id=$(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/$org_name/$repo_name/actions/workflows | jq -r --arg NAME "$workflow_name" '.workflows[] | select(.name == $NAME) | .id')
 
                 if [ -n "$workflow_id" ]; then
                   echo "Workflow ID for $workflow_name: $workflow_id"
@@ -90,6 +77,7 @@ jobs:
                         else
                           echo "Failed to delete run ID: $run_id"
                         fi
+                        sleep 0.1
                       done
                       
                       ((page++))
