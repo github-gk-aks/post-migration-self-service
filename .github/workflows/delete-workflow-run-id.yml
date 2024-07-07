@@ -54,8 +54,10 @@ jobs:
 
             for workflow_name_input in "${NAMES_ARRAY[@]}"; do
 
-                workflow_id=$(echo "$workflows" | jq -r --arg NAME "$workflow_name_input" '.[] | select(.name == $NAME) | .id')
-                echo "Workflow ID's are : $workflow_id"   
+                workflow_name_input=$(echo "$workflow_name_input" | xargs)  # Remove surrounding quotes and leading/trailing whitespace
+                echo "Fetching runs for workflow: "$workflow_name_input" in repository: $org_name/$repo_name"
+
+                workflow_id=$(echo "$workflows" | jq -r --arg NAME "$workflow_name_input" '.[] | select(.name == $NAME) | .id') 
 
                 # workflow_name_input=$(echo "$workflow_name_input" | xargs)  # Remove surrounding quotes and leading/trailing whitespace
                 # echo "Fetching runs for workflow: "$workflow_name_input" in repository: $org_name/$repo_name"
@@ -63,25 +65,36 @@ jobs:
                 # workflow_names=$(echo "$workflows" | jq -r '.workflows[].name')
                 # echo "Workflow names: $workflow_names"
 
-                #echo "Workflow ID's are : $workflow_id"   
                 #workflow_id=$(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/$org_name/$repo_name/actions/workflows | jq -r --arg NAME "$workflow_name" '.workflows[] | select(.name == $NAME) | .id')
 
                 if [ -n "$workflow_id" ]; then
                   echo "Workflow ID for $workflow_name: $workflow_id"
-                  runs=$(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/$org_name/$repo_name/actions/workflows/$workflow_id/runs | jq -r '.workflow_runs[].id')
+                  page=1
+                    while : ; do
+                      # Fetch runs for the current page
+                      response=$(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" "/repos/$org_name/$repo_name/actions/workflows/$workflow_id/runs?per_page=100&page=$page")
+                      total_count=$(echo "$response" | jq -r '.total_count')
+                      runs=$(echo "$response" | jq -r '.workflow_runs[].id')
 
-                  echo "Runs for workflow $workflow_name: $runs"
+                      if [ "$total_count" -eq 0 ]; then
+                        break
+                      fi
+                      
+                      echo "Runs for workflow $workflow_name_input (Page $page): $runs"
 
-                #   for run_id in $runs; do
-                #     echo "Deleting run ID: $run_id"
-                #     response=$(gh api --method DELETE -H "Accept: application/vnd.github.v3+json" /repos/$org_name/$repo_name/actions/runs/$run_id)
+                    #   for run_id in $runs; do
+                    #     echo "Deleting run ID: $run_id"
+                    #     response=$(gh api --method DELETE -H "Accept: application/vnd.github.v3+json" /repos/$org_name/$repo_name/actions/runs/$run_id)
 
-                #     if [ $? -eq 0 ]; then
-                #       echo "Successfully deleted run ID: $run_id"
-                #     else
-                #       echo "Failed to delete run ID: $run_id"
-                #     fi
-                #   done
+                    #     if [ $? -eq 0 ]; then
+                    #       echo "Successfully deleted run ID: $run_id"
+                    #     else
+                    #       echo "Failed to delete run ID: $run_id"
+                    #     fi
+                    #   done
+                      
+                      ((page++))
+                    done
                 else
                   echo "No workflow found with name: $workflow_name in repository: $org_name/$repo_name"
                 fi
