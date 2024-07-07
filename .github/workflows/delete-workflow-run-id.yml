@@ -45,6 +45,7 @@ jobs:
                 echo "Workflow names: $workflow_names"
 
                 for workflow in $(echo "$workflows" | jq -c '.workflows[]'); do
+                    echo "Workflows: $workflows"
                     workflow_name=$(echo "$workflow" | jq -r '.name')
                     workflow_id=$(echo "$workflow" | jq -r '.id')
 
