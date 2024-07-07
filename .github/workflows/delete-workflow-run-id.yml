@@ -17,16 +17,18 @@ jobs:
           token: ${{ secrets.GK_PAT }}
           path: ./source-repo
 
-      - name: Read Repositories List
-        id: read-repos
-        run: |
-          mapfile -t repositories < "${{ github.workspace }}/source-repo/repositories.txt"
-          echo "REPOSITORIES=${repositories[*]}" >> $GITHUB_ENV
+    #   - name: Read Repositories List
+    #     id: read-repos
+    #     run: |
+    #       mapfile -t repositories < "${{ github.workspace }}/source-repo/repositories.txt"
+    #       echo "REPOSITORIES=${repositories[*]}" >> $GITHUB_ENV
 
       - name: Delete Workflow Runs
         env:
           REPOSITORIES: ${{ env.REPOSITORIES }}
         run: |
+          mapfile -t repositories < "${{ github.workspace }}/source-repo/repositories.txt"
+
           WORKFLOW_NAMES="${{ github.event.inputs['workflow-names'] }}"
           IFS=',' read -ra NAMES_ARRAY <<< "$WORKFLOW_NAMES"
 
@@ -35,6 +37,7 @@ jobs:
               echo "Processing repository: $org_name/$repo_name"
 
               for workflow_name in "${NAMES_ARRAY[@]}"; do
+                workflow_name=$(echo $workflow_name | tr -d '"') 
                 echo "Fetching runs for workflow: $workflow_name in repository: $org_name/$repo_name"
                 workflow_id=$(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/$org_name/$repo_name/actions/workflows | jq -r --arg NAME "$workflow_name" '.workflows[] | select(.name == $NAME) | .id')
 
