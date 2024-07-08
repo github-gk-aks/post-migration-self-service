@@ -55,10 +55,13 @@ jobs:
                 workflow_name_input=$(echo "$workflow_name_input" | xargs)  # Remove surrounding quotes and leading/trailing whitespace
                 echo "Fetching runs for workflow: "$workflow_name_input" in repository: $org_name/$repo_name"
 
-                workflow_id=$(echo "$workflows" | jq -r --arg NAME "$workflow_name_input" '.[] | select(.name == $NAME) | .id') 
+                # Escape backslashes in the workflow name
+                workflow_name_escaped=$(printf '%s' "$workflow_name_input" | sed 's/\\/\\\\/g')
+
+                workflow_id=$(echo "$workflows" | jq -r --arg NAME "$workflow_name_escaped" '.[] | select(.name == $NAME) | .id') 
 
                 if [ -n "$workflow_id" ]; then
-                  echo "Workflow ID for $workflow_name_input: $workflow_id"
+                  echo "Workflow ID for $workflow_name_escaped: $workflow_id"
                       all_runs="[]"
                       page=1
                       while : ; do
