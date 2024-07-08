@@ -54,7 +54,7 @@ jobs:
 
             for workflow_name_input in "${NAMES_ARRAY[@]}"; do
 
-                workflow_name_input=$(echo "$workflow_name_input" | xargs | sed 's/\\/\\\\/g')  # Remove surrounding quotes and leading/trailing whitespace
+                workflow_name_input=$(echo "$workflow_name_input" | xargs | sed 's/\\\\/\\\\\\\\/g')  # Escape the backslashes
                 echo "Fetching runs for workflow: "$workflow_name_input" in repository: $org_name/$repo_name"
 
                 workflow_id=$(echo "$workflows" | jq -r --arg NAME "$workflow_name_input" '.[] | select(.name == $NAME) | .id') 
