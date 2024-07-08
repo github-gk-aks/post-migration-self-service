@@ -27,6 +27,7 @@ jobs:
           WORKFLOW_NAMES=${{ github.event.inputs['workflow-names'] }}
           echo "Workfkow name is $WORKFLOW_NAMES"
           IFS=',' read -ra NAMES_ARRAY <<< "$WORKFLOW_NAMES"
+          echo "Workflow name in second stage is $NAMES_ARRAY"
 
           for repo in "${repositories[@]}"; do
             IFS='/' read -r org_name repo_name <<< "$repo"
