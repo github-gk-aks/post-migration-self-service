@@ -60,6 +60,8 @@ jobs:
 
                 workflow_id=$(echo "$workflows" | jq -r --arg NAME "$workflow_name_escaped" '.[] | select(.name == $NAME) | .id') 
 
+                echo "Workflow ID for $workflow_name_escaped: $workflow_id"
+
                 if [ -n "$workflow_id" ]; then
                   echo "Workflow ID for $workflow_name_escaped: $workflow_id"
                       all_runs="[]"
