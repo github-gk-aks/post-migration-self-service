@@ -56,7 +56,7 @@ jobs:
                 echo "Fetching runs for workflow: "$workflow_name_input" in repository: $org_name/$repo_name"
 
                 # Escape backslashes in the workflow name
-                workflow_name_escaped=$(printf '%s' "$workflow_name_input" | sed 's/\\/\\\\/g')
+                workflow_name_escaped=$(echo "$workflow_name_input" | xargs | sed 's/\\/\\\\/g')
 
                 workflow_id=$(echo "$workflows" | jq -r --arg NAME "$workflow_name_escaped" '.[] | select(.name == $NAME) | .id') 
 
