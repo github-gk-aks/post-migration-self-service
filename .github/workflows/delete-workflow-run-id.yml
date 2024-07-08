@@ -25,6 +25,7 @@ jobs:
           mapfile -t repositories < "${{ github.workspace }}/source-repo/repositories.txt"
 
           WORKFLOW_NAMES=${{ github.event.inputs['workflow-names'] }}
+          echo "Workfkow name is $WORKFLOW_NAMES"
           IFS=',' read -ra NAMES_ARRAY <<< "$WORKFLOW_NAMES"
 
           for repo in "${repositories[@]}"; do
