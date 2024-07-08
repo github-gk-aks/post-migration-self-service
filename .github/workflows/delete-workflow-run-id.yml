@@ -93,7 +93,7 @@ jobs:
                           sleep 0.1
                       done
                 else
-                  echo "No workflow found with name: $workflow_name in repository: $org_name/$repo_name"
+                  echo "No workflow found with name: $workflow_name_input in repository: $org_name/$repo_name"
                 fi
             done
           done
