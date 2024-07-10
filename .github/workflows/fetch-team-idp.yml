@@ -1,0 +1,66 @@
+name: Map Github Teams to External IDP groups
+
+on:
+ workflow_dispatch:
+
+jobs:
+ generate-report:
+   env:
+      GH_TOKEN: ${{ secrets.GH_MIGRATION_PAT }}
+   runs-on: fixed-ip-runner-4core-22.04
+
+   steps:
+   - name: Checkout repository
+     uses: actions/checkout@v4
+
+   - name: Set up Node.js
+     uses: actions/setup-node@v3
+     with:
+       node-version: '20'
+
+   - name: Install dependencies
+     run: npm install -g @octokit/core
+
+  #  - name: Get all teams in the organization
+  #    id: get-teams
+  #    run: |
+  #      ORG="Legal-and-General-Group-Confidential"
+  #      TEAMS=$(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /orgs/$ORG/teams --jq '.[].slug')
+  #      echo "teams=$TEAMS" >> $GITHUB_ENV
+
+   - name: Generate report
+     id: generate-report
+     run: |
+       ORG="Legal-and-General-Group-Confidential"
+       REPORT="report.csv"
+       teams="[]"
+            page=1
+            while : ; do
+                response=$(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" "/orgs/$ORG/teams?per_page=100&page=$page")
+                current_page_teams=$(echo "$response" | jq -r '.[].slug')
+
+                if [ -z  "$current_page_teams" ]; then
+                    break
+                fi
+
+                # Merge current page teams with the total teams
+                teams+=($current_page_teams)
+                page=$((page + 1))
+                sleep 0.2
+            done
+        # for team in "${teams[@]}"; do
+        #   echo "Teams: $team"
+        # done
+
+        #  echo "Repo Name,Group Name" > $REPORT
+
+        for team in "${teams[@]}"; do
+          GROUP_NAME=$(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /orgs/$ORG/teams/$team/external-groups | jq '.group_name')
+          echo "$team,$GROUP_NAME" >> $REPORT
+        done
+
+   - name: Upload report as artifact
+     uses: actions/upload-artifact@v3
+     with:
+       name: teams-and-groups-report
+       path: report.csv
