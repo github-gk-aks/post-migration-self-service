@@ -1,1 +1,2 @@
-github-gk-aks/production
+github-gk-aks/test-repo-2
+github-gk-aks/test-repo-1
