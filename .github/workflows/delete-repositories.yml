@@ -1,0 +1,57 @@
+name: Delete Repositories in Test Organizations
+
+on:
+  workflow_dispatch:
+
+jobs:
+  delete-repositories:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GK_PAT }}
+          path: ./source-repo
+
+      - name: Delete Repositories
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GK_PAT }}
+          script: |
+            const fs = require('fs');
+            const repoFilePath = "${{ github.workspace }}//source-repo/repositories.txt";
+            const outputFilePath = "${{ github.workspace }}/source-repo/output/deletion_log.txt";
+            let repoNames = [];
+
+            try {
+              const data = fs.readFileSync(repoFilePath, 'utf8');
+              repoNames = data.trim().split('\n');
+            } catch (err) {
+              console.error(`Error reading file: ${err}`);
+              process.exit(1);
+            }
+
+            // Clear or create the output file
+            fs.writeFileSync(outputFilePath, 'Repo_Name,Status\n');
+
+            for (const repoFullName of repoNames) {
+              const [orgName, repoName] = repoFullName.split('/');
+              try {
+                await github.rest.repos.delete({
+                  owner: orgName,
+                  repo: repoName,
+                });
+                console.log(`Deleted repository: ${repoFullName}`);
+                fs.appendFileSync(outputFilePath, `${repoFullName},Deleted\n`);
+              } catch (err) {
+                console.error(`Error deleting repository ${repoFullName}:`, err);
+                fs.appendFileSync(outputFilePath, `${repoFullName},Failed: ${err.message}\n`);
+              }
+            }
+
+      - name: Upload deletion log
+        uses: actions/upload-artifact@v3
+        with:
+            name: deletion-log
+            path: ${{ github.workspace }}/source-repo/output/deletion_log.txt

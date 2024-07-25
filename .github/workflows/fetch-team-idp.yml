@@ -6,7 +6,7 @@ on:
 jobs:
  generate-report:
    env:
-      GH_TOKEN: ${{ secrets.GH_MIGRATION_PAT }}
+      GH_TOKEN: ${{ secrets.GK_PAT }}
    runs-on: fixed-ip-runner-4core-22.04
 
    steps:
